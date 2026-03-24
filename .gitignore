@@ -1,0 +1,10 @@
+# generated
+man
+docs
+NAMESPACE
+
+
+# private
+pkg.R
+notes.R
+notes.md

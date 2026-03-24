@@ -1,0 +1,10 @@
+^LICENSE\.md$
+^nowcastr\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+
+pkg.R
+figs

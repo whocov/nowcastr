@@ -1,0 +1,27 @@
+Version: 0.1.0
+Package: nowcastr
+Title: Nowcasting with Chain-Ladder Method
+Description: Tools for performing nowcasting using the Chain-Ladder method. It supports both non-cumulative delay-based estimation and model-based completeness fitting (e.g., using logistic or Gompertz curves) to predict final counts from partially reported data.
+Authors@R: 
+    person("Mathias", "Leroy", , "mathias.leroy.rpkg@gmail.com", role = c("aut", "cre"))
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+LazyData: true
+Imports: 
+    S7,
+    rlang,
+    magrittr,
+    dplyr,
+    tidyr,
+    stats,
+    purrr,
+    ggplot2,
+    scales
+Depends: 
+    R (>= 3.5)
+Suggests: 
+    ISOweek,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

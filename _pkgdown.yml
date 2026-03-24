@@ -1,0 +1,30 @@
+url: ~
+template:
+  bootstrap: 5
+navbar:
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github, lightswitch]
+reference:
+- title: "Main Functions"
+  contents: 
+  - nowcast_cl
+  - plot.nowcast_results
+- title: "Utilities"
+  contents:
+  - calculate_retro_score
+  - rm_repeated_values
+  - fill_future_reported_values
+- title: "Data"
+  contents:
+  - nowcast_demo
+  - nowcast_test_data
+  - generate_test_data
+- title: "Other"
+  contents:
+  - plot_delays
+  - plot_triangle
+  - plot_millipede
+  - starts_with("plot_")
+  - nowcast_results
+
