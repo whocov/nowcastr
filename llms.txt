@@ -121,18 +121,23 @@ nowcast %>% plot(which = "results")
 
 ## Methods
 
-Summary:  
-1. Input Data: Ensure three core columns: `observed_value` /
-`date_of_reporting` / `date_of_occurrence` (e.g. date_of_event /
-date_of_onset) ![alt text](figs/gif2_fig0_5.png) 1. Calculate the
-`reporting_delay` (= `date_of_reporting` - `date_of_occurrence`) ![alt
-text](figs/fig_delays.png) 1. Compute the `completeness` (=
-`observed_value` / `true_value` (approximated by `last_reported_value`))
-![alt text](figs/fig_completeness.png) 1. Aggregate the
-`avg_completeness` for each `reporting_delay` ![alt
-text](figs/fig1.png) 1. Optional: Fit a curve through that ![alt
-text](figs/fig3_3.png) 1. Apply Nowcast: `nowcast` = `observed_value` /
-`avg_completeness` ![alt text](figs/fig4_example.png)
+Summary:
+
+1.  Input Data: Ensure three core columns: `observed_value` /
+    `date_of_reporting` / `date_of_occurrence` (e.g. date_of_event /
+    date_of_onset) ![data has 3 cols](figs/gif2_fig0_5.png)
+2.  Calculate the `reporting_delay` (= `date_of_reporting` -
+    `date_of_occurrence`) ![calculate reporting
+    delay](figs/fig_delays.png)
+3.  Compute the `completeness` (= `observed_value` / `true_value`
+    (approximated by `last_reported_value`)) ![calculate
+    completeness](figs/fig_completeness.png)
+4.  Aggregate the `avg_completeness` for each `reporting_delay`
+    ![aggregate average completeness](figs/fig1.png)
+5.  Optional: Fit a curve through that ![fit model
+    curve](figs/fig3_3.png)
+6.  Apply Nowcast: `nowcast` = `observed_value` / `avg_completeness`
+    ![apply nowcast factor](figs/fig4_example.png)
 
 # Package index
 

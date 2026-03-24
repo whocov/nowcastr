@@ -169,8 +169,27 @@ devtools::load_all("nowcastr")
 <div class="section level2">
 <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a>
 </h2>
-<p>Summary:<br>
-1. Input Data: Ensure three core columns: <code>observed_value</code> / <code>date_of_reporting</code> / <code>date_of_occurrence</code> (e.g. date_of_event / date_of_onset) <img src="figs/gif2_fig0_5.png" alt="alt text"> 1. Calculate the <code>reporting_delay</code> (= <code>date_of_reporting</code> - <code>date_of_occurrence</code>) <img src="figs/fig_delays.png" alt="alt text"> 1. Compute the <code>completeness</code> (= <code>observed_value</code> / <code>true_value</code> (approximated by <code>last_reported_value</code>)) <img src="figs/fig_completeness.png" alt="alt text"> 1. Aggregate the <code>avg_completeness</code> for each <code>reporting_delay</code> <img src="figs/fig1.png" alt="alt text"> 1. Optional: Fit a curve through that <img src="figs/fig3_3.png" alt="alt text"> 1. Apply Nowcast: <code>nowcast</code> = <code>observed_value</code> / <code>avg_completeness</code> <img src="figs/fig4_example.png" alt="alt text"></p>
+<p>Summary:</p>
+<ol>
+<li>
+Input Data: Ensure three core columns: <code>observed_value</code> / <code>date_of_reporting</code> / <code>date_of_occurrence</code> (e.g. date_of_event / date_of_onset) <img src="figs/gif2_fig0_5.png" alt="data has 3 cols">
+</li>
+<li>
+Calculate the <code>reporting_delay</code> (= <code>date_of_reporting</code> - <code>date_of_occurrence</code>) <img src="figs/fig_delays.png" alt="calculate reporting delay">
+</li>
+<li>
+Compute the <code>completeness</code> (= <code>observed_value</code> / <code>true_value</code> (approximated by <code>last_reported_value</code>)) <img src="figs/fig_completeness.png" alt="calculate completeness">
+</li>
+<li>
+Aggregate the <code>avg_completeness</code> for each <code>reporting_delay</code> <img src="figs/fig1.png" alt="aggregate average completeness">
+</li>
+<li>
+Optional: Fit a curve through that <img src="figs/fig3_3.png" alt="fit model curve">
+</li>
+<li>
+Apply Nowcast: <code>nowcast</code> = <code>observed_value</code> / <code>avg_completeness</code> <img src="figs/fig4_example.png" alt="apply nowcast factor">
+</li>
+</ol>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
