@@ -1,4 +1,4 @@
-url: ~
+url: https://whocov.github.io/nowcastr
 template:
   bootstrap: 5
 navbar:
