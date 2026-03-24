@@ -19,22 +19,27 @@ R package for nowcasting with non-cumulative chain-ladder method.
 
 ## Installation
 
-``` r
+<!-- ``` r
 install.packages("nowcastr")
-```
+``` -->
+
 ``` r
-devtools::install_github(".../nowcastr")
+devtools::install_github("whocov/nowcastr")
 ```
-``` r
+
+<!-- ``` r
 devtools::load_all("nowcastr")
-```
+``` -->
+
+## Requirements
+
+Dataset with at least 2 date columns and a value column. The dataset can also have multiple group-by columns for batch processing.
+
+Note that the delays (difference between the 2 dates) should have constant intervals, *i.e.*, multiples of 1 day or 7 days.
 
 ## Usage
 
 The core functionality is provided by the `nowcast_cl()` function.  
-You will need a dataset with 2 date columns and a value.  
-You can also have one or more group_by column(s) for batch processing.  
-(the delays should be the same within all groups)
 
 
 **Data**
