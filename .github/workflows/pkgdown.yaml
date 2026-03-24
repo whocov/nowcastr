@@ -21,10 +21,12 @@ jobs:
           
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown
-          
+          extra-packages: |
+            any::pkgdown
+            any::roxygen2
+
       - name: Document
-        run: devtools::document()
+        run: roxygen2::roxygenize()
         shell: Rscript {0}
 
       - name: Build site
