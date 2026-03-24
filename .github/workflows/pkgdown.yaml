@@ -29,6 +29,10 @@ jobs:
         run: roxygen2::roxygenize()
         shell: Rscript {0}
 
+      - name: Copy figures to docs
+        run: cp -r figs docs/
+        shell: bash
+          
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE)
         shell: Rscript {0}
