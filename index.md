@@ -1,17 +1,27 @@
 # nowcastr
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![R
+version](https://img.shields.io/badge/R-%3E%3D3.5.0-blue.svg)](https://www.r-project.org/)
+
 R package for nowcasting with non-cumulative chain-ladder method.
 
 - 1 main nowcast function
   - [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
     returns object with all intermediary results
-- 4 plots, accessible via 1 main
-  [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
-  - [`plot_triangle()`](https://whocov.github.io/nowcastr/reference/plot_triangle.md)
-  - [`plot_millipede()`](https://whocov.github.io/nowcastr/reference/plot_millipede.md)
+- 4 plots
+  - `plot_nc_input(option = "triangle")` /
+    `plot(which = "data", option = "triangle")`
+  - `plot_nc_input(option = "millipede")` /
+    `plot(which = "data", option = "millipede")`
   - [`plot_delays()`](https://whocov.github.io/nowcastr/reference/plot_delays.md)
+    / `plot(which = "delays")`
   - [`plot_nowcast()`](https://whocov.github.io/nowcastr/reference/plot_nowcast.md)
-- 3 utils functions
+    / `plot(which = "results")`
+- 3 utility functions
   - [`calculate_retro_score()`](https://whocov.github.io/nowcastr/reference/calculate_retro_score.md):
     Calculate retro-scores for all groups
   - [`rm_repeated_values()`](https://whocov.github.io/nowcastr/reference/rm_repeated_values.md):
@@ -25,21 +35,32 @@ R package for nowcasting with non-cumulative chain-ladder method.
 devtools::install_github("whocov/nowcastr")
 ```
 
-## Requirements
+## Quick Start
+
+``` r
+library(nowcastr)
+
+# Run nowcast with built-in demo data
+result <- nowcast_demo %>% 
+  nowcast_cl(
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group"
+  )
+
+# View results
+print(result@results)
+plot(result, which = "results")
+```
+
+## Data Requirements
 
 Dataset with at least 2 date columns and a value column. The dataset can
 also have multiple group-by columns for batch processing.
 
 Note that the delays (difference between the 2 dates) should have
 constant intervals, *i.e.*, multiples of 1 day or 7 days.
-
-## Usage
-
-The core functionality is provided by the
-[`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
-function.
-
-**Data**
 
 ``` r
 print(nowcast_demo)
@@ -58,7 +79,13 @@ print(nowcast_demo)
 #  9 311657 2025-01-06     2025-06-16  Syndromic ARI
 # 10 313798 2025-01-13     2025-05-26  Syndromic ARI
 # # ℹ 1,614 more rows
+```
 
+## Usage
+
+### Data Preparation
+
+``` r
 ## Visualize input data
 nowcast_demo %>%
   plot_nc_input(
@@ -91,7 +118,7 @@ data %>%
   )
 ```
 
-**Nowcast**
+### Nowcasting
 
 ``` r
 nowcast <- data %>%
@@ -105,19 +132,49 @@ nowcast <- data %>%
   )
 ```
 
-**Plot delays**
+### Plotting Results
 
 ``` r
 print(nowcast@delays)
 nowcast %>% plot(which = "delays")
 ```
 
-**Plot nowcast**
-
 ``` r
 print(nowcast@results)
 nowcast %>% plot(which = "results")
 ```
+
+## Output Object
+
+[`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
+returns an S7 object of class `nowcast_results` with the following
+properties:
+
+| Property       | Type       | Description                                                       |
+|----------------|------------|-------------------------------------------------------------------|
+| `name`         | character  | Timestamp identifier for the run                                  |
+| `params`       | list       | Parameters used for nowcasting (unevaluated call)                 |
+| `time_start`   | POSIXct    | Sys time when function started                                    |
+| `time_end`     | POSIXct    | Sys time when function ended                                      |
+| `n_groups`     | numeric    | Number of groups processed                                        |
+| `max_delay`    | numeric    | Maximum delay used                                                |
+| `data`         | data.frame | Original input data (required columns only)                       |
+| `completeness` | data.frame | Input data with delays and completeness columns                   |
+| `delays`       | data.frame | Aggregated completeness per delay (+ `modelled` column if fitted) |
+| `models`       | data.frame | Fitted models (empty if `do_model_fitting = FALSE`)               |
+| `results`      | data.frame | Final nowcasting predictions                                      |
+
+Access properties with `$`:
+
+``` r
+nowcast$delays
+nowcast$results
+nowcast$params
+```
+
+Available methods: - `print(nowcast)` - Summary of nowcast results -
+`plot(nowcast, which = "delays")` - Delay distribution -
+`plot(nowcast, which = "results")` - Nowcast time series
 
 ## Methods
 
