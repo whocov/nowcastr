@@ -6,11 +6,11 @@ R package for nowcasting with non-cumulative chain-ladder method.
 
 - 1 main nowcast function
   - `nowcast_cl()` returns object with all intermediary results
-- 4 plots, accessible via 1 main `plot()`
-  - `plot_triangle()`
-  - `plot_millipede()`
-  - `plot_delays()`
-  - `plot_nowcast()`
+- 4 plots
+  - `plot_triangle()` = `plot(which = "data", option = "triangle")`
+  - `plot_millipede()` = `plot(which = "data", option = "millipede")`
+  - `plot_delays()` = `plot(which = "delays")`
+  - `plot_nowcast()` = `plot(which = "results")`
 - 3 utils functions
   - `calculate_retro_score()`: Calculate retro-scores for all groups
   - `rm_repeated_values()`: Remove duplicated reported values in reporting matrix
