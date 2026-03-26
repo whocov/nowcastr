@@ -663,7 +663,8 @@ S7::method(plot, nowcast_results) <- function(
               "model: ", trimws(modelname),
               # "\niterations: ", iterations,
               # "\nRSS: ", RSS %>% signif(2),
-              "\nLog(RSS): ", log_RSS,
+              # "\nLog(RSS): ", log_RSS,
+              "\nR²: ", signif(R2, 2),
               ""
             ),
             # x = Inf, hjust = 1.5, ## far right
@@ -790,7 +791,25 @@ tbl_models_stats <- function(nc_obj) {
     return(nc_obj@models)
   } else {
     nc_obj@models %>%
-      arrange(.data$RSS) %>%
+      # mutate(
+      #   # 1. Calculate Total Sum of Squares (Variation from the mean)
+      #   SS_tot = purrr::map_dbl(.data$data, ~ sum((.x$y - mean(.x$y, na.rm = TRUE))^2)),
+      #   # 2. Calculate R2 (Coefficient of Determination)
+      #   R2 = 1 - (RSS / SS_tot),
+      #   R2 = round(R2, 3)
+      # )
+      # select(-SS_tot) %>%
+      mutate(
+        R2 = purrr::map2_dbl(.data$data, .data$RSS, function(dat, rss) {
+          ss_tot <- sum((dat$y - mean(dat$y, na.rm = TRUE))^2)
+          if (ss_tot == 0) {
+            return(NA_real_)
+          } # Prevent division by zero if data is perfectly flat
+          round(1 - (rss / ss_tot), 3)
+        })
+      ) %>%
+      arrange(.data$R2, .data$RSS |> desc()) %>% ## worse on top
+      # arrange(.data$RSS) %>%
       mutate(
         start_completeness_obs = purrr::map_dbl(.data$data, ~ .x$y[which.min(.x$x)]) %>% round(2),
         start_completeness_pred = purrr::map_dbl(.data$pred, ~ .x$y[which.min(.x$x)]) %>% round(2),
@@ -800,7 +819,7 @@ tbl_models_stats <- function(nc_obj) {
       mutate(
         coefs_str = purrr::map_chr(.data$fit, ~ paste(signif(coef(.x), 2), collapse = ", "))
       ) %>%
-      mutate(log_RSS = log10(.data$RSS) %>% round(1), ) %>%
+      # mutate(log_RSS = log10(.data$RSS) %>% round(1), ) %>%
       mutate(
         t_to_95_model = .data$t_to_95_model %>% signif(2) # %>% paste(., nc_obj@params$unit),
       ) %>%
@@ -826,7 +845,8 @@ tbl_models_stats <- function(nc_obj) {
         "iterations",
         "modelname",
         "a", "b", "c",
-        "RSS", "log_RSS",
+        "R2", "RSS",
+        # "log_RSS",
         "t_to_95_obs", "t_to_95_model",
         "start_completeness_obs",
         "start_completeness_pred",
