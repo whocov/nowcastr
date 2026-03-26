@@ -808,7 +808,8 @@ tbl_models_stats <- function(nc_obj) {
         .data$coefs_str,
         into = c("a", "b", "c"),
         sep = ",",
-        convert = TRUE
+        convert = TRUE,
+        fill = "right"
       ) %>%
       select(
         -c("data", "pred", "fit")
