@@ -664,7 +664,7 @@ S7::method(plot, nowcast_results) <- function(
               # "\niterations: ", iterations,
               # "\nRSS: ", RSS %>% signif(2),
               # "\nLog(RSS): ", log_RSS,
-              "\nR²: ", signif(R2, 2),
+              "\nR2: ", signif(R2, 2), # should try R\u00b2, but superscript 2 is not allowed, non-ascii
               ""
             ),
             # x = Inf, hjust = 1.5, ## far right
