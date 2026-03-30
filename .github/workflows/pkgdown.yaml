@@ -24,6 +24,7 @@ jobs:
           extra-packages: |
             any::pkgdown
             any::roxygen2
+            any::quarto
 
       - name: Document
         run: roxygen2::roxygenize()
