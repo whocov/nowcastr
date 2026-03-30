@@ -45,6 +45,7 @@
 #' ## plot results:
 #' # res %>% plot(which = "results")
 #'
+#' @importFrom magrittr %>%
 #' @import dplyr
 #' @importFrom rlang := !! enquo syms as_name .data
 #' @importFrom dplyr %>% filter mutate group_by ungroup arrange select

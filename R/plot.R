@@ -531,9 +531,10 @@ plot_nowcast <- function(
 
 
 
-
 #' @rdname plot.nowcast_results
+#' @param x A `nowcast_results` object.
 #' @usage \method{plot}{nowcast_results}(x, which, option, do_rescale, add_model_info, ...)
+#' @importFrom S7 S7_dispatch
 #' @export
 plot.nowcast_results <- function(
     x,
@@ -541,11 +542,11 @@ plot.nowcast_results <- function(
     option = "millipede",
     do_rescale = FALSE,
     add_model_info = TRUE,
-    ...
-    #
-    ) {
+    ...) {
   S7::S7_dispatch()
 }
+
+
 
 
 
