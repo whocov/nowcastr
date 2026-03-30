@@ -1,0 +1,226 @@
+---
+title: "Introduction to nowcastr"
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+# description: |
+#   An overview of the nowcastr package.
+vignette: >
+  %\VignetteIndexEntry{Introduction to nowcastr}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(dplyr) # Ensure pipe operator is available
+```
+
+Nowcasting is the process of estimating the current state of a phenomenon when the data are incomplete due to reporting delays. The **nowcastr** package implements the chain-ladder method for nowcasting, supporting both non-cumulative delay-based estimation and model-based completeness fitting (*e.g.*, logistic or Gompertz curves). This vignette provides a quick start guide to using the package with demo data.
+
+## Setup
+
+The package is available on GitHub. Install it with:
+
+```{r}
+#| eval: false
+devtools::install_github("whocov/nowcastr")
+```
+```{r}
+library(nowcastr)
+```
+
+
+
+## Data Structure
+
+Your dataset must contain at least three columns:
+
+- **occurrence date**: when the event happened
+- **reporting date**: when the event was reported
+- **value**: the observed count/value
+- \<*groups*\>: none, one or multiple grouping columns: *e.g.* `group_cols = c("group") # or c("region", "disease")`
+
+The package includes a demo dataset `nowcast_demo` that follows this structure:
+
+```{r}
+head(nowcast_demo, 10)
+```
+
+The demo data also includes a `group` column for demonstrating grouped processing.
+The dataset can also have multiple group-by columns for batch processing.
+
+
+
+## Workflow
+
+A typical nowcasting workflow with **nowcastr** involves the following steps.
+
+
+
+### 1. Visualize Input Data
+
+Before nowcasting, inspect the reporting pattern of your data:
+
+```{r}
+nowcast_demo %>%
+  plot_nc_input(
+    option = "triangle",
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group"
+  )
+```
+
+The "millipede" plot provides an alternative view of delays:
+
+```{r}
+nowcast_demo %>%
+  plot_nc_input(
+    option = "millipede",
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group"
+  )
+```
+
+
+
+### 2. Prepare Data (Optional)
+
+If your data contains future occurrence dates with no reports yet, you may want to fill these with the last known reporting values to ensure consistent time units:
+
+```{r}
+data_filled <- nowcast_demo %>%
+  fill_future_reported_values(
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group",
+    max_delay = "auto"
+  )
+data_filled %>%
+  plot_nc_input(
+    option = "triangle",
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group"
+  )
+```
+
+This step is optional; `nowcast_cl` can handle unfilled data.
+
+
+
+### 3. Run Nowcast
+
+Perform the nowcasting using the chain-ladder method:
+
+```{r}
+nc_obj <-
+  data_filled %>%
+  nowcast_cl(
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group",
+    time_units = "weeks",
+    do_model_fitting = TRUE
+  )
+```
+
+The `nowcast_cl()` function returns a `nowcast_results` object containing predictions, delay distributions, completeness estimates, and parameters.
+
+
+
+### 4. Explore Results
+
+Access the components of the result object:
+
+```{r slots}
+nc_obj@results # Final nowcasted values
+nc_obj@delays # Delay distribution
+nc_obj@completeness # Data with completeness estimates
+str(nc_obj@params) # Parameters used
+```
+
+Visualize the results:
+
+```{r plots}
+#| warning: false
+plot(nc_obj, which = "delays") # Delay distribution
+plot(nc_obj, which = "results") # Nowcast time series
+```
+
+
+
+
+
+## How It Works
+
+The chain-ladder method estimates "completeness" for each delay bucket:
+
+- **Delay** = reporting date - occurrence date
+- **Completeness** = observed value / last reported value (approximation of true value)
+- **Average completeness** per delay bucket (across occurrence dates)
+- **Nowcast** = observed value / average completeness
+
+Recent occurrence dates have shorter delays and lower completeness. The method upweights these observations to estimate the true count.
+
+
+
+
+
+### Grouped Processing
+
+You can nowcast multiple groups (e.g., regions, diseases) in a single call by specifying multiple grouping columns:
+
+```{r grouped}
+#| eval: false
+
+nowcast_cl(
+  # ...
+  group_cols = c("region", "disease")
+)
+```
+
+
+
+
+
+## Other Utility Functions
+
+
+### Calculate Retro Scores of input data
+
+retro_score = number of actual value changes / max possible value changes
+
+```{r calculate_retro_score}
+# Calculate retro-scores (= number of actual value changes / max possible value changes)
+nowcast_demo %>%
+  calculate_retro_score(
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = c("group")
+  )
+```
+
+
+### Remove duplicated data
+This can be useful to reduce size without losing information.
+
+```{r rm_repeated_values}
+# Remove duplicate reported values (same value and higher reporting date)
+nowcast_demo %>%
+  rm_repeated_values(
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = c("group")
+  )
+```
+
