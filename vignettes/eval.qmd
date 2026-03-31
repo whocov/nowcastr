@@ -1,5 +1,5 @@
 ---
-title: "Evaluate Past Nowcasts"
+title: "Evaluate Past Nowcasts Accuracy"
 knitr:
   opts_chunk:
     collapse: true
@@ -7,7 +7,7 @@ knitr:
 # description: |
 #   An overview of the nowcastr package.
 vignette: >
-  %\VignetteIndexEntry{Evaluate Past Nowcasts}
+  %\VignetteIndexEntry{Evaluate Past Nowcasts Accuracy}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,13 +26,6 @@ You can run the evaluation with all the same parameters as `nowcast_cl()`.
 library(nowcastr)
 nc_eval_obj <-
   nowcast_demo %>%
-  # fill_future_reported_values(
-  #   col_date_occurrence = date_occurrence,
-  #   col_date_reporting = date_report,
-  #   col_value = value,
-  #   group_cols = "group",
-  #   max_delay = "auto"
-  # ) %>%
   nowcast_eval(
     n_past = 10,
     col_date_occurrence = date_occurrence,
@@ -85,4 +78,38 @@ plot_nowcast_eval_by_delay(
 
 ```{r}
 plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
+```
+
+
+
+
+## Evaluate Scenarios
+
+We test if accuracy of nowcasts improve with `fill_future_reported_values()`:
+
+```{r}
+library(nowcastr)
+nc_eval_obj_with_fill <-
+  nowcast_demo %>%
+  fill_future_reported_values(
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group",
+    max_delay = "auto"
+  ) %>%
+  nowcast_eval(
+    n_past = 10,
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group",
+    time_units = "weeks",
+    do_model_fitting = TRUE
+  )
+```
+
+```{r}
+#| warning: false
+plot_nowcast_eval(nc_eval_obj_with_fill, delay = 0)
 ```
