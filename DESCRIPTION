@@ -1,4 +1,4 @@
-Version: 0.1.0
+Version: 0.1.1
 Package: nowcastr
 Title: Nowcasting with Chain-Ladder Method
 Description: Tools for performing nowcasting using the Chain-Ladder method. It supports both non-cumulative delay-based estimation and model-based completeness fitting (e.g., using logistic or Gompertz curves) to predict final counts from partially reported data.
@@ -24,7 +24,9 @@ Depends:
     R (>= 3.5)
 Suggests: 
     ISOweek,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    quarto
+VignetteBuilder: quarto
 Config/testthat/edition: 3
 URL: https://github.com/whocov/nowcastr, https://whocov.github.io/nowcastr/
 BugReports: https://github.com/whocov/nowcastr/issues
