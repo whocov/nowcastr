@@ -1,0 +1,88 @@
+---
+title: "Evaluate Past Nowcasts"
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+# description: |
+#   An overview of the nowcastr package.
+vignette: >
+  %\VignetteIndexEntry{Evaluate Past Nowcasts}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r}
+```
+
+## Run evaluation
+
+You can run the evaluation with all the same parameters as `nowcast_cl()`.  
+`nowcast_eval()` has only one additional parameter: `n_past`, which controls how many steps in the past you wish to run a nowcast on.
+
+
+```{r}
+library(nowcastr)
+nc_eval_obj <-
+  nowcast_demo %>%
+  # fill_future_reported_values(
+  #   col_date_occurrence = date_occurrence,
+  #   col_date_reporting = date_report,
+  #   col_value = value,
+  #   group_cols = "group",
+  #   max_delay = "auto"
+  # ) %>%
+  nowcast_eval(
+    n_past = 10,
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group",
+    time_units = "weeks",
+    do_model_fitting = TRUE
+  )
+```
+
+This will return an S7 object with 2 slots:
+
+```{r}
+nc_eval_obj@detail %>% dplyr::glimpse(0)
+```
+
+
+```{r}
+nc_eval_obj@summary %>% dplyr::glimpse(0)
+```
+
+
+## Plots
+
+### Plot aggregated indicators
+
+- "SMAPE Improvement median" = median of the difference between SMAPE(observed) and SMAPE(predicted)
+- "Proportion Better = proportion of predictions that outperform base values (-50% to center around zero)
+
+```{r}
+#| warning: false
+plot_nowcast_eval(nc_eval_obj, delay = 0)
+```
+
+### Plot one indicator by delay / for one indicator
+
+```{r}
+#| warning: false
+plot_nowcast_eval_by_delay(
+  nc_eval_obj,
+  indicator = "SMAPE_improvement_med"
+)
+```
+
+## Plot raw values / for one delay
+- predicted values
+- base reported values, at the time
+- last reported values
+
+```{r}
+plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
+```
