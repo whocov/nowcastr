@@ -118,7 +118,7 @@ data %>%
   )
 ```
 
-### Nowcasting
+### Nowcast
 
 ``` r
 nowcast <- data %>%
@@ -247,3 +247,9 @@ Summary:
   [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
   Results
 
+# Articles
+
+### All vignettes
+
+- [Introduction to
+  nowcastr](https://whocov.github.io/nowcastr/articles/nowcastr.md):

@@ -118,7 +118,7 @@ data %>%
   )
 ```
 
-### Nowcasting
+### Nowcast
 
 ``` r
 nowcast <- data %>%
