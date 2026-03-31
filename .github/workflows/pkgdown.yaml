@@ -28,6 +28,8 @@ jobs:
             any::roxygen2
             any::quarto
             any::DT
+            any::shiny
+            any::bslib
 
       - name: Document
         run: roxygen2::roxygenize()
