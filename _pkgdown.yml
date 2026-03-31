@@ -6,10 +6,19 @@ navbar:
     left:  [intro, reference, articles, tutorials, news]
     right: [search, github, lightswitch]
 reference:
-- title: "Main Functions"
+- title: "Main"
   contents: 
   - nowcast_cl
   - plot.nowcast_results
+  - nowcast_results
+- title: "Visualization"
+  contents: 
+  - plot_delays
+  - plot_triangle
+  - plot_millipede
+  - plot_nc_input
+  - plot_nowcast
+  - explore_nowcast
 - title: "Utilities"
   contents:
   - calculate_retro_score
@@ -20,11 +29,12 @@ reference:
   - nowcast_demo
   - nowcast_test_data
   - generate_test_data
-- title: "Other"
+- title: "Evaluation"
   contents:
-  - plot_delays
-  - plot_triangle
-  - plot_millipede
-  - starts_with("plot_")
-  - nowcast_results
+  - nowcast_eval
+  - nowcast_eval_results
+  - plot_nowcast_eval
+  - plot_nowcast_eval_by_delay
+  - plot_nowcast_eval_detail
+
 
