@@ -288,8 +288,6 @@ nowcast_eval <- function(
 #'
 #' @importFrom S7 new_class class_list class_data.frame class_numeric class_POSIXct
 #' @export
-#' @usage
-#' nowcast_eval_results(detail, summary, params, n_past, time_start, time_end)
 nowcast_eval_results <-
   S7::new_class("nowcast_eval_results",
     properties = list(
