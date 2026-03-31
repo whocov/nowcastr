@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nowcastr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/nowcastr.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/eval.html">Evaluate Past Nowcasts Accuracy</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -33,7 +37,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="main-functions">Main Functions<a class="anchor" aria-label="anchor" href="#main-functions"></a></h2>
+      <h2 id="main">Main<a class="anchor" aria-label="anchor" href="#main"></a></h2>
 
 
 
@@ -55,6 +59,64 @@
 
         </dt>
         <dd>Plotting method for nowcasting results</dd>
+
+        <dt>
+
+          <code><a href="nowcast_results.html">nowcast_results()</a></code>
+
+        </dt>
+        <dd>S7 object class for <code><a href="../reference/nowcast_cl.html">nowcast_cl()</a></code> Results</dd>
+      </dl></div><div class="section level2">
+      <h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="plot_delays.html">plot_delays()</a></code>
+
+        </dt>
+        <dd>Plot Reporting Completeness by Delay</dd>
+
+        <dt>
+
+          <code><a href="plot_triangle.html">plot_triangle()</a></code>
+
+        </dt>
+        <dd>Triangle plot</dd>
+
+        <dt>
+
+          <code><a href="plot_millipede.html">plot_millipede()</a></code>
+
+        </dt>
+        <dd>Millipede plot</dd>
+
+        <dt>
+
+          <code><a href="plot_nc_input.html">plot_nc_input()</a></code>
+
+        </dt>
+        <dd>Plot Nowcast Input Data</dd>
+
+        <dt>
+
+          <code><a href="plot_nowcast.html">plot_nowcast()</a></code>
+
+        </dt>
+        <dd>Plot Nowcasting Predictions</dd>
+
+        <dt>
+
+          <code><a href="explore_nowcast.html">explore_nowcast()</a></code>
+
+        </dt>
+        <dd>Explore Nowcast Results with Shiny</dd>
       </dl></div><div class="section level2">
       <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
 
@@ -116,7 +178,7 @@
         </dt>
         <dd>Generate asymptotic test data for nowcating</dd>
       </dl></div><div class="section level2">
-      <h2 id="other">Other<a class="anchor" aria-label="anchor" href="#other"></a></h2>
+      <h2 id="evaluation">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation"></a></h2>
 
 
 
@@ -127,45 +189,38 @@
 
       <dl><dt>
 
-          <code><a href="plot_delays.html">plot_delays()</a></code>
+          <code><a href="nowcast_eval.html">nowcast_eval()</a></code>
 
         </dt>
-        <dd>Plot Reporting Completeness by Delay</dd>
+        <dd>Evaluate Nowcasting Performance</dd>
 
         <dt>
 
-          <code><a href="plot_triangle.html">plot_triangle()</a></code>
+          <code><a href="nowcast_eval_results.html">nowcast_eval_results()</a></code>
 
         </dt>
-        <dd>Triangle plot</dd>
+        <dd>S7 object class for <code><a href="../reference/nowcast_eval.html">nowcast_eval()</a></code> Results</dd>
 
         <dt>
 
-          <code><a href="plot_millipede.html">plot_millipede()</a></code>
+          <code><a href="plot_nowcast_eval.html">plot_nowcast_eval()</a></code>
 
         </dt>
-        <dd>Millipede plot</dd>
+        <dd>Plot Nowcast Evaluation Results</dd>
 
         <dt>
 
-          <code><a href="plot_nc_input.html">plot_nc_input()</a></code>
+          <code><a href="plot_nowcast_eval_by_delay.html">plot_nowcast_eval_by_delay()</a></code>
 
         </dt>
-        <dd>Plot Nowcast Input Data</dd>
+        <dd>Plot Nowcast Evaluation by Delay</dd>
 
         <dt>
 
-          <code><a href="plot_nowcast.html">plot_nowcast()</a></code>
+          <code><a href="plot_nowcast_eval_detail.html">plot_nowcast_eval_detail()</a></code>
 
         </dt>
-        <dd>Plot Nowcasting Predictions</dd>
-
-        <dt>
-
-          <code><a href="nowcast_results.html">nowcast_results()</a></code>
-
-        </dt>
-        <dd>S7 object class for <code><a href="../reference/nowcast_cl.html">nowcast_cl()</a></code> Results</dd>
+        <dd>Plot Nowcast Evaluation Detail Over Time</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

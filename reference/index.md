@@ -1,11 +1,34 @@
 # Package index
 
-## Main Functions
+## Main
 
 - [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
   : Nowcasting with Chain-Ladder Method
+
 - [`plot(`*`<nowcast_results>`*`)`](https://whocov.github.io/nowcastr/reference/plot.nowcast_results.md)
   : Plotting method for nowcasting results
+
+- [`nowcast_results()`](https://whocov.github.io/nowcastr/reference/nowcast_results.md)
+  :
+
+  S7 object class for
+  [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
+  Results
+
+## Visualization
+
+- [`plot_delays()`](https://whocov.github.io/nowcastr/reference/plot_delays.md)
+  : Plot Reporting Completeness by Delay
+- [`plot_triangle()`](https://whocov.github.io/nowcastr/reference/plot_triangle.md)
+  : Triangle plot
+- [`plot_millipede()`](https://whocov.github.io/nowcastr/reference/plot_millipede.md)
+  : Millipede plot
+- [`plot_nc_input()`](https://whocov.github.io/nowcastr/reference/plot_nc_input.md)
+  : Plot Nowcast Input Data
+- [`plot_nowcast()`](https://whocov.github.io/nowcastr/reference/plot_nowcast.md)
+  : Plot Nowcasting Predictions
+- [`explore_nowcast()`](https://whocov.github.io/nowcastr/reference/explore_nowcast.md)
+  : Explore Nowcast Results with Shiny
 
 ## Utilities
 
@@ -25,26 +48,23 @@
 - [`generate_test_data()`](https://whocov.github.io/nowcastr/reference/generate_test_data.md)
   : Generate asymptotic test data for nowcating
 
-## Other
+## Evaluation
 
-- [`plot_delays()`](https://whocov.github.io/nowcastr/reference/plot_delays.md)
-  : Plot Reporting Completeness by Delay
+- [`nowcast_eval()`](https://whocov.github.io/nowcastr/reference/nowcast_eval.md)
+  : Evaluate Nowcasting Performance
 
-- [`plot_triangle()`](https://whocov.github.io/nowcastr/reference/plot_triangle.md)
-  : Triangle plot
-
-- [`plot_millipede()`](https://whocov.github.io/nowcastr/reference/plot_millipede.md)
-  : Millipede plot
-
-- [`plot_nc_input()`](https://whocov.github.io/nowcastr/reference/plot_nc_input.md)
-  : Plot Nowcast Input Data
-
-- [`plot_nowcast()`](https://whocov.github.io/nowcastr/reference/plot_nowcast.md)
-  : Plot Nowcasting Predictions
-
-- [`nowcast_results()`](https://whocov.github.io/nowcastr/reference/nowcast_results.md)
+- [`nowcast_eval_results()`](https://whocov.github.io/nowcastr/reference/nowcast_eval_results.md)
   :
 
   S7 object class for
-  [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
+  [`nowcast_eval()`](https://whocov.github.io/nowcastr/reference/nowcast_eval.md)
   Results
+
+- [`plot_nowcast_eval()`](https://whocov.github.io/nowcastr/reference/plot_nowcast_eval.md)
+  : Plot Nowcast Evaluation Results
+
+- [`plot_nowcast_eval_by_delay()`](https://whocov.github.io/nowcastr/reference/plot_nowcast_eval_by_delay.md)
+  : Plot Nowcast Evaluation by Delay
+
+- [`plot_nowcast_eval_detail()`](https://whocov.github.io/nowcastr/reference/plot_nowcast_eval_detail.md)
+  : Plot Nowcast Evaluation Detail Over Time

@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Introduction to nowcastr • nowcastr</title>
+<title>Getting Started with nowcastr • nowcastr</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="nowcastr_files/libs/quarto-html/popper.min.js"></script><script src="nowcastr_files/libs/quarto-html/tippy.umd.min.js"></script><link href="nowcastr_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="nowcastr_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to nowcastr">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with nowcastr">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">nowcastr</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,12 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/nowcastr.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/eval.html">Evaluate Past Nowcasts Accuracy</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -49,7 +55,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Introduction to nowcastr</h1>
+      <h1>Getting Started with nowcastr</h1>
 
 
 
@@ -73,7 +79,11 @@
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whocov/nowcastr" class="external-link">nowcastr</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whocov/nowcastr" class="external-link">nowcastr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'DT::dataTableOutput' by</span></span>
+<span><span class="co">#&gt; 'shiny::dataTableOutput' when loading 'nowcastr'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'DT::renderDataTable' by</span></span>
+<span><span class="co">#&gt; 'shiny::renderDataTable' when loading 'nowcastr'</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="data-structure">Data Structure<a class="anchor" aria-label="anchor" href="#data-structure"></a>
 </h2>
@@ -88,11 +98,11 @@
 <li>&lt;<em>groups</em>&gt;: none, one or multiple grouping columns: <em>e.g.</em> <code>group_cols = c("group") # or c("region", "disease")</code>
 </li>
 </ul>
-<p>The package includes a demo dataset <code>nowcast_demo</code> that follows this structure:</p>
+<p>The package includes a demo dataset <code>nowcast_demo</code> that follows this structure</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">nowcast_demo</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 10 × 4</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">nowcast_demo</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 1,624 × 4</span></span>
 <span><span class="co">#&gt;     value date_occurrence date_report group        </span></span>
 <span><span class="co">#&gt;     &lt;dbl&gt; &lt;date&gt;          &lt;date&gt;      &lt;chr&gt;        </span></span>
 <span><span class="co">#&gt;  1 251563 2024-12-16      2025-05-26  Syndromic ARI</span></span>
@@ -104,9 +114,10 @@
 <span><span class="co">#&gt;  7 311666 2025-01-06      2025-06-02  Syndromic ARI</span></span>
 <span><span class="co">#&gt;  8 311654 2025-01-06      2025-06-09  Syndromic ARI</span></span>
 <span><span class="co">#&gt;  9 311657 2025-01-06      2025-06-16  Syndromic ARI</span></span>
-<span><span class="co">#&gt; 10 313798 2025-01-13      2025-05-26  Syndromic ARI</span></span></code></pre></div>
+<span><span class="co">#&gt; 10 313798 2025-01-13      2025-05-26  Syndromic ARI</span></span>
+<span><span class="co">#&gt; # ℹ 1,614 more rows</span></span></code></pre></div>
 </div>
-<p>The demo data also includes a <code>group</code> column for demonstrating grouped processing. The dataset can also have multiple group-by columns for batch processing.</p>
+<p>The demo data also includes a <code>group</code> column for demonstrating grouped processing, though you can have multiple grouping columns.</p>
 </section><section class="level2"><h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
 </h2>
 <p>A typical nowcasting workflow with <strong>nowcastr</strong> involves the following steps.</p>
@@ -125,7 +136,7 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -143,14 +154,14 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section class="level3"><h3 id="prepare-data-optional">2. Prepare Data (Optional)<a class="anchor" aria-label="anchor" href="#prepare-data-optional"></a>
 </h3>
-<p>If your data contains future occurrence dates with no reports yet, you may want to fill these with the last known reporting values to ensure consistent time units:</p>
+<p>You may want to fill missing values with the last known reporting values to ensure consistent time units:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_filled</span> <span class="op">&lt;-</span> <span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -171,7 +182,7 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -311,7 +322,7 @@
 </h2>
 <section class="level3"><h3 id="calculate-retro-scores-of-input-data">Calculate Retro Scores of input data<a class="anchor" aria-label="anchor" href="#calculate-retro-scores-of-input-data"></a>
 </h3>
-<p>retro_score = number of actual value changes / max possible value changes</p>
+<p>retro_score = number of actual value changes / max possible value changes [0-1]</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate retro-scores (= number of actual value changes / max possible value changes)</span></span>
@@ -332,7 +343,7 @@
 </div>
 </section><section class="level3"><h3 id="remove-duplicated-data">Remove duplicated data<a class="anchor" aria-label="anchor" href="#remove-duplicated-data"></a>
 </h3>
-<p>This can be useful to reduce size without losing information.</p>
+<p>This is the opposite of <code><a href="../reference/fill_future_reported_values.html">fill_future_reported_values()</a></code>. This can be useful to reduce data size without losing information.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove duplicate reported values (same value and higher reporting date)</span></span>

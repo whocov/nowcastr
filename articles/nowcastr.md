@@ -1,4 +1,4 @@
-# Introduction to nowcastr
+# Getting Started with nowcastr
 
 Nowcasting is the process of estimating the current state of a
 phenomenon when the data are incomplete due to reporting delays. The
@@ -18,6 +18,10 @@ devtools::install_github("whocov/nowcastr")
 
 ``` r
 library(nowcastr)
+#> Warning: replacing previous import 'DT::dataTableOutput' by
+#> 'shiny::dataTableOutput' when loading 'nowcastr'
+#> Warning: replacing previous import 'DT::renderDataTable' by
+#> 'shiny::renderDataTable' when loading 'nowcastr'
 ```
 
 ## Data Structure
@@ -31,11 +35,11 @@ Your dataset must contain at least three columns:
   `group_cols = c("group") # or c("region", "disease")`
 
 The package includes a demo dataset `nowcast_demo` that follows this
-structure:
+structure
 
 ``` r
-head(nowcast_demo, 10)
-#> # A tibble: 10 × 4
+print(nowcast_demo)
+#> # A tibble: 1,624 × 4
 #>     value date_occurrence date_report group        
 #>     <dbl> <date>          <date>      <chr>        
 #>  1 251563 2024-12-16      2025-05-26  Syndromic ARI
@@ -48,11 +52,11 @@ head(nowcast_demo, 10)
 #>  8 311654 2025-01-06      2025-06-09  Syndromic ARI
 #>  9 311657 2025-01-06      2025-06-16  Syndromic ARI
 #> 10 313798 2025-01-13      2025-05-26  Syndromic ARI
+#> # ℹ 1,614 more rows
 ```
 
 The demo data also includes a `group` column for demonstrating grouped
-processing. The dataset can also have multiple group-by columns for
-batch processing.
+processing, though you can have multiple grouping columns.
 
 ## Workflow
 
@@ -74,7 +78,7 @@ nowcast_demo %>%
   )
 ```
 
-![](nowcastr_files/figure-html/unnamed-chunk-4-1.png)
+![](nowcastr_files/figure-html/unnamed-chunk-5-1.png)
 
 The “millipede” plot provides an alternative view of delays:
 
@@ -89,13 +93,12 @@ nowcast_demo %>%
   )
 ```
 
-![](nowcastr_files/figure-html/unnamed-chunk-5-1.png)
+![](nowcastr_files/figure-html/unnamed-chunk-6-1.png)
 
 ### 2. Prepare Data (Optional)
 
-If your data contains future occurrence dates with no reports yet, you
-may want to fill these with the last known reporting values to ensure
-consistent time units:
+You may want to fill missing values with the last known reporting values
+to ensure consistent time units:
 
 ``` r
 data_filled <- nowcast_demo %>%
@@ -116,7 +119,7 @@ data_filled %>%
   )
 ```
 
-![](nowcastr_files/figure-html/unnamed-chunk-6-1.png)
+![](nowcastr_files/figure-html/unnamed-chunk-7-1.png)
 
 This step is optional; `nowcast_cl` can handle unfilled data.
 
@@ -257,7 +260,7 @@ nowcast_cl(
 ### Calculate Retro Scores of input data
 
 retro_score = number of actual value changes / max possible value
-changes
+changes \[0-1\]
 
 ``` r
 # Calculate retro-scores (= number of actual value changes / max possible value changes)
@@ -279,7 +282,9 @@ nowcast_demo %>%
 
 ### Remove duplicated data
 
-This can be useful to reduce size without losing information.
+This is the opposite of
+[`fill_future_reported_values()`](https://whocov.github.io/nowcastr/reference/fill_future_reported_values.md).
+This can be useful to reduce data size without losing information.
 
 ``` r
 # Remove duplicate reported values (same value and higher reporting date)
