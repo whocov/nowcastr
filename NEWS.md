@@ -8,12 +8,11 @@
 * (work with tidytable)
 -->
 
-<!-- 
+
 # nowcastr 0.2.0
 - [feature] accuracy evaluation function
 - [feature] accuracy evaluation plots
-- [feature] shiny for models results visualization 
--->
+- [feature] shiny to visualize model results 
 
 # nowcastr 0.1.1
 - [bugfix] ensure S7 methods are registered before S3 dispatch happens
