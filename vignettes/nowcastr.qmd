@@ -1,5 +1,5 @@
 ---
-title: "Introduction to nowcastr"
+title: "Getting Started with nowcastr"
 knitr:
   opts_chunk:
     collapse: true
@@ -7,7 +7,7 @@ knitr:
 # description: |
 #   An overview of the nowcastr package.
 vignette: >
-  %\VignetteIndexEntry{Introduction to nowcastr}
+  %\VignetteIndexEntry{Getting Started with nowcastr}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
@@ -41,15 +41,25 @@ Your dataset must contain at least three columns:
 - **value**: the observed count/value
 - \<*groups*\>: none, one or multiple grouping columns: *e.g.* `group_cols = c("group") # or c("region", "disease")`
 
-The package includes a demo dataset `nowcast_demo` that follows this structure:
+The package includes a demo dataset `nowcast_demo` that follows this structure
 
 ```{r}
-head(nowcast_demo, 10)
+print(nowcast_demo)
 ```
 
-The demo data also includes a `group` column for demonstrating grouped processing.
-The dataset can also have multiple group-by columns for batch processing.
+The demo data also includes a `group` column for demonstrating grouped processing, though you can have multiple grouping columns.
 
+
+
+
+```{r}
+#| echo: false
+#| eval: false
+# generate_test_data(
+#   n_reportdates = 5,
+#   n_delays = 5
+# )
+```
 
 
 ## Workflow
@@ -62,7 +72,7 @@ A typical nowcasting workflow with **nowcastr** involves the following steps.
 
 Before nowcasting, inspect the reporting pattern of your data:
 
-```{r}
+```{r, fig.asp=5.5/10}
 nowcast_demo %>%
   plot_nc_input(
     option = "triangle",
@@ -90,9 +100,9 @@ nowcast_demo %>%
 
 ### 2. Prepare Data (Optional)
 
-If your data contains future occurrence dates with no reports yet, you may want to fill these with the last known reporting values to ensure consistent time units:
+You may want to fill missing values with the last known reporting values to ensure consistent time units:
 
-```{r}
+```{r, fig.asp=5.5/10}
 data_filled <- nowcast_demo %>%
   fill_future_reported_values(
     col_date_occurrence = date_occurrence,
@@ -196,7 +206,7 @@ nowcast_cl(
 
 ### Calculate Retro Scores of input data
 
-retro_score = number of actual value changes / max possible value changes
+retro_score = number of actual value changes / max possible value changes [0-1]
 
 ```{r calculate_retro_score}
 # Calculate retro-scores (= number of actual value changes / max possible value changes)
@@ -211,7 +221,9 @@ nowcast_demo %>%
 
 
 ### Remove duplicated data
-This can be useful to reduce size without losing information.
+
+This is the opposite of `fill_future_reported_values()`.
+This can be useful to reduce data size without losing information.  
 
 ```{r rm_repeated_values}
 # Remove duplicate reported values (same value and higher reporting date)
