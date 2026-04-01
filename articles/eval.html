@@ -99,31 +99,31 @@
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">detail</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 958</span></span>
-<span><span class="co">#&gt; Columns: 11</span></span>
-<span><span class="co">#&gt; $ group           &lt;chr&gt; …</span></span>
-<span><span class="co">#&gt; $ cut_date        &lt;date&gt; …</span></span>
-<span><span class="co">#&gt; $ date_occurrence &lt;date&gt; …</span></span>
-<span><span class="co">#&gt; $ last_r_date     &lt;date&gt; …</span></span>
-<span><span class="co">#&gt; $ value           &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ value_predicted &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ value_true      &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ delay           &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SAPE_pred       &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SAPE_obs        &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ pred_is_better  &lt;int&gt; …</span></span></code></pre></div>
+<span><span class="co">#&gt; Columns: 12</span></span>
+<span><span class="co">#&gt; $ group            &lt;chr&gt; …</span></span>
+<span><span class="co">#&gt; $ cut_date         &lt;date&gt; …</span></span>
+<span><span class="co">#&gt; $ date_occurrence  &lt;date&gt; …</span></span>
+<span><span class="co">#&gt; $ last_r_date      &lt;date&gt; …</span></span>
+<span><span class="co">#&gt; $ value            &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ value_predicted  &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ value_true       &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ delay            &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ SAPE_pred        &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ SAPE_obs         &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ SAPE_improvement &lt;dbl&gt; …</span></span>
+<span><span class="co">#&gt; $ pred_is_better   &lt;int&gt; …</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 96</span></span>
-<span><span class="co">#&gt; Columns: 15</span></span>
+<span><span class="co">#&gt; Columns: 14</span></span>
 <span><span class="co">#&gt; $ group                     &lt;chr&gt; …</span></span>
 <span><span class="co">#&gt; $ delay                     &lt;dbl&gt; …</span></span>
 <span><span class="co">#&gt; $ n_periods                 &lt;int&gt; …</span></span>
 <span><span class="co">#&gt; $ n_obs                     &lt;int&gt; …</span></span>
 <span><span class="co">#&gt; $ SMAPE_pred                &lt;dbl&gt; …</span></span>
 <span><span class="co">#&gt; $ SMAPE_obs                 &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_improvement         &lt;dbl&gt; …</span></span>
 <span><span class="co">#&gt; $ SMAPE_improvement_mean    &lt;dbl&gt; …</span></span>
 <span><span class="co">#&gt; $ SMAPE_improvement_med     &lt;dbl&gt; …</span></span>
 <span><span class="co">#&gt; $ SMAPE_improvement_q1      &lt;dbl&gt; …</span></span>
@@ -155,10 +155,7 @@
 </h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval_by_delay.html">plot_nowcast_eval_by_delay</a></span><span class="op">(</span></span>
-<span>  <span class="va">nc_eval_obj</span>,</span>
-<span>  indicator <span class="op">=</span> <span class="st">"SMAPE_improvement_med"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval_by_delay.html">plot_nowcast_eval_by_delay</a></span><span class="op">(</span><span class="va">nc_eval_obj</span>, indicator <span class="op">=</span> <span class="st">"SMAPE_improvement_med"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="eval_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>

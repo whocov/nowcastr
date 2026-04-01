@@ -145,6 +145,13 @@ The
 function returns a `nowcast_results` object containing predictions,
 delay distributions, completeness estimates, and parameters.
 
+``` r
+S7::prop_names(nc_obj)
+#>  [1] "name"         "params"       "time_start"   "time_end"     "n_groups"    
+#>  [6] "max_delay"    "data"         "completeness" "delays"       "models"      
+#> [11] "results"
+```
+
 ### 4. Explore Results
 
 Access the components of the result object:
@@ -216,7 +223,7 @@ str(nc_obj@params) # Parameters used
 #>  $ output                      : chr "all"
 ```
 
-Visualize the results:
+Plot the results:
 
 ``` r
 plot(nc_obj, which = "delays") # Delay distribution
@@ -229,6 +236,12 @@ plot(nc_obj, which = "results") # Nowcast time series
 ```
 
 ![](nowcastr_files/figure-html/plots-2.png)
+
+Open a Shiny app to explore results group by group:
+
+``` r
+explore_nowcast(nc_obj)
+```
 
 ## How It Works
 

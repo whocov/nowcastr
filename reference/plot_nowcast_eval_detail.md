@@ -11,8 +11,8 @@ date.
 plot_nowcast_eval_detail(
   x,
   delay = NULL,
-  color_good = "#2166ac",
-  color_bad = "#d6604d",
+  color_good = "dodgerblue1",
+  color_bad = "firebrick1",
   ...
 )
 ```

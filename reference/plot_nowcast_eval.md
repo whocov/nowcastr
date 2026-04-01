@@ -18,8 +18,9 @@ fully above or below zero) or not.
 plot_nowcast_eval(
   x,
   delay = NULL,
-  color_good = "#2166ac",
-  color_bad = "#d6604d",
+  color_good = "dodgerblue1",
+  color_bad = "firebrick1",
+  alpha_less = 0.35,
   ...
 )
 ```

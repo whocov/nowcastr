@@ -11,8 +11,8 @@ improvement.
 plot_nowcast_eval_by_delay(
   x,
   indicator = "SMAPE_improvement_med",
-  color_good = "#2166ac",
-  color_bad = "#d6604d",
+  color_good = "dodgerblue1",
+  color_bad = "firebrick1",
   ...
 )
 ```

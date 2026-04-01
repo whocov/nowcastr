@@ -205,11 +205,18 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
 <p>The <code><a href="../reference/nowcast_cl.html">nowcast_cl()</a></code> function returns a <code>nowcast_results</code> object containing predictions, delay distributions, completeness estimates, and parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/prop_names.html" class="external-link">prop_names</a></span><span class="op">(</span><span class="va">nc_obj</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "name"         "params"       "time_start"   "time_end"     "n_groups"    </span></span>
+<span><span class="co">#&gt;  [6] "max_delay"    "data"         "completeness" "delays"       "models"      </span></span>
+<span><span class="co">#&gt; [11] "results"</span></span></code></pre></div>
+</div>
 </section><section class="level3"><h3 id="explore-results">4. Explore Results<a class="anchor" aria-label="anchor" href="#explore-results"></a>
 </h3>
 <p>Access the components of the result object:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc_obj</span><span class="op">@</span><span class="va">results</span> <span class="co"># Final nowcasted values</span></span>
 <span><span class="co">#&gt; # A tibble: 95 × 7</span></span>
 <span><span class="co">#&gt;    group    date_occurrence last_r_date delay value value_predicted completeness</span></span>
@@ -275,9 +282,9 @@
 <span><span class="co">#&gt;  $ rss_threshold               : num 0.01</span></span>
 <span><span class="co">#&gt;  $ output                      : chr "all"</span></span></code></pre></div>
 </div>
-<p>Visualize the results:</p>
+<p>Plot the results:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nc_obj</span>, which <span class="op">=</span> <span class="st">"delays"</span><span class="op">)</span> <span class="co"># Delay distribution</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
@@ -285,7 +292,7 @@
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nc_obj</span>, which <span class="op">=</span> <span class="st">"results"</span><span class="op">)</span> <span class="co"># Nowcast time series</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
@@ -293,6 +300,11 @@
 </figure>
 </div>
 </div>
+</div>
+<p>Open a Shiny app to explore results group by group:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/explore_nowcast.html">explore_nowcast</a></span><span class="op">(</span><span class="va">nc_obj</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section></section><section class="level2"><h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h2>
@@ -312,7 +324,7 @@
 </h3>
 <p>You can nowcast multiple groups (e.g., regions, diseases) in a single call by specifying multiple grouping columns:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/nowcast_cl.html">nowcast_cl</a></span><span class="op">(</span></span>
 <span>  <span class="co"># ...</span></span>
 <span>  group_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"region"</span>, <span class="st">"disease"</span><span class="op">)</span></span>
@@ -324,7 +336,7 @@
 </h3>
 <p>retro_score = number of actual value changes / max possible value changes [0-1]</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate retro-scores (= number of actual value changes / max possible value changes)</span></span>
 <span><span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/calculate_retro_score.html">calculate_retro_score</a></span><span class="op">(</span></span>
@@ -345,7 +357,7 @@
 </h3>
 <p>This is the opposite of <code><a href="../reference/fill_future_reported_values.html">fill_future_reported_values()</a></code>. This can be useful to reduce data size without losing information.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove duplicate reported values (same value and higher reporting date)</span></span>
 <span><span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/rm_repeated_values.html">rm_repeated_values</a></span><span class="op">(</span></span>
