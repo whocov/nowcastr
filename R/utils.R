@@ -159,7 +159,7 @@ calculate_retro_score <- function(
 
     d <- nrow(report_delay_matrix %>% distinct(.data$delay))
     r <- nrow(report_delay_matrix %>% distinct(!!s_col_rep))
-    # O <- d + r - 1
+    # o <- d + r - 1
     # n_changes follows a distribution like this:
     # 0 1 2 3 ... 3 2 1 0
     # of length o = d + r - 1

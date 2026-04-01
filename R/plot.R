@@ -648,7 +648,8 @@ S7::method(plot, nowcast_results) <- function(
       # xxx todo:
       # we should also be able to add stats if no model fitting?: t_to_95_obs
 
-      df_model_stats <- x %>% tbl_models_stats()
+      df_model_stats <- x %>%
+        tbl_models_stats()
 
       ggtext_size <- function(base_size, ratio = 0.5) {
         ratio * base_size / ggplot2::.pt
@@ -669,11 +670,11 @@ S7::method(plot, nowcast_results) <- function(
               ""
             ),
             # x = Inf, hjust = 1.5, ## far right
-            x = x@max_delay * 0.8, hjust = 0,
+            x = x@max_delay * 0.7, hjust = 0, # 70% from the end
             # y = ifelse(start_completeness_pred < 1, 1.04, .96),
             # y = 1,
             y = end_completeness_pred,
-            vjust = ifelse(start_completeness_pred < 1, 1.9, -.9),
+            vjust = ifelse(start_completeness_pred < 1, 1.9, -.9), ## above or below the line
           ),
           color = "#666666",
           fontface = "bold",
@@ -781,9 +782,14 @@ S7::method(plot, nowcast_results) <- function(
 
 #' Unwrap nowcast models stats
 #' @param nc_obj A `nowcast_results` object.
+#' @param thresholds_r2 R squared threshold to classify `eval` into good or bad fit
 #' @return tibble
 #' @noRd
-tbl_models_stats <- function(nc_obj) {
+tbl_models_stats <- function(
+    nc_obj,
+    thresholds_r2 = 0.8
+    # ,thresholds_rss = 0.011
+    ) {
   group_cols <- nc_obj@params$group_cols
   # s_group_cols <- if (is.null(group_cols) || length(group_cols) == 0) list(rlang::expr(1)) else rlang::syms(group_cols)
 
@@ -792,14 +798,6 @@ tbl_models_stats <- function(nc_obj) {
     return(nc_obj@models)
   } else {
     nc_obj@models %>%
-      # mutate(
-      #   # 1. Calculate Total Sum of Squares (Variation from the mean)
-      #   SS_tot = purrr::map_dbl(.data$data, ~ sum((.x$y - mean(.x$y, na.rm = TRUE))^2)),
-      #   # 2. Calculate R2 (Coefficient of Determination)
-      #   R2 = 1 - (RSS / SS_tot),
-      #   R2 = round(R2, 3)
-      # )
-      # select(-SS_tot) %>%
       mutate(
         R2 = purrr::map2_dbl(.data$data, .data$RSS, function(dat, rss) {
           ss_tot <- sum((dat$y - mean(dat$y, na.rm = TRUE))^2)
@@ -810,7 +808,6 @@ tbl_models_stats <- function(nc_obj) {
         })
       ) %>%
       arrange(.data$R2, .data$RSS |> desc()) %>% ## worse on top
-      # arrange(.data$RSS) %>%
       mutate(
         start_completeness_obs = purrr::map_dbl(.data$data, ~ .x$y[which.min(.x$x)]) %>% round(2),
         start_completeness_pred = purrr::map_dbl(.data$pred, ~ .x$y[which.min(.x$x)]) %>% round(2),
@@ -831,16 +828,15 @@ tbl_models_stats <- function(nc_obj) {
         convert = TRUE,
         fill = "right"
       ) %>%
-      select(
-        -c("data", "pred", "fit")
-      ) %>%
-      ## order columns, with everything first and specific after
-      # relocate(
-      #   iterations, modelname, a, b, c,
-      #   RSS, log_RSS,
-      #   t_to_95_obs, t_to_95_model, start_completeness_pred,
-      #   .after = last_col()
-      # )
+      ## eval good or bad fit
+      mutate(eval = case_when(
+        modelname != "linear" &
+          # RSS < thresholds_rss[1] &
+          R2 > thresholds_r2
+        ~ "Good Fit",
+        TRUE ~ "Bad Fit"
+      )) %>%
+      # select( -c("data", "pred", "fit") ) %>%
       select(
         all_of(group_cols),
         "iterations",

@@ -76,7 +76,6 @@ nowcast_eval <- function(
     rlang::abort(paste0("col_date_reporting must be Date class: ", str_col_rep))
   }
 
-
   ## GROUND TRUTH -----
   ## For each occurrence date (+ groups), the true value is the one reported
   ## at the highest col_date_reporting — i.e. what was eventually fully reported.
@@ -172,14 +171,13 @@ nowcast_eval <- function(
       ## sMAPE-style: Symmetric Absolute Percentage Error (per prediction)
       ## Formula: |pred - true| / (|pred| + |true|)
       ## Bounded [0, 1]; handles zeros symmetrically
-      SAPE_pred = abs(.data$value_predicted - .data$value_true) /
-        (abs(.data$value_predicted) + abs(.data$value_true)),
-      SAPE_obs = abs(!!s_col_val - .data$value_true) /
-        (abs(!!s_col_val) + abs(.data$value_true)),
+      SAPE_pred = abs(.data$value_predicted - .data$value_true) / (abs(.data$value_predicted) + abs(.data$value_true)),
+      SAPE_obs = abs(!!s_col_val - .data$value_true) / (abs(!!s_col_val) + abs(.data$value_true)),
+      SAPE_improvement = .data$SAPE_obs - .data$SAPE_pred,
       ## Pairwise: is prediction closer to truth than raw observed?
       pred_is_better = dplyr::case_when(
-        abs(.data$value_predicted - .data$value_true) < abs(!!s_col_val - .data$value_true) ~ 1L,
-        abs(.data$value_predicted - .data$value_true) > abs(!!s_col_val - .data$value_true) ~ 0L,
+        abs(.data$value_predicted - .data$value_true) < abs(!!s_col_val - .data$value_true) ~ 1L, # TRUE
+        abs(.data$value_predicted - .data$value_true) > abs(!!s_col_val - .data$value_true) ~ 0L, # FALSE
         TRUE ~ NA_integer_ ## tie
       )
     ) %>%
@@ -201,40 +199,8 @@ nowcast_eval <- function(
   ## SUMMARY BY GROUP x DELAY -----
   df_summary <-
     df_detail %>%
-    group_by(!!!s_group_cols, .data$delay) %>%
-    reframe(
-      n_periods = dplyr::n_distinct(.data$cut_date),
-      n_obs = dplyr::n(),
+    nowcast_eval_summarise()
 
-      ## SMAPE: mean of per-prediction SAPE, excluding Inf (0/0 case)
-      SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
-      SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
-      ## Positive = prediction is better than raw observed
-      # SMAPE_improvement = .data$SMAPE_obs - .data$SMAPE_pred,
-
-      SMAPE_improvement = SMAPE_obs - SMAPE_pred,
-      SMAPE_improvement_mean = mean(.data$SMAPE_improvement[is.finite(.data$SMAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_med = median(.data$SMAPE_improvement[is.finite(.data$SMAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_q1 = quantile(.data$SMAPE_improvement[is.finite(.data$SMAPE_improvement)], .25, na.rm = TRUE),
-      SMAPE_improvement_q3 = quantile(.data$SMAPE_improvement[is.finite(.data$SMAPE_improvement)], .75, na.rm = TRUE),
-
-      ## Proportion of predictions that beat raw observed (pairwise)
-      proportion_pred_is_better = mean(.data$pred_is_better, na.rm = TRUE),
-      n_pairs = sum(!is.na(.data$pred_is_better)),
-
-      ## Wilson score 95% CI on proportion_pred_is_better
-      .p = .data$proportion_pred_is_better,
-      .z = stats::qnorm(0.975),
-      .n = .data$n_pairs,
-      CI_lower = (.data$.p + .data$.z^2 / (2 * .data$.n) -
-        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
-        (1 + .data$.z^2 / .data$.n),
-      CI_upper = (.data$.p + .data$.z^2 / (2 * .data$.n) +
-        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
-        (1 + .data$.z^2 / .data$.n)
-    ) %>%
-    select(-".p", -".z", -".n") %>%
-    arrange(!!!s_group_cols, .data$delay)
 
   ## PARAMS -----
   params <- list(
@@ -269,6 +235,45 @@ nowcast_eval <- function(
 }
 
 
+#' Summarise nowcast evaluation results
+#' @noRd
+nowcast_eval_summarise <- function(df) {
+  df %>%
+    group_by(!!!s_group_cols, .data$delay) %>%
+    reframe(
+      n_periods = dplyr::n_distinct(.data$cut_date),
+      n_obs = dplyr::n(),
+
+      ## SMAPE: mean of per-prediction SAPE, excluding Inf (0/0 case)
+      SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
+      SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
+      ## Positive = prediction is better than raw observed
+      # SMAPE_improvement = .data$SMAPE_obs - .data$SMAPE_pred,
+
+      ## Improvement statistics (from per-row SAPE_improvement)
+      SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      SMAPE_improvement_med = median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      SMAPE_improvement_q1 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
+      SMAPE_improvement_q3 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
+
+      ## Proportion of predictions that beat raw observed (pairwise)
+      proportion_pred_is_better = mean(.data$pred_is_better, na.rm = TRUE),
+      n_pairs = sum(!is.na(.data$pred_is_better)),
+
+      ## Wilson score 95% CI on proportion_pred_is_better
+      .p = .data$proportion_pred_is_better,
+      .z = stats::qnorm(0.975),
+      .n = .data$n_pairs,
+      CI_lower = (.data$.p + .data$.z^2 / (2 * .data$.n) -
+        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
+        (1 + .data$.z^2 / .data$.n),
+      CI_upper = (.data$.p + .data$.z^2 / (2 * .data$.n) +
+        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
+        (1 + .data$.z^2 / .data$.n)
+    ) %>%
+    select(-".p", -".z", -".n") %>%
+    arrange(!!!s_group_cols, .data$delay)
+}
 
 
 
@@ -299,11 +304,6 @@ nowcast_eval_results <-
       time_end   = S7::class_POSIXct
     )
   )
-
-
-
-
-
 
 
 
@@ -352,8 +352,9 @@ nowcast_eval_results <-
 plot_nowcast_eval <- function(
     x,
     delay = NULL,
-    color_good = "#2166ac",
-    color_bad = "#d6604d",
+    color_good = "dodgerblue1",
+    color_bad = "firebrick1",
+    alpha_less = .35,
     ...) {
   ## VALIDATE -----
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
@@ -381,27 +382,37 @@ plot_nowcast_eval <- function(
     df <- df %>% dplyr::mutate(.y = "all")
   }
 
+
+  # View(df)
+
+  # browser()
+
   ## BUILD TWO INDICATOR DATA FRAMES THEN BIND -----
-  df_smape <- df %>%
+  df_smape <-
+    df %>%
     dplyr::mutate(
       indicator = "SMAPE improvement",
       value     = .data$SMAPE_improvement_med,
       q1        = .data$SMAPE_improvement_q1,
       q3        = .data$SMAPE_improvement_q3,
       n_label   = .data$n_obs
-    )
+    ) %>%
+    dplyr::select("indicator", "value", "q1", "q3", "n_label", ".y")
 
-  df_prop <- df %>%
+  df_prop <-
+    df %>%
     dplyr::mutate(
       indicator = "Proportion better",
       value     = .data$proportion_pred_is_better - 0.50, ## to center on 0
       q1        = .data$CI_lower - 0.50, ## to center on 0
       q3        = .data$CI_upper - 0.50, ## to center on 0
       n_label   = .data$n_pairs
-    )
+    ) %>%
+    dplyr::select("indicator", "value", "q1", "q3", "n_label", ".y")
 
-  df_plot <- dplyr::bind_rows(df_smape, df_prop) %>%
-    dplyr::select(".y", "indicator", "value", "q1", "q3", "n_label") %>%
+  df_plot <-
+    dplyr::bind_rows(df_smape, df_prop) %>%
+    # dplyr::select(".y", "indicator", "value", "q1", "q3", "n_label") %>%
     ## SIGNIFICANCE COLOUR
     ## good     = value >= 0 and q1 >= 0  (interval fully above zero)
     ## lessgood = value >= 0 and q1 <  0  (positive but interval crosses zero)
@@ -424,9 +435,9 @@ plot_nowcast_eval <- function(
     ggplot2::scale_fill_manual(
       values = c(
         "good"     = color_good,
-        "lessgood" = scales::alpha(color_good, 0.35),
+        "lessgood" = scales::alpha(color_good, alpha_less),
         "bad"      = color_bad,
-        "lessbad"  = scales::alpha(color_bad, 0.35)
+        "lessbad"  = scales::alpha(color_bad, alpha_less)
       ),
       labels = c(
         "good"     = "Better (significant)",
@@ -474,9 +485,9 @@ plot_nowcast_eval <- function(
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      legend.position  = "bottom",
-      strip.text       = ggplot2::element_text(face = "bold"),
-      panel.grid.minor = ggplot2::element_blank()
+      legend.position = "top",
+      # strip.text       = ggplot2::element_text(face = "bold"),
+      # panel.grid.minor = ggplot2::element_blank()
     )
 }
 
@@ -533,8 +544,8 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 plot_nowcast_eval_by_delay <- function(
     x,
     indicator = "SMAPE_improvement_med",
-    color_good = "#2166ac",
-    color_bad = "#d6604d",
+    color_good = "dodgerblue1",
+    color_bad = "firebrick1",
     ...) {
   ## VALIDATE -----
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
@@ -588,8 +599,8 @@ plot_nowcast_eval_by_delay <- function(
       y = y_label
     ) +
     ggplot2::theme(
-      strip.text       = ggplot2::element_text(face = "bold"),
-      panel.grid.minor = ggplot2::element_blank()
+      # strip.text       = ggplot2::element_text(face = "bold"),
+      # panel.grid.minor = ggplot2::element_blank()
     )
 }
 
@@ -630,8 +641,8 @@ plot_nowcast_eval_by_delay <- function(
 plot_nowcast_eval_detail <- function(
     x,
     delay = NULL,
-    color_good = "#2166ac",
-    color_bad = "#d6604d",
+    color_good = "dodgerblue1",
+    color_bad = "firebrick1",
     ...) {
   ## VALIDATE -----
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
@@ -685,6 +696,8 @@ plot_nowcast_eval_detail <- function(
         xend   = .data[[str_col_occ]],
         y      = .data$value_true,
         yend   = .data$.seg_yend,
+        # y      = .data$value,
+        # yend   = .data$value_predicted,
         color  = .data$.seg_color
       ),
       linewidth = 3
@@ -706,8 +719,8 @@ plot_nowcast_eval_detail <- function(
       y = NULL
     ) +
     ggplot2::theme(
-      strip.text       = ggplot2::element_text(face = "bold"),
-      panel.grid.minor = ggplot2::element_blank(),
-      legend.position  = "top"
+      # strip.text       = ggplot2::element_text(face = "bold"),
+      # panel.grid.minor = ggplot2::element_blank(),
+      legend.position = "top"
     )
 }

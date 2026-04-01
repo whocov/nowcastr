@@ -11,7 +11,11 @@ explore_nowcast <- function(nc_obj) {
   if (!requireNamespace("bslib", quietly = TRUE)) stop("Package 'bslib' required.")
 
   # 1. Prepare the summary table data
-  stats_df <- tbl_models_stats(nc_obj)
+  stats_df <-
+    tbl_models_stats(nc_obj) %>%
+    select(-c("data", "pred", "fit")) %>%
+    select(eval, everything())
+  ## we could keep data and pred to make sparklines in the table
 
 
   # # Model count summary
@@ -25,20 +29,6 @@ explore_nowcast <- function(nc_obj) {
   #   ) %>%
   #   arrange(desc(count))
 
-
-  ## eval good or bad
-  thresholds_rss <- 0.011
-  thresholds_r2 <- 0.8
-  stats_df <-
-    stats_df %>%
-    mutate(eval = case_when(
-      modelname != "linear" &
-        RSS < thresholds_rss[1] &
-        R2 > thresholds_r2
-      ~ "Good Fit",
-      TRUE ~ "Bad Fit"
-    )) %>%
-    select(eval, everything())
 
   # Define UI
   ui <- bslib::page_fluid(
@@ -152,5 +142,5 @@ explore_nowcast <- function(nc_obj) {
     })
   }
 
-  shinyApp(ui, server, options = list(launch.browser = FALSE))
+  shinyApp(ui, server)
 }
