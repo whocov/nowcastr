@@ -145,6 +145,9 @@ nc_obj <-
 The `nowcast_cl()` function returns a `nowcast_results` object containing predictions, delay distributions, completeness estimates, and parameters.
 
 
+```{r}
+S7::prop_names(nc_obj)
+```
 
 ### 4. Explore Results
 
@@ -157,7 +160,7 @@ nc_obj@completeness # Data with completeness estimates
 str(nc_obj@params) # Parameters used
 ```
 
-Visualize the results:
+Plot the results:
 
 ```{r plots}
 #| warning: false
@@ -165,6 +168,13 @@ plot(nc_obj, which = "delays") # Delay distribution
 plot(nc_obj, which = "results") # Nowcast time series
 ```
 
+
+Open a Shiny app to explore results group by group:
+
+```{r}
+#| eval: false
+explore_nowcast(nc_obj)
+```
 
 
 
