@@ -199,7 +199,41 @@ nowcast_eval <- function(
   ## SUMMARY BY GROUP x DELAY -----
   df_summary <-
     df_detail %>%
-    nowcast_eval_summarise()
+    # nowcast_eval_summarise()
+    group_by(!!!s_group_cols, .data$delay) %>%
+    reframe(
+      n_periods = dplyr::n_distinct(.data$cut_date),
+      n_obs = dplyr::n(),
+
+      ## SMAPE: mean of per-prediction SAPE, excluding Inf (0/0 case)
+      SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
+      SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
+      ## Positive = prediction is better than raw observed
+      # SMAPE_improvement = .data$SMAPE_obs - .data$SMAPE_pred,
+
+      ## Improvement statistics (from per-row SAPE_improvement)
+      SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      SMAPE_improvement_med = median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      SMAPE_improvement_q1 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
+      SMAPE_improvement_q3 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
+
+      ## Proportion of predictions that beat raw observed (pairwise)
+      proportion_pred_is_better = mean(.data$pred_is_better, na.rm = TRUE),
+      n_pairs = sum(!is.na(.data$pred_is_better)),
+
+      ## Wilson score 95% CI on proportion_pred_is_better
+      .p = .data$proportion_pred_is_better,
+      .z = stats::qnorm(0.975),
+      .n = .data$n_pairs,
+      CI_lower = (.data$.p + .data$.z^2 / (2 * .data$.n) -
+        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
+        (1 + .data$.z^2 / .data$.n),
+      CI_upper = (.data$.p + .data$.z^2 / (2 * .data$.n) +
+        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
+        (1 + .data$.z^2 / .data$.n)
+    ) %>%
+    select(-".p", -".z", -".n") %>%
+    arrange(!!!s_group_cols, .data$delay)
 
 
   ## PARAMS -----
@@ -235,45 +269,11 @@ nowcast_eval <- function(
 }
 
 
-#' Summarise nowcast evaluation results
-#' @noRd
-nowcast_eval_summarise <- function(df) {
-  df %>%
-    group_by(!!!s_group_cols, .data$delay) %>%
-    reframe(
-      n_periods = dplyr::n_distinct(.data$cut_date),
-      n_obs = dplyr::n(),
-
-      ## SMAPE: mean of per-prediction SAPE, excluding Inf (0/0 case)
-      SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
-      SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
-      ## Positive = prediction is better than raw observed
-      # SMAPE_improvement = .data$SMAPE_obs - .data$SMAPE_pred,
-
-      ## Improvement statistics (from per-row SAPE_improvement)
-      SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_med = median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_q1 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
-      SMAPE_improvement_q3 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
-
-      ## Proportion of predictions that beat raw observed (pairwise)
-      proportion_pred_is_better = mean(.data$pred_is_better, na.rm = TRUE),
-      n_pairs = sum(!is.na(.data$pred_is_better)),
-
-      ## Wilson score 95% CI on proportion_pred_is_better
-      .p = .data$proportion_pred_is_better,
-      .z = stats::qnorm(0.975),
-      .n = .data$n_pairs,
-      CI_lower = (.data$.p + .data$.z^2 / (2 * .data$.n) -
-        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
-        (1 + .data$.z^2 / .data$.n),
-      CI_upper = (.data$.p + .data$.z^2 / (2 * .data$.n) +
-        .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
-        (1 + .data$.z^2 / .data$.n)
-    ) %>%
-    select(-".p", -".z", -".n") %>%
-    arrange(!!!s_group_cols, .data$delay)
-}
+# #' Summarise nowcast evaluation results
+# #' @noRd
+# nowcast_eval_summarise <- function(df) {
+#   df %>%
+# }
 
 
 
