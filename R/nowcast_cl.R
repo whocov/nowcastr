@@ -522,6 +522,21 @@ nowcast_cl <- function(
 #' @param models Dataframe. The resulting fitted models (empty data frame if do_model_fitting was FALSE)
 #' @param results Dataframe. A data frame with the resulting nowcasting predictions.
 #'
+#' @return An S7 object of class `nowcast_results` with the following slots:
+#'   \describe{
+#'     \item{name}{Character. Timestamp identifier for the run.}
+#'     \item{params}{List. Parameters used in the nowcasting call.}
+#'     \item{time_start}{POSIXct. Time the function started.}
+#'     \item{time_end}{POSIXct. Time the function ended.}
+#'     \item{n_groups}{Numeric. Number of groups processed.}
+#'     \item{max_delay}{Numeric. Maximum delay used in the analysis.}
+#'     \item{data}{Data frame. Original input data (required columns only).}
+#'     \item{completeness}{Data frame. Input data with delay and completeness columns.}
+#'     \item{delays}{Data frame. Aggregated completeness estimates per delay.}
+#'     \item{models}{Data frame. Fitted models, empty if `do_model_fitting = FALSE`.}
+#'     \item{results}{Data frame. Nowcasting predictions.}
+#'   }
+#' 
 #' @importFrom S7 new_class class_character class_list class_data.frame class_numeric class_POSIXct
 #' @export
 #' @usage
