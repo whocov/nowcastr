@@ -32,11 +32,11 @@ plot_nowcast_eval_by_delay(
 
 - color_good:
 
-  Character. Fill colour for the "better" region. Default `"#2166ac"`.
+  Character. Fill colour for the "better" region.\`.
 
 - color_bad:
 
-  Character. Fill colour for the "worse" region. Default `"#d6604d"`.
+  Character. Fill colour for the "worse" region.\`.
 
 - ...:
 

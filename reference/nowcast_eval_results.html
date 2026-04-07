@@ -60,7 +60,7 @@
 
 <dl><dt id="arg-detail">detail<a class="anchor" aria-label="anchor" href="#arg-detail"></a></dt>
 <dd><p>data.frame. Per-prediction errors with columns for observed value,
-predicted value, true value, SAPE (pred and obs), and <code>pred_is_better</code>.</p></dd>
+predicted value, true value.</p></dd>
 
 
 <dt id="arg-summary">summary<a class="anchor" aria-label="anchor" href="#arg-summary"></a></dt>
@@ -82,6 +82,30 @@ SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.<
 
 <dt id="arg-time-end">time_end<a class="anchor" aria-label="anchor" href="#arg-time-end"></a></dt>
 <dd><p>POSIXct. Time the function ended.</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An S7 object of class <code>nowcast_eval_results</code> with the following slots:</p><dl><dt>detail</dt>
+<dd><p>Data frame. Per-prediction errors with columns for observed value,
+predicted value, true value.</p></dd>
+
+<dt>summary</dt>
+<dd><p>Data frame. Aggregated metrics per group x delay:
+SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.</p></dd>
+
+<dt>params</dt>
+<dd><p>List. Parameters used for the evaluation run.</p></dd>
+
+<dt>n_past</dt>
+<dd><p>Numeric. Number of past reporting periods evaluated.</p></dd>
+
+<dt>time_start</dt>
+<dd><p>POSIXct. Time the function started.</p></dd>
+
+<dt>time_end</dt>
+<dd><p>POSIXct. Time the function ended.</p></dd>
+
 
 </dl></div>
 

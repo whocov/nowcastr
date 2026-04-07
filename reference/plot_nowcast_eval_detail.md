@@ -31,13 +31,11 @@ plot_nowcast_eval_detail(
 
 - color_good:
 
-  Character. Colour when prediction beats raw observed. Default
-  `"#2166ac"`.
+  Character. Colour when prediction beats raw observed.\`.
 
 - color_bad:
 
-  Character. Colour when raw observed beats prediction. Default
-  `"#d6604d"`.
+  Character. Colour when raw observed beats prediction.\`.
 
 - ...:
 

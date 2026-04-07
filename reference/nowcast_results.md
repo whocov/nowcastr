@@ -1,6 +1,8 @@
 # S7 object class for `nowcast_cl()` Results
 
-The `nowcast_cl` function returns an object of this class.
+The
+[`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
+function returns an object of this class.
 
 ## Usage
 

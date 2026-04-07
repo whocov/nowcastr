@@ -5,9 +5,6 @@
 - [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
   : Nowcasting with Chain-Ladder Method
 
-- [`plot(`*`<nowcast_results>`*`)`](https://whocov.github.io/nowcastr/reference/plot.nowcast_results.md)
-  : Plotting method for nowcasting results
-
 - [`nowcast_results()`](https://whocov.github.io/nowcastr/reference/nowcast_results.md)
   :
 

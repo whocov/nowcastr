@@ -22,7 +22,7 @@ nc_eval_obj <-
     do_model_fitting = TRUE
   )
 #> Evaluating nowcast  ■■■■■■■■■■■■■                    4/10 | ETA:  2s
-#> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■     9/10 | ETA:  0s
+#> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■        8/10 | ETA:  1s
 #> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  10/10 | ETA:  0s
 ```
 

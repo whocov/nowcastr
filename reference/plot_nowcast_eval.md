@@ -39,13 +39,11 @@ plot_nowcast_eval(
 
 - color_good:
 
-  Character. Colour for significantly better predictions. Default
-  `"#2166ac"`.
+  Character. Colour for significantly better predictions.\`.
 
 - color_bad:
 
-  Character. Colour for significantly worse predictions. Default
-  `"#d6604d"`.
+  Character. Colour for significantly worse predictions.\`.
 
 - alpha_less:
 

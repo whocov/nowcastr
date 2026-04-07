@@ -22,8 +22,7 @@ nowcast_eval_results(
 - detail:
 
   data.frame. Per-prediction errors with columns for observed value,
-  predicted value, true value, SAPE (pred and obs), and
-  `pred_is_better`.
+  predicted value, true value.
 
 - summary:
 
@@ -37,6 +36,36 @@ nowcast_eval_results(
 - n_past:
 
   numeric. Number of past reporting periods evaluated.
+
+- time_start:
+
+  POSIXct. Time the function started.
+
+- time_end:
+
+  POSIXct. Time the function ended.
+
+## Value
+
+An S7 object of class `nowcast_eval_results` with the following slots:
+
+- detail:
+
+  Data frame. Per-prediction errors with columns for observed value,
+  predicted value, true value.
+
+- summary:
+
+  Data frame. Aggregated metrics per group x delay: SMAPE (pred and
+  obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.
+
+- params:
+
+  List. Parameters used for the evaluation run.
+
+- n_past:
+
+  Numeric. Number of past reporting periods evaluated.
 
 - time_start:
 
