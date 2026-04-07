@@ -16,25 +16,20 @@ check_delays <- function(list_delays) { # xxx todo
 
   ## number of delays
   if (length(list_delays) == 0) {
-    print(list_delays)
     rlang::abort("The data contains no delays.")
   }
   if (length(list_delays) == 1) {
-    print(list_delays)
     rlang::abort("The data contains only 1 delay")
   }
   if (length(list_delays) > 999) {
-    print(list_delays[1:30])
     rlang::abort("The number of delays exceeds 999. Please verify time_units and the dates of the input data.")
   }
   ## no decimals
   if (!all(list_delays %% 1 == 0)) {
-    print(list_delays)
     rlang::abort("Decimal values are detected in the delays. Please verify time_units and the dates of the input data.")
   }
   ## evenly distributed
   if (length(list_delays) > 2 && length(unique(diff(list_delays))) > 1) {
-    print(list_delays)
     rlang::abort("delays must be evenly distributed")
   }
   return(TRUE)
