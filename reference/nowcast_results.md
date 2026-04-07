@@ -58,3 +58,51 @@ nowcast_results(name, params, time_start, time_end, n_groups, max_delay,
 - results:
 
   Dataframe. A data frame with the resulting nowcasting predictions.
+
+## Value
+
+An S7 object of class `nowcast_results` with the following slots:
+
+- name:
+
+  Character. Timestamp identifier for the run.
+
+- params:
+
+  List. Parameters used in the nowcasting call.
+
+- time_start:
+
+  POSIXct. Time the function started.
+
+- time_end:
+
+  POSIXct. Time the function ended.
+
+- n_groups:
+
+  Numeric. Number of groups processed.
+
+- max_delay:
+
+  Numeric. Maximum delay used in the analysis.
+
+- data:
+
+  Data frame. Original input data (required columns only).
+
+- completeness:
+
+  Data frame. Input data with delay and completeness columns.
+
+- delays:
+
+  Data frame. Aggregated completeness estimates per delay.
+
+- models:
+
+  Data frame. Fitted models, empty if `do_model_fitting = FALSE`.
+
+- results:
+
+  Data frame. Nowcasting predictions.

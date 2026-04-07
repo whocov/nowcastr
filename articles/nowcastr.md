@@ -13,7 +13,7 @@ data.
 The package is available on GitHub. Install it with:
 
 ``` r
-devtools::install_github("whocov/nowcastr")
+pak::pak("whocov/nowcastr")
 ```
 
 ``` r

@@ -96,6 +96,43 @@
 <dd><p>Dataframe. A data frame with the resulting nowcasting predictions.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An S7 object of class <code>nowcast_results</code> with the following slots:</p><dl><dt>name</dt>
+<dd><p>Character. Timestamp identifier for the run.</p></dd>
+
+<dt>params</dt>
+<dd><p>List. Parameters used in the nowcasting call.</p></dd>
+
+<dt>time_start</dt>
+<dd><p>POSIXct. Time the function started.</p></dd>
+
+<dt>time_end</dt>
+<dd><p>POSIXct. Time the function ended.</p></dd>
+
+<dt>n_groups</dt>
+<dd><p>Numeric. Number of groups processed.</p></dd>
+
+<dt>max_delay</dt>
+<dd><p>Numeric. Maximum delay used in the analysis.</p></dd>
+
+<dt>data</dt>
+<dd><p>Data frame. Original input data (required columns only).</p></dd>
+
+<dt>completeness</dt>
+<dd><p>Data frame. Input data with delay and completeness columns.</p></dd>
+
+<dt>delays</dt>
+<dd><p>Data frame. Aggregated completeness estimates per delay.</p></dd>
+
+<dt>models</dt>
+<dd><p>Data frame. Fitted models, empty if <code>do_model_fitting = FALSE</code>.</p></dd>
+
+<dt>results</dt>
+<dd><p>Data frame. Nowcasting predictions.</p></dd>
+
+
+</dl></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
