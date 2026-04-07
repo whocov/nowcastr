@@ -56,31 +56,31 @@
 #'
 #' @export
 nowcast_cl <- function(
-    df,
-    col_date_occurrence,
-    col_date_reporting,
-    col_value,
-    group_cols = NULL,
-    time_units = "days",
-    max_delay = NULL,
-    #  max_delay = 12,
-    max_reportunits = 10,
-    #  max_yw_lookback = 12,
-    max_completeness = 5,
-    min_completeness_samples = 1, ## int from 1 to max_reportunits
-    use_weighted_method = TRUE, ## method to alleviate BIAS1, more weight to older reported completeness
-    do_propagate_missing_delays = FALSE,
-    do_model_fitting = TRUE, ## flag we want to model completeness distribution
-    model_names = c(
-      "monomolecular", "vonbertalanffy",
-      "logistic", "gompertz",
-      "asymptotic", "linear"
-    ),
-    do_use_modelled_completeness = TRUE,
-    rss_threshold = 1e-2,
-    output = "all"
-    #
-    ) {
+  df,
+  col_date_occurrence,
+  col_date_reporting,
+  col_value,
+  group_cols = NULL,
+  time_units = "days",
+  max_delay = NULL,
+  #  max_delay = 12,
+  max_reportunits = 10,
+  #  max_yw_lookback = 12,
+  max_completeness = 5,
+  min_completeness_samples = 1, ## int from 1 to max_reportunits
+  use_weighted_method = TRUE, ## method to alleviate BIAS1, more weight to older reported completeness
+  do_propagate_missing_delays = FALSE,
+  do_model_fitting = TRUE, ## flag we want to model completeness distribution
+  model_names = c(
+    "monomolecular", "vonbertalanffy",
+    "logistic", "gompertz",
+    "asymptotic", "linear"
+  ),
+  do_use_modelled_completeness = TRUE,
+  rss_threshold = 1e-2,
+  output = "all"
+  #
+) {
   time_start <- Sys.time() ## save start time
 
 
@@ -166,7 +166,6 @@ nowcast_cl <- function(
     )
 
 
-
   ### SET AUTO MAX DELAY -----
   if (is.null(max_delay)) {
     max_delay <- max(df_data_delays$delay)
@@ -205,8 +204,6 @@ nowcast_cl <- function(
   # seq(as.numeric(min_delay), max_delay)
   # browser()
   # seq(from = as.numeric(min_delay), to = as.numeric(max_delay), by = as.numeric(time_units)) %>% print()
-
-
 
 
   # todo: optimisation
@@ -270,8 +267,6 @@ nowcast_cl <- function(
     ungroup() %>%
     filter(n >= min_completeness_samples) ## default is 1, no impact
   ## NOTE: completeness_avg is slightly overstimated here. See BIAS1.
-
-
 
 
   ## OPTIONAL: PROPAGATE MISSING DELAYS ---
@@ -504,11 +499,9 @@ nowcast_cl <- function(
 }
 
 
-
-
 #' S7 object class for `nowcast_cl()` Results
 #'
-#' The `nowcast_cl` function returns an object of this class.
+#' The `nowcast_cl()` function returns an object of this class.
 #'
 #' @param name A character string with a timestamp for the run.
 #' @param params A list with the parameters used for the nowcasting (unevaluated call).
@@ -536,7 +529,7 @@ nowcast_cl <- function(
 #'     \item{models}{Data frame. Fitted models, empty if `do_model_fitting = FALSE`.}
 #'     \item{results}{Data frame. Nowcasting predictions.}
 #'   }
-#' 
+#'
 #' @importFrom S7 new_class class_character class_list class_data.frame class_numeric class_POSIXct
 #' @export
 #' @usage
