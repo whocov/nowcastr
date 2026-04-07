@@ -5,6 +5,7 @@
 - \[feature\] accuracy evaluation function
 - \[feature\] accuracy evaluation plots
 - \[feature\] shiny to visualize model results
+- \[bugfix\] resolve github installs namespace conflicts
 
 ## nowcastr 0.1.1
 
@@ -13,15 +14,14 @@
 ## nowcastr 0.1.0
 
 - \[feature\] base model-free nowcast
-- \[feature\] feature: model-fitting
-- \[feature\] plot: for raw data: triangle
-- \[feature\] plot: for raw data: millipede
-- \[feature\] plot: for delays
-- \[feature\] plot: for nowcast results
+- \[feature\] model-fitting
+- \[feature\] plot method for raw data: triangle
+- \[feature\] plot method for raw data: millipede
+- \[feature\] plot method for delays
+- \[feature\] plot method for nowcast results
 - \[feature\] S7 Object output and S7 plot method
-- \[feature\] helper function: retro-score analysis
-- \[feature\] helper function: remove dupl numbers
-- \[feature\] helper function: future fill missing
-- \[feature\] testing function: to generate testing data
-- \[feature\] dataset for testing
-- \[feature\] dataset for demo
+- \[feature\] utility function: retro-score analysis
+- \[feature\] utility function: remove duplicated values
+- \[feature\] utility function: future fill missing
+- \[feature\] testing data generator
+- \[feature\] testing and demo datasets

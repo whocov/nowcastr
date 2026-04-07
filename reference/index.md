@@ -1,6 +1,6 @@
 # Package index
 
-## Main
+## Core
 
 - [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
   : Nowcasting with Chain-Ladder Method
@@ -36,7 +36,7 @@
 - [`fill_future_reported_values()`](https://whocov.github.io/nowcastr/reference/fill_future_reported_values.md)
   : Fill future reported values with last known values
 
-## Data
+## Data Utilities
 
 - [`nowcast_demo`](https://whocov.github.io/nowcastr/reference/nowcast_demo.md)
   : Nowcast Dataset for demo and testing
@@ -45,7 +45,7 @@
 - [`generate_test_data()`](https://whocov.github.io/nowcastr/reference/generate_test_data.md)
   : Generate asymptotic test data for nowcating
 
-## Evaluation
+## Evaluation Module
 
 - [`nowcast_eval()`](https://whocov.github.io/nowcastr/reference/nowcast_eval.md)
   : Evaluate Nowcasting Performance
