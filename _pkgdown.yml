@@ -7,11 +7,12 @@ navbar:
     right: [search, github, lightswitch]
 reference:
 - title: "Main"
+  desc: ""
   contents: 
   - nowcast_cl
-  - plot.nowcast_results
   - nowcast_results
 - title: "Visualization"
+  desc: ""
   contents: 
   - plot_triangle
   - plot_millipede
@@ -20,16 +21,19 @@ reference:
   - plot_nowcast
   - explore_nowcast
 - title: "Utilities"
+  desc: ""
   contents:
   - calculate_retro_score
   - rm_repeated_values
   - fill_future_reported_values
 - title: "Data"
+  desc: ""
   contents:
   - nowcast_demo
   - nowcast_test_data
   - generate_test_data
 - title: "Evaluation"
+  desc: ""
   contents:
   - nowcast_eval
   - nowcast_eval_results

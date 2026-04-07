@@ -507,12 +507,33 @@ plot_nowcast_eval <- function(
 }
 
 
+
+
+
+# ### S3 WRAPPER
+# # @return A ggplot object.
+
+# #' @rdname plot.nowcast_eval_results
+# #' @param x A `nowcast_eval_results` object.
+# #' @usage \method{plot}{nowcast_eval_results}(x, delay, ...)
+# #' @return A ggplot object.
+# #' @importFrom S7 S7_dispatch
+# #' @export
+# plot.nowcast_eval_results <- function(
+#   x,
+#   delay = NULL,
+#   ...
+# ) {
+#   S7::S7_dispatch()
+# }
+
 #' Plotting method for nowcasting eval results
+#'
 #' @name plot.nowcast_eval_results
 #' @param x A `nowcast_eval_results` object.
 #' @param delay Integer. Delay to plot.
-#' @return A ggplot object.
-#' @export
+#' @importFrom graphics plot
+#' @noRd
 S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
   plot_nowcast_eval(x, delay = delay, ...)
 }

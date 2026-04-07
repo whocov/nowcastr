@@ -509,22 +509,25 @@ plot_nowcast <- function(
 }
 
 
-#' @rdname plot.nowcast_results
-#' @param x A `nowcast_results` object.
-#' @usage \method{plot}{nowcast_results}(x, which, option, do_rescale, add_model_info, ...)
-#' @return A ggplot object.
-#' @importFrom S7 S7_dispatch
-#' @export
-plot.nowcast_results <- function(
-  x,
-  which = "results",
-  option = "millipede",
-  do_rescale = FALSE,
-  add_model_info = TRUE,
-  ...
-) {
-  S7::S7_dispatch()
-}
+# ### S3 WRAPPER
+# # @return A ggplot object.
+
+# #' @rdname plot.nowcast_results
+# #' @param x A `nowcast_results` object.
+# #' @usage \method{plot}{nowcast_results}(x, which, option, do_rescale, add_model_info, ...)
+# #' @return A ggplot object.
+# #' @importFrom S7 S7_dispatch
+# #' @export
+# plot.nowcast_results <- function(
+#   x,
+#   which = "results",
+#   option = "millipede",
+#   do_rescale = FALSE,
+#   add_model_info = TRUE,
+#   ...
+# ) {
+#   S7::S7_dispatch()
+# }
 
 
 #' Plotting method for nowcasting results
@@ -548,7 +551,7 @@ plot.nowcast_results <- function(
 #' @importFrom graphics plot
 #' @importFrom S7 method S7_dispatch
 #' @importFrom scales rescale
-#' @export
+#' @noRd
 S7::method(plot, nowcast_results) <- function(
   x,
   which = "results",
