@@ -1,7 +1,8 @@
 # generated
-man
 docs
-NAMESPACE
+# will be generated from gh action
+NAMESPACE 
+man
 
 
 # private
