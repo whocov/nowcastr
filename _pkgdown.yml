@@ -1,39 +1,41 @@
 url: https://whocov.github.io/nowcastr
 template:
   bootstrap: 5
-navbar:
-  structure:
-    left:  [intro, reference, articles, tutorials, news]
-    right: [search, github, lightswitch]
+  light-switch: true
+  bslib:
+    primary: "#0054AD"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+    danger: "#A6081A"
+
 reference:
-- title: "Main"
-  desc: ""
-  contents: 
+- title: "Core"
+  contents:
   - nowcast_cl
   - nowcast_results
+
 - title: "Visualization"
-  desc: ""
-  contents: 
+  contents:
   - plot_triangle
   - plot_millipede
   - plot_nc_input
   - plot_delays
   - plot_nowcast
   - explore_nowcast
+
 - title: "Utilities"
-  desc: ""
   contents:
   - calculate_retro_score
   - rm_repeated_values
   - fill_future_reported_values
-- title: "Data"
-  desc: ""
+
+- title: "Data Utilities"
   contents:
   - nowcast_demo
   - nowcast_test_data
   - generate_test_data
-- title: "Evaluation"
-  desc: ""
+
+- title: "Evaluation Module"
   contents:
   - nowcast_eval
   - nowcast_eval_results
