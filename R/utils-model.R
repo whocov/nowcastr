@@ -1,5 +1,11 @@
-## v2
 #' Fit one model to data
+#'
+#' @param data A data.frame with columns `x` and `y`.
+#' @param modelname Character. Name of the model to fit.
+#' @return An `nls` or `lm` object if successful, otherwise `NULL`.
+#' @examples
+#' data <- data.frame(x = 0:9, y = c(0, .5, .7, .8, .9, .95, .975, .985, .995, 1))
+#' fit_model(data, modelname = "linear")
 #' @importFrom stats nls lm
 #' @noRd
 fit_model <- function(data, modelname = "monomolecular") {
@@ -55,20 +61,24 @@ fit_model <- function(data, modelname = "monomolecular") {
     }
   )
 }
-##
-# data.frame(x = 0:9, y = c(0, .5, .7, .8, .9, .95, .975, .985, .995, 1)) %>% fit_model(model = "linear")
-# data.frame(x = 0:9, y = c(0, .5, .7, .8, .9, .95, .975, .985, .995, 1)) %>% fit_model(model = "asymptotic")
 
 
 
 #' Select the best fitted model
+#'
+#' @param data A data.frame with columns `x` and `y`.
+#' @param modelnames Character vector. Names of models to try.
+#' @return The fitted model object (`nls` or `lm`) with the lowest sum of squared residuals, or `NULL`.
+#' @examples
+#' data <- data.frame(x = 0:9, y = c(0, .5, .7, .8, .9, .95, .975, .985, .995, 1))
+#' fit_models(data)
 #' @importFrom stats residuals
 #' @noRd
 fit_models <- function(
-    data,
-    modelnames = c("monomolecular", "vonbertalanffy", "logistic", "gompertz", "asymptotic", "linear")
-    #
-    ) {
+  data,
+  modelnames = c("monomolecular", "vonbertalanffy", "logistic", "gompertz", "asymptotic", "linear")
+  #
+) {
   ## verify valid modelnames
   accepted_modelnames <- c(
     "monomolecular",
@@ -115,15 +125,12 @@ fit_models <- function(
   return(best_fit)
 }
 
-# ### TEST
-# data <- structure(list(x = c(14, 21), y = c(1.25, 1)),
-#   row.names = c(NA, -2L), class = c("tbl_df", "tbl", "data.frame")
-# )
-# fit_models(data)
-
 
 
 #' Detect the model type and return a model name
+#'
+#' @param fit A fitted model object (`nls` or `lm`).
+#' @return Character string of the model name.
 #' @importFrom stats formula
 #' @noRd
 detect_model_type <- function(fit) {
@@ -145,7 +152,12 @@ detect_model_type <- function(fit) {
   }
 }
 
+
+
 #' Extract model parameters (coefficients)
+#'
+#' @param fit A fitted model object (`nls` or `lm`).
+#' @return Named numeric vector of coefficients.
 #' @importFrom stats coef
 #' @noRd
 extract_model_params <- function(fit) {
@@ -160,11 +172,13 @@ extract_model_params <- function(fit) {
 
 
 
-#' Extract the time to reach 95% completeness
+#' Predict values from a fitted model
 #'
+#' @param fit A fitted model object (`nls` or `lm`).
+#' @param alldelays Numeric vector of x values to predict for.
+#' @return A data.frame with columns `x` and `y`, or a single numeric value for constant linear models.
 #' @importFrom stats coef
 #' @noRd
-## update without max_delay
 predict_values_from_fit <- function(fit, alldelays) {
   if (is.null(fit)) {
     return(NULL)
@@ -187,7 +201,10 @@ predict_values_from_fit <- function(fit, alldelays) {
 }
 
 
-#' Extract the first time to reach 95% completeness from discrete data
+#' Extract the first time to reach band 0.95-1.05 from discrete data
+#'
+#' @param data_x_y A data.frame with columns `x` and `y`.
+#' @return Numeric time value or `NA`.
 #' @noRd
 get_time_to_95_105_discrete <- function(data_x_y) {
   if (is.null(data_x_y)) {
@@ -203,7 +220,13 @@ get_time_to_95_105_discrete <- function(data_x_y) {
 
 
 #' Find precise time to reach band 0.95 - 1.05
+#'
 #' Uses grid search for robustness (local minima) and uniroot for precision.
+#'
+#' @param fit A fitted model object (`nls` or `lm`).
+#' @param step Numeric. Step size for the grid search.
+#' @param max_delay Numeric. Maximum x value to search.
+#' @return Numeric time value or `NA_real_`.
 #' @importFrom stats uniroot predict
 #' @noRd
 get_time_to_95_105_precise <- function(fit, step = 1, max_delay = 1000) {
