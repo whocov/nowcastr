@@ -1,6 +1,17 @@
 #' Explore Nowcast Results with Shiny
 #'
-#' @param nc_obj A `nowcast_results` S7 object.
+#' Launch an interactive Shiny application to explore and visualize nowcast results.
+#' The app displays a summary table of model statistics and allows users to select
+#' groups to view corresponding plots for input data, delay distributions, and
+#' nowcast results.
+#'
+#' @param nc_obj A `nowcast_results` S7 object from [nowcast()].
+#'
+#' @return A Shiny app object. Run via `explore_nowcast(obj)` or
+#'   `shiny::runApp(explore_nowcast(obj))`.
+#'
+#' @seealso [nowcast()], [plot.nowcast_results()]
+#'
 #' @export
 explore_nowcast <- function(nc_obj) {
   if (!requireNamespace("shiny", quietly = TRUE)) stop("Package 'shiny' required.")
