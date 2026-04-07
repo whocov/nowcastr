@@ -33,9 +33,6 @@
 #      \  \  \  \
 
 
-
-
-
 ## xxx to hamonize with
 ## print_ywk_rwk_matrix <- function(ccc, mmm, select_minrwk, dim = 9){}
 ## (cf. functions.R)
@@ -104,16 +101,16 @@
 #' @import ggplot2
 #' @export
 plot_nc_input <- function(
-    df,
-    col_value,
-    col_date_occurrence,
-    col_date_reporting,
-    group_cols = NULL,
-    option = "millipede",
-    do_rescale = TRUE,
-    do_facet_groups = TRUE
-    #
-    ) {
+  df,
+  col_value,
+  col_date_occurrence,
+  col_date_reporting,
+  group_cols = NULL,
+  option = "millipede",
+  do_rescale = TRUE,
+  do_facet_groups = TRUE
+  #
+) {
   ## PREP INPUT ---
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -173,8 +170,6 @@ plot_nc_input <- function(
 }
 
 
-
-
 #' Triangle plot
 #'
 #' Draw a triangular heatmap where:
@@ -214,14 +209,14 @@ plot_nc_input <- function(
 #' @importFrom scales percent
 #' @export
 plot_triangle <- function(
-    df,
-    col_value,
-    col_date_occurrence,
-    col_date_reporting,
-    # group_cols = NULL,
-    scale_percent = FALSE
-    #
-    ) {
+  df,
+  col_value,
+  col_date_occurrence,
+  col_date_reporting,
+  # group_cols = NULL,
+  scale_percent = FALSE
+  #
+) {
   ## PREP INPUT ---
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -260,9 +255,6 @@ plot_triangle <- function(
 #     )
 
 
-
-
-
 #' Millipede plot
 #'
 #' Draw a line plot where each line represents one reporting date:
@@ -294,14 +286,14 @@ plot_triangle <- function(
 #' @importFrom scales percent
 #' @export
 plot_millipede <- function(
-    df,
-    col_value,
-    col_date_occurrence,
-    col_date_reporting,
-    # group_cols = NULL,
-    scale_percent = FALSE
-    #
-    ) {
+  df,
+  col_value,
+  col_date_occurrence,
+  col_date_reporting,
+  # group_cols = NULL,
+  scale_percent = FALSE
+  #
+) {
   ## PREP INPUT ---
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -334,13 +326,7 @@ plot_millipede <- function(
 }
 
 
-
-
 # res %>% plot(which = 'delays')
-
-
-
-
 
 
 #' Plot Reporting Completeness by Delay
@@ -374,18 +360,18 @@ plot_millipede <- function(
 #' @importFrom scales percent
 #' @export
 plot_delays <- function(
-    df,
-    # col_date_occurrence,
-    # col_date_reporting,
-    # col_value,
-    col_completeness_obs,
-    col_completeness_modelled = "",
-    group_cols = NULL,
-    color1 = "#222222",
-    color2 = "firebrick2",
-    limits_y = c(NA, NA)
-    #
-    ) {
+  df,
+  # col_date_occurrence,
+  # col_date_reporting,
+  # col_value,
+  col_completeness_obs,
+  col_completeness_modelled = "",
+  group_cols = NULL,
+  color1 = "#222222",
+  color2 = "firebrick2",
+  limits_y = c(NA, NA)
+  #
+) {
   ## PREP INPUT ---
   # str_col_val <- rlang::as_name(rlang::enquo(col_value))
   # str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -445,10 +431,6 @@ plot_delays <- function(
 }
 
 
-
-
-
-
 #' Plot Nowcasting Predictions
 #'
 #' @description
@@ -479,17 +461,17 @@ plot_delays <- function(
 #' @import ggplot2
 #' @export
 plot_nowcast <- function(
-    df,
-    col_date_occurrence,
-    # col_date_reporting,
-    col_value,
-    col_value_predicted,
-    group_cols = NULL,
-    color1 = "#333333",
-    color2 = "firebrick1"
-    # , scale_percent = TRUE
-    #
-    ) {
+  df,
+  col_date_occurrence,
+  # col_date_reporting,
+  col_value,
+  col_value_predicted,
+  group_cols = NULL,
+  color1 = "#333333",
+  color2 = "firebrick1"
+  # , scale_percent = TRUE
+  #
+) {
   ## PREP INPUT ---
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_val_pred <- rlang::as_name(rlang::enquo(col_value_predicted))
@@ -527,27 +509,22 @@ plot_nowcast <- function(
 }
 
 
-
-
-
-
 #' @rdname plot.nowcast_results
 #' @param x A `nowcast_results` object.
 #' @usage \method{plot}{nowcast_results}(x, which, option, do_rescale, add_model_info, ...)
+#' @return A ggplot object.
 #' @importFrom S7 S7_dispatch
 #' @export
 plot.nowcast_results <- function(
-    x,
-    which = "results",
-    option = "millipede",
-    do_rescale = FALSE,
-    add_model_info = TRUE,
-    ...) {
+  x,
+  which = "results",
+  option = "millipede",
+  do_rescale = FALSE,
+  add_model_info = TRUE,
+  ...
+) {
   S7::S7_dispatch()
 }
-
-
-
 
 
 #' Plotting method for nowcasting results
@@ -573,16 +550,16 @@ plot.nowcast_results <- function(
 #' @importFrom scales rescale
 #' @export
 S7::method(plot, nowcast_results) <- function(
-    x,
-    which = "results",
-    option = "millipede",
-    do_rescale = FALSE,
-    add_model_info = TRUE,
-    color1 = "#333333",
-    color2 = "firebrick1",
-    ...
-    #
-    ) {
+  x,
+  which = "results",
+  option = "millipede",
+  do_rescale = FALSE,
+  add_model_info = TRUE,
+  color1 = "#333333",
+  color2 = "firebrick1",
+  ...
+  #
+) {
   ## PREP INPUT ---
   ## extract from @params
   col_value <- rlang::syms(x@params$col_value)[[1]]
@@ -778,18 +755,16 @@ S7::method(plot, nowcast_results) <- function(
 }
 
 
-
-
 #' Unwrap nowcast models stats
 #' @param nc_obj A `nowcast_results` object.
 #' @param thresholds_r2 R squared threshold to classify `eval` into good or bad fit
-#' @return tibble
+#' @return A tibble.
 #' @noRd
 tbl_models_stats <- function(
-    nc_obj,
-    thresholds_r2 = 0.8
-    # ,thresholds_rss = 0.011
-    ) {
+  nc_obj,
+  thresholds_r2 = 0.8
+  # ,thresholds_rss = 0.011
+) {
   group_cols <- nc_obj@params$group_cols
   # s_group_cols <- if (is.null(group_cols) || length(group_cols) == 0) list(rlang::expr(1)) else rlang::syms(group_cols)
 
