@@ -15,7 +15,7 @@ nowcast_eval_results(
 }
 \arguments{
 \item{detail}{data.frame. Per-prediction errors with columns for observed value,
-predicted value, true value, SAPE (pred and obs), and \code{pred_is_better}.}
+predicted value, true value.}
 
 \item{summary}{data.frame. Aggregated metrics per group x delay:
 SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
@@ -27,6 +27,19 @@ SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
 \item{time_start}{POSIXct. Time the function started.}
 
 \item{time_end}{POSIXct. Time the function ended.}
+}
+\value{
+An S7 object of class \code{nowcast_eval_results} with the following slots:
+\describe{
+\item{detail}{Data frame. Per-prediction errors with columns for observed value,
+predicted value, true value.}
+\item{summary}{Data frame. Aggregated metrics per group x delay:
+SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
+\item{params}{List. Parameters used for the evaluation run.}
+\item{n_past}{Numeric. Number of past reporting periods evaluated.}
+\item{time_start}{POSIXct. Time the function started.}
+\item{time_end}{POSIXct. Time the function ended.}
+}
 }
 \description{
 The \code{nowcast_eval()} function returns an object of this class.

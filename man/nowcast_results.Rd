@@ -47,5 +47,5 @@ An S7 object of class \code{nowcast_results} with the following slots:
 }
 }
 \description{
-The \code{nowcast_cl} function returns an object of this class.
+The \code{nowcast_cl()} function returns an object of this class.
 }

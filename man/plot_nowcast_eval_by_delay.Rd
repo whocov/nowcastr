@@ -19,9 +19,9 @@ plot_nowcast_eval_by_delay(
 \code{"SMAPE_improvement_med"} (default), \code{"SMAPE_improvement_mean"},
 or \code{"proportion_pred_is_better"}.}
 
-\item{color_good}{Character. Fill colour for the "better" region. Default \code{"#2166ac"}.}
+\item{color_good}{Character. Fill colour for the "better" region.`.}
 
-\item{color_bad}{Character. Fill colour for the "worse" region. Default \code{"#d6604d"}.}
+\item{color_bad}{Character. Fill colour for the "worse" region.`.}
 
 \item{...}{Ignored.}
 }

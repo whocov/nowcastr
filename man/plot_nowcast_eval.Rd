@@ -18,9 +18,9 @@ plot_nowcast_eval(
 
 \item{delay}{Numeric. Which delay to plot. Defaults to the minimum delay in the data.}
 
-\item{color_good}{Character. Colour for significantly better predictions. Default \code{"#2166ac"}.}
+\item{color_good}{Character. Colour for significantly better predictions.`.}
 
-\item{color_bad}{Character. Colour for significantly worse predictions. Default \code{"#d6604d"}.}
+\item{color_bad}{Character. Colour for significantly worse predictions.`.}
 
 \item{alpha_less}{alpha value for the "less significant" bars, 0-1.}
 

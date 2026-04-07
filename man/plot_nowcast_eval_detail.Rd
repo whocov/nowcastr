@@ -17,9 +17,9 @@ plot_nowcast_eval_detail(
 
 \item{delay}{Numeric. Which delay to plot. Defaults to the minimum delay in the data.}
 
-\item{color_good}{Character. Colour when prediction beats raw observed. Default \code{"#2166ac"}.}
+\item{color_good}{Character. Colour when prediction beats raw observed.`.}
 
-\item{color_bad}{Character. Colour when raw observed beats prediction. Default \code{"#d6604d"}.}
+\item{color_bad}{Character. Colour when raw observed beats prediction.`.}
 
 \item{...}{Ignored.}
 }

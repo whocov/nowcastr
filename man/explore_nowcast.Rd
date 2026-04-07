@@ -9,6 +9,12 @@ explore_nowcast(nc_obj)
 \arguments{
 \item{nc_obj}{A \code{nowcast_results} S7 object.}
 }
+\value{
+A Shiny app object.
+}
 \description{
-Explore Nowcast Results with Shiny
+Launch an interactive Shiny application to explore and visualize nowcast results.
+The app displays a summary table of model statistics and allows users to select
+groups to view corresponding plots for input data, delay distributions, and
+nowcast results.
 }
