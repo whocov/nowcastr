@@ -22,18 +22,18 @@
 #' generate_test_data(time_units = "weeks", remove_delay = TRUE)
 #' @export
 generate_test_data <- function(
-    reportdate_from = "2025-02-01",
-    # reportdate_to = "2025-02-09",
-    n_reportdates = 9,
-    delay_from = 0,
-    n_delays = 10,
-    time_units = "days",
-    final_value = 100,
-    c = .5,
-    b = .9, # Units = 1/(x units). Larger b → faster approach; b ≤ 0 changes shape (b>0 for monotonic increase).
-    remove_delay = FALSE
-    #
-    ) {
+  reportdate_from = "2025-02-01",
+  # reportdate_to = "2025-02-09",
+  n_reportdates = 9,
+  delay_from = 0,
+  n_delays = 10,
+  time_units = "days",
+  final_value = 100,
+  c = .5,
+  b = .9, # Units = 1/(x units). Larger b → faster approach; b ≤ 0 changes shape (b>0 for monotonic increase).
+  remove_delay = FALSE
+  #
+) {
   stopifnot(c >= 0)
 
   a <- 1 - c ## assymptote to 100%
@@ -63,8 +63,6 @@ generate_test_data <- function(
 }
 
 
-
-
 #' Calculate retro-scores for all groups
 #'
 #' The retro-score is the amount of retro-adjustments / max possible retro-adjustments
@@ -92,17 +90,17 @@ generate_test_data <- function(
 #'
 #' @export
 calculate_retro_score <- function(
-    df,
-    col_date_occurrence,
-    col_date_reporting,
-    col_value,
-    group_cols = NULL,
-    # time_units = "weeks",
-    method = "2D_allgroups", # at_least_1_change_by_occ / 2D_allgroups
-    max_delay = Inf,
-    aggrby
-    #
-    ) {
+  df,
+  col_date_occurrence,
+  col_date_reporting,
+  col_value,
+  group_cols = NULL,
+  # time_units = "weeks",
+  method = "2D_allgroups", # at_least_1_change_by_occ / 2D_allgroups
+  max_delay = Inf,
+  aggrby
+  #
+) {
   ## PREP INPUT ---
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -200,8 +198,6 @@ calculate_retro_score <- function(
 }
 
 
-
-
 #' Remove duplicated reported values in reporting matrix
 #'
 #' @inheritParams nowcast_cl
@@ -224,13 +220,13 @@ calculate_retro_score <- function(
 #'   )
 #' @export
 rm_repeated_values <- function(
-    df,
-    col_date_occurrence,
-    col_date_reporting,
-    col_value,
-    group_cols = NULL
-    #
-    ) {
+  df,
+  col_date_occurrence,
+  col_date_reporting,
+  col_value,
+  group_cols = NULL
+  #
+) {
   ## PREP INPUT ---
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -246,7 +242,6 @@ rm_repeated_values <- function(
     distinct(!!!s_group_cols, !!s_col_occ, !!s_col_val, .keep_all = TRUE) %>%
     arrange(!!!s_group_cols, !!s_col_occ, !!s_col_rep)
 }
-
 
 
 ## VERTICAL UP FILL
@@ -283,14 +278,14 @@ rm_repeated_values <- function(
 #'   )
 #' @export
 fill_future_reported_values <- function(
-    df,
-    col_date_occurrence,
-    col_date_reporting,
-    col_value,
-    group_cols = NULL,
-    max_delay = Inf # Inf / 'auto' / integer
-    #
-    ) {
+  df,
+  col_date_occurrence,
+  col_date_reporting,
+  col_value,
+  group_cols = NULL,
+  max_delay = Inf # Inf / 'auto' / integer
+  #
+) {
   # --- Input validation
   stopifnot(
     "PRECHECK: `df` must be a data.frame." = is.data.frame(df)
@@ -336,11 +331,6 @@ fill_future_reported_values <- function(
 }
 
 
-
-
-
-
-
 ## VERTICAL DOWN FILL
 
 # #' Fill Past reported values with first known values
@@ -369,8 +359,6 @@ fill_future_reported_values <- function(
 #     ungroup() %>%
 #     filter(!is.na(!!s_col_val))
 # }
-
-
 
 
 ## HORIZONTAL FILL
