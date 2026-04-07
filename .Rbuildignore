@@ -13,4 +13,4 @@ figs
 .github
 
 
-
+^vignettes/\.quarto$

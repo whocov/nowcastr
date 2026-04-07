@@ -1,9 +1,6 @@
 #' Explore Nowcast Results with Shiny
 #'
 #' @param nc_obj A `nowcast_results` S7 object.
-#' @import shiny
-#' @import DT
-#' @import bslib
 #' @export
 explore_nowcast <- function(nc_obj) {
   if (!requireNamespace("shiny", quietly = TRUE)) stop("Package 'shiny' required.")
@@ -33,21 +30,21 @@ explore_nowcast <- function(nc_obj) {
   # Define UI
   ui <- bslib::page_fluid(
     theme = bslib::bs_theme(version = 5, bootswatch = "flatly"),
-    titlePanel(paste("Nowcast Results")),
-    # layout_column_wrap(
+    shiny::titlePanel(paste("Nowcast Results")),
+    # bslib::layout_column_wrap(
     #   width = 1 / 3, # 3 columns
     #   # height = "500px",
     #   bslib::card(),
     #   bslib::card(
     #     bslib::card_header("Selected Group Spotlight"),
-    #     # uiOutput("selected_stats")
+    #     # shiny::uiOutput("selected_stats")
     #   ),
     #   bslib::card(
     #     bslib::card_header("Model Types"),
-    #     tableOutput("model_summary")
+    #     shiny::tableOutput("model_summary")
     #   )
     # ),
-    div(
+    shiny::div(
       style = "margin-bottom: 20px;",
       bslib::card(
         height = "45vh",
@@ -55,20 +52,20 @@ explore_nowcast <- function(nc_obj) {
         DT::DTOutput("tbl_summary")
       )
     ),
-    layout_column_wrap(
+    bslib::layout_column_wrap(
       width = 1 / 3, # 3 columns
       height = "45vh",
       bslib::card(
         bslib::card_header("Input Data"),
-        plotOutput("plot_data")
+        shiny::plotOutput("plot_data")
       ),
       bslib::card(
         bslib::card_header("Completeness Model (Delays)"),
-        plotOutput("plot_delays")
+        shiny::plotOutput("plot_delays")
       ),
       bslib::card(
         bslib::card_header("Final Nowcast"),
-        plotOutput("plot_results")
+        shiny::plotOutput("plot_results")
       )
     )
   )
@@ -81,8 +78,8 @@ explore_nowcast <- function(nc_obj) {
     # })
 
 
-    # Reactive for selected group
-    selected_group <- reactive({
+    # shiny::Reactive for selected group
+    selected_group <- shiny::reactive({
       idx <- input$tbl_summary_rows_selected
       if (is.null(idx)) {
         return(NULL)
@@ -122,25 +119,25 @@ explore_nowcast <- function(nc_obj) {
       return(tmp)
     }
 
-    output$plot_data <- renderPlot({
-      req(selected_group())
+    output$plot_data <- shiny::renderPlot({
+      shiny::req(selected_group())
       filtered_obj <- filter_nc(nc_obj, selected_group())
       plot(filtered_obj, which = "data", option = "millipede") +
         theme(legend.position = "none")
     })
 
-    output$plot_delays <- renderPlot({
-      req(selected_group())
+    output$plot_delays <- shiny::renderPlot({
+      shiny::req(selected_group())
       filtered_obj <- filter_nc(nc_obj, selected_group())
       plot(filtered_obj, which = "delays")
     })
 
-    output$plot_results <- renderPlot({
-      req(selected_group())
+    output$plot_results <- shiny::renderPlot({
+      shiny::req(selected_group())
       filtered_obj <- filter_nc(nc_obj, selected_group())
       plot(filtered_obj, which = "results")
     })
   }
 
-  shinyApp(ui, server)
+  shiny::shinyApp(ui, server)
 }

@@ -32,6 +32,7 @@
 #' @import dplyr
 #' @importFrom rlang := !! enquo syms as_name
 #' @importFrom cli cli_progress_bar cli_progress_update cli_progress_done
+#' @importFrom stats median quantile
 #'
 #' @export
 nowcast_eval <- function(
@@ -213,9 +214,9 @@ nowcast_eval <- function(
 
       ## Improvement statistics (from per-row SAPE_improvement)
       SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_med = median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_q1 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
-      SMAPE_improvement_q3 = quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
+      SMAPE_improvement_med = stats::median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      SMAPE_improvement_q1 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
+      SMAPE_improvement_q3 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
 
       ## Proportion of predictions that beat raw observed (pairwise)
       proportion_pred_is_better = mean(.data$pred_is_better, na.rm = TRUE),
@@ -291,6 +292,14 @@ nowcast_eval <- function(
 #' @param time_start POSIXct. Time the function started.
 #' @param time_end POSIXct. Time the function ended.
 #'
+#' @usage nowcast_eval_results(
+#'   detail,
+#'   summary,
+#'   params,
+#'   n_past,
+#'   time_start,
+#'   time_end
+#' )
 #' @importFrom S7 new_class class_list class_data.frame class_numeric class_POSIXct
 #' @export
 nowcast_eval_results <-
@@ -326,6 +335,7 @@ nowcast_eval_results <-
 #' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data.
 #' @param color_good Character. Colour for significantly better predictions. Default `"#2166ac"`.
 #' @param color_bad  Character. Colour for significantly worse predictions. Default `"#d6604d"`.
+#' @param alpha_less alpha value for the "less significant" bars, 0-1.
 #' @param ... Ignored.
 #'
 #' @return A `ggplot` object.

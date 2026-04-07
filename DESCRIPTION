@@ -22,11 +22,14 @@ Imports:
     scales,
     cli
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 Suggests: 
     ISOweek,
     testthat (>= 3.0.0),
-    quarto
+    quarto,
+    shiny,
+    bslib,
+    DT
 VignetteBuilder: quarto
 Config/testthat/edition: 3
 URL: https://github.com/whocov/nowcastr, https://whocov.github.io/nowcastr/
