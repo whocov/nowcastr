@@ -36,27 +36,28 @@
 #'
 #' @export
 nowcast_eval <- function(
-    df,
-    col_date_occurrence,
-    col_date_reporting,
-    col_value,
-    group_cols = NULL,
-    n_past = 10,
-    time_units = "days",
-    max_delay = NULL,
-    max_reportunits = 10,
-    max_completeness = 5,
-    min_completeness_samples = 1,
-    use_weighted_method = TRUE,
-    do_propagate_missing_delays = FALSE,
-    do_model_fitting = TRUE,
-    model_names = c(
-      "monomolecular", "vonbertalanffy",
-      "logistic", "gompertz",
-      "asymptotic", "linear"
-    ),
-    do_use_modelled_completeness = TRUE,
-    rss_threshold = 1e-2) {
+  df,
+  col_date_occurrence,
+  col_date_reporting,
+  col_value,
+  group_cols = NULL,
+  n_past = 10,
+  time_units = "days",
+  max_delay = NULL,
+  max_reportunits = 10,
+  max_completeness = 5,
+  min_completeness_samples = 1,
+  use_weighted_method = TRUE,
+  do_propagate_missing_delays = FALSE,
+  do_model_fitting = TRUE,
+  model_names = c(
+    "monomolecular", "vonbertalanffy",
+    "logistic", "gompertz",
+    "asymptotic", "linear"
+  ),
+  do_use_modelled_completeness = TRUE,
+  rss_threshold = 1e-2
+) {
   time_start <- Sys.time()
 
   ## CAPTURE COLUMN NAMES -----
@@ -270,27 +271,11 @@ nowcast_eval <- function(
 }
 
 
-# #' Summarise nowcast evaluation results
-# #' @noRd
-# nowcast_eval_summarise <- function(df) {
-#   df %>%
-# }
-
-
 
 
 #' S7 object class for `nowcast_eval()` Results
 #'
 #' The `nowcast_eval()` function returns an object of this class.
-#'
-#' @param detail data.frame. Per-prediction errors with columns for observed value,
-#'   predicted value, true value, SAPE (pred and obs), and `pred_is_better`.
-#' @param summary data.frame. Aggregated metrics per group x delay:
-#'   SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.
-#' @param params list. Parameters used for the evaluation run.
-#' @param n_past numeric. Number of past reporting periods evaluated.
-#' @param time_start POSIXct. Time the function started.
-#' @param time_end POSIXct. Time the function ended.
 #'
 #' @usage nowcast_eval_results(
 #'   detail,
@@ -300,6 +285,28 @@ nowcast_eval <- function(
 #'   time_start,
 #'   time_end
 #' )
+#'
+#' @param detail data.frame. Per-prediction errors with columns for observed value,
+#'   predicted value, true value.
+#' @param summary data.frame. Aggregated metrics per group x delay:
+#'   SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.
+#' @param params list. Parameters used for the evaluation run.
+#' @param n_past numeric. Number of past reporting periods evaluated.
+#' @param time_start POSIXct. Time the function started.
+#' @param time_end POSIXct. Time the function ended.
+#'
+#' @return An S7 object of class `nowcast_eval_results` with the following slots:
+#'   \describe{
+#'     \item{detail}{Data frame. Per-prediction errors with columns for observed value,
+#'       predicted value, true value.}
+#'     \item{summary}{Data frame. Aggregated metrics per group x delay:
+#'       SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
+#'     \item{params}{List. Parameters used for the evaluation run.}
+#'     \item{n_past}{Numeric. Number of past reporting periods evaluated.}
+#'     \item{time_start}{POSIXct. Time the function started.}
+#'     \item{time_end}{POSIXct. Time the function ended.}
+#'   }
+#'
 #' @importFrom S7 new_class class_list class_data.frame class_numeric class_POSIXct
 #' @export
 nowcast_eval_results <-
@@ -313,9 +320,6 @@ nowcast_eval_results <-
       time_end   = S7::class_POSIXct
     )
   )
-
-
-
 
 
 #' Plot Nowcast Evaluation Results
@@ -333,8 +337,8 @@ nowcast_eval_results <-
 #'
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
 #' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data.
-#' @param color_good Character. Colour for significantly better predictions. Default `"#2166ac"`.
-#' @param color_bad  Character. Colour for significantly worse predictions. Default `"#d6604d"`.
+#' @param color_good Character. Colour for significantly better predictions.`.
+#' @param color_bad  Character. Colour for significantly worse predictions.`.
 #' @param alpha_less alpha value for the "less significant" bars, 0-1.
 #' @param ... Ignored.
 #'
@@ -360,12 +364,13 @@ nowcast_eval_results <-
 #'
 #' @export
 plot_nowcast_eval <- function(
-    x,
-    delay = NULL,
-    color_good = "dodgerblue1",
-    color_bad = "firebrick1",
-    alpha_less = .35,
-    ...) {
+  x,
+  delay = NULL,
+  color_good = "dodgerblue1",
+  color_bad = "firebrick1",
+  alpha_less = .35,
+  ...
+) {
   ## VALIDATE -----
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
     rlang::abort("x must be a nowcast_eval_results object.")
@@ -502,18 +507,15 @@ plot_nowcast_eval <- function(
 }
 
 
-## S7 plot() method
+#' Plotting method for nowcasting eval results
+#' @name plot.nowcast_eval_results
+#' @param x A `nowcast_eval_results` object.
+#' @param delay Integer. Delay to plot.
+#' @return A ggplot object.
 #' @export
 S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
   plot_nowcast_eval(x, delay = delay, ...)
 }
-
-
-
-
-
-
-
 
 
 #' Plot Nowcast Evaluation by Delay
@@ -526,8 +528,8 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 #' @param indicator Character. Which metric to plot on the y-axis. One of:
 #'   `"SMAPE_improvement_med"` (default), `"SMAPE_improvement_mean"`,
 #'   or `"proportion_pred_is_better"`.
-#' @param color_good Character. Fill colour for the "better" region. Default `"#2166ac"`.
-#' @param color_bad  Character. Fill colour for the "worse" region. Default `"#d6604d"`.
+#' @param color_good Character. Fill colour for the "better" region.`.
+#' @param color_bad  Character. Fill colour for the "worse" region.`.
 #' @param ... Ignored.
 #'
 #' @return A `ggplot` object.
@@ -552,11 +554,12 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 #'
 #' @export
 plot_nowcast_eval_by_delay <- function(
-    x,
-    indicator = "SMAPE_improvement_med",
-    color_good = "dodgerblue1",
-    color_bad = "firebrick1",
-    ...) {
+  x,
+  indicator = "SMAPE_improvement_med",
+  color_good = "dodgerblue1",
+  color_bad = "firebrick1",
+  ...
+) {
   ## VALIDATE -----
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
     rlang::abort("x must be a nowcast_eval_results object.")
@@ -615,7 +618,6 @@ plot_nowcast_eval_by_delay <- function(
 }
 
 
-
 #' Plot Nowcast Evaluation Detail Over Time
 #'
 #' For a selected delay, plots predicted and observed values over time alongside
@@ -624,8 +626,8 @@ plot_nowcast_eval_by_delay <- function(
 #'
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
 #' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data.
-#' @param color_good Character. Colour when prediction beats raw observed. Default `"#2166ac"`.
-#' @param color_bad  Character. Colour when raw observed beats prediction. Default `"#d6604d"`.
+#' @param color_good Character. Colour when prediction beats raw observed.`.
+#' @param color_bad  Character. Colour when raw observed beats prediction.`.
 #' @param ... Ignored.
 #'
 #' @return A `ggplot` object.
@@ -649,11 +651,12 @@ plot_nowcast_eval_by_delay <- function(
 #'
 #' @export
 plot_nowcast_eval_detail <- function(
-    x,
-    delay = NULL,
-    color_good = "dodgerblue1",
-    color_bad = "firebrick1",
-    ...) {
+  x,
+  delay = NULL,
+  color_good = "dodgerblue1",
+  color_bad = "firebrick1",
+  ...
+) {
   ## VALIDATE -----
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
     rlang::abort("x must be a nowcast_eval_results object.")
