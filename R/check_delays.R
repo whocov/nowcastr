@@ -7,6 +7,10 @@
 #' - be evenly distributed and follow a pattern of:
 #'   c(min_delay, min_delay+1*time_units, min_delay+2*time_units, ..., max_delay ) )
 #' - max_delay should be within reasonable range: e.g. not years
+#'
+#' @param list_delays A numeric vector or difftime object of delays.
+#' @return \code{TRUE} if the delays are valid, otherwise throws an error.
+#'
 #' @noRd
 check_delays <- function(list_delays) { # xxx todo
   list_delays <- list_delays %>%
@@ -34,9 +38,3 @@ check_delays <- function(list_delays) { # xxx todo
   }
   return(TRUE)
 }
-# check_delays(c())
-# check_delays(c(2))
-# check_delays(c(0, 1.2, 2.4))
-# check_delays(seq(2, 33, 7))
-# check_delays(seq(0, 33, 7))
-# check_delays(c(0, 1, 6))
