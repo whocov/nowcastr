@@ -10,10 +10,6 @@ steps in the past you wish to run a nowcast on.
 
 ``` r
 library(nowcastr)
-#> Warning: replacing previous import 'DT::dataTableOutput' by
-#> 'shiny::dataTableOutput' when loading 'nowcastr'
-#> Warning: replacing previous import 'DT::renderDataTable' by
-#> 'shiny::renderDataTable' when loading 'nowcastr'
 nc_eval_obj <-
   nowcast_demo %>%
   nowcast_eval(
@@ -25,7 +21,7 @@ nc_eval_obj <-
     time_units = "weeks",
     do_model_fitting = TRUE
   )
-#> Evaluating nowcast  ■■■■■■■■■■■■■■■■                 5/10 | ETA:  1s
+#> Evaluating nowcast  ■■■■■■■■■■■■■                    4/10 | ETA:  2s
 #> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■     9/10 | ETA:  0s
 #> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  10/10 | ETA:  0s
 ```

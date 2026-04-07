@@ -47,6 +47,10 @@ plot_nowcast_eval(
   Character. Colour for significantly worse predictions. Default
   `"#d6604d"`.
 
+- alpha_less:
+
+  alpha value for the "less significant" bars, 0-1.
+
 - ...:
 
   Ignored.

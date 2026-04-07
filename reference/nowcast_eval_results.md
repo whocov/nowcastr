@@ -8,46 +8,12 @@ function returns an object of this class.
 
 ``` r
 nowcast_eval_results(
-  detail = (function (.data = list(), row.names = NULL) 
- {
-     if (is.null(row.names))
-    {
-         list2DF(.data)
-     }
-     else {
-         out <- list2DF(.data,
-    length(row.names))
-attr(out, "row.names") <- row.names
-         out
-     }
-
-    })(),
-  summary = (function (.data = list(), row.names = NULL) 
- {
-     if (is.null(row.names))
-    {
-         list2DF(.data)
-     }
-     else {
-         out <- list2DF(.data,
-    length(row.names))
-attr(out, "row.names") <- row.names
-         out
-     }
-
-    })(),
-  params = list(),
-  n_past = integer(0),
-  time_start = (function (.data = double(), tz = "") 
- {
-     .POSIXct(.data, tz = tz)
-
-    })(),
-  time_end = (function (.data = double(), tz = "") 
- {
-     .POSIXct(.data, tz = tz)
-
-    })()
+  detail,
+  summary,
+  params,
+  n_past,
+  time_start,
+  time_end
 )
 ```
 

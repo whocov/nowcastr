@@ -18,10 +18,6 @@ devtools::install_github("whocov/nowcastr")
 
 ``` r
 library(nowcastr)
-#> Warning: replacing previous import 'DT::dataTableOutput' by
-#> 'shiny::dataTableOutput' when loading 'nowcastr'
-#> Warning: replacing previous import 'DT::renderDataTable' by
-#> 'shiny::renderDataTable' when loading 'nowcastr'
 ```
 
 ## Data Structure
