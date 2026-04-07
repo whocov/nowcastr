@@ -1,20 +1,23 @@
 #' Calculate delay between 2 dates
+#'
 #' Add (or overwrite) a column named 'delay' (name is parametrable)
+#'
 #' @param date1 an unquoted column name of type date
 #' @param date2 an unquoted column name of type date
 #' @param units a value from c("auto", "secs", "mins", "hours", "days", "weeks")
 #' @param as_difftime Flag to return difftime (TRUE) or numeric (FALSE)
 #' @param col_name output column name (string)
+#' @return A data.frame with the delay column added (or overwritten).
 #' @noRd
 calc_delay <- function(
-    df,
-    date1,
-    date2,
-    units = "weeks",
-    as_difftime = TRUE,
-    col_name = "delay"
-    #
-    ) {
+  df,
+  date1,
+  date2,
+  units = "weeks",
+  as_difftime = TRUE,
+  col_name = "delay"
+  #
+) {
   name_date1 <- rlang::as_name(rlang::enquo(date1))
   name_date2 <- rlang::as_name(rlang::enquo(date2))
   s_date1 <- rlang::sym(name_date1)
