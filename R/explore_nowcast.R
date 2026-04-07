@@ -5,12 +5,9 @@
 #' groups to view corresponding plots for input data, delay distributions, and
 #' nowcast results.
 #'
-#' @param nc_obj A `nowcast_results` S7 object from [nowcast()].
+#' @param nc_obj A `nowcast_results` S7 object.
 #'
-#' @return A Shiny app object. Run via `explore_nowcast(obj)` or
-#'   `shiny::runApp(explore_nowcast(obj))`.
-#'
-#' @seealso [nowcast()], [plot.nowcast_results()]
+#' @return A Shiny app object.
 #'
 #' @export
 explore_nowcast <- function(nc_obj) {
