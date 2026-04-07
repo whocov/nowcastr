@@ -1,7 +1,7 @@
 # generated
-man
 docs
-NAMESPACE
+# man ## needed for install from gh
+# NAMESPACE ## needed for install from gh
 
 
 # private
