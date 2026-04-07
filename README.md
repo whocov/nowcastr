@@ -29,7 +29,7 @@ install.packages("nowcastr")
 ``` -->
 
 ``` r
-devtools::install_github("whocov/nowcastr")
+pak::pak("whocov/nowcastr")
 ```
 
 
