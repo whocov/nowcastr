@@ -22,11 +22,11 @@
 #' generate_test_data(time_units = "weeks", remove_delay = TRUE)
 #' @export
 generate_test_data <- function(
+  n_reportdates = 9,
+  n_delays = 10,
   reportdate_from = "2025-02-01",
   # reportdate_to = "2025-02-09",
-  n_reportdates = 9,
   delay_from = 0,
-  n_delays = 10,
   time_units = "days",
   final_value = 100,
   c = .5,
