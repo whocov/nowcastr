@@ -21,8 +21,7 @@ nowcast_cl(
   model_names = c("monomolecular", "vonbertalanffy", "logistic", "gompertz",
     "asymptotic", "linear"),
   do_use_modelled_completeness = TRUE,
-  rss_threshold = 0.01,
-  output = "all"
+  rss_threshold = 0.01
 )
 }
 \arguments{
@@ -65,11 +64,23 @@ Boolean or NULL (for auto selective).  (unused if do_model_fitting=FALSE)}
 \item{rss_threshold}{Minimum RSS threshold to use model-fitted values.
 Only used if do_use_modelled_completeness is NULL.
 If the RSS of the fit is higher than this then observed completeness is used for nowcasting.}
-
-\item{output}{What should the function return? 'nowcast' = data.frame / 'all' = S7 object}
 }
 \value{
-Either a S7 object of class \code{nowcast_results}; or a data.frame if \code{output="nowcast"}.
+Returns an \bold{S7 object} of class \code{nowcast_results}.
+This object serves as a comprehensive container for the analysis results and
+metadata. Use the \code{@results} slot to access the primary prediction
+data frame.
+
+The object includes:
+\itemize{
+\item \bold{Predictions}: The \code{results} slot contains the latest
+observed values, the calculated \code{completeness} ratio, and the
+\code{value_predicted}.
+\item \bold{Calculation}: Predictions are derived using
+\eqn{value\_predicted = value / completeness}.
+\item \bold{Metadata}: Slots for \code{params}, \code{time_start},
+\code{max_delay}, and model diagnostics (\code{RSS}).
+}
 }
 \description{
 Performs nowcasting using non-cumulative Chain-Ladder Method.
@@ -86,7 +97,8 @@ res <- input \%>\%
     col_value = value,
     time_units = "days"
   )
-## plot results:
-# res \%>\% plot(which = "results")
+
+# Access the predicted data:
+head(res@results)
 
 }

@@ -22,7 +22,7 @@ SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
 
 \item{params}{list. Parameters used for the evaluation run.}
 
-\item{n_past}{numeric. Number of past reporting periods evaluated.}
+\item{n_past}{integer. Number of past reporting periods evaluated.}
 
 \item{time_start}{POSIXct. Time the function started.}
 
