@@ -153,6 +153,10 @@ nowcast_cl <- function(
       )
     )
   }
+  ## check minimum number of reporting dates
+  if (dplyr::n_distinct(df[[str_col_rep]]) < 2) {
+    rlang::abort("Insufficient reporting history: at least 2 distinct reporting dates are required.")
+  }
   ## end of input validation
 
 
@@ -281,6 +285,14 @@ nowcast_cl <- function(
     filter(n >= min_completeness_samples) ## default is 1, no impact
   ## NOTE: completeness_avg is slightly overstimated here. See BIAS1.
 
+  if (all(is.na(df_completeness_observed$completeness_avg) | is.nan(df_completeness_observed$completeness_avg))) {
+    rlang::abort(
+      c(
+        "Insufficient reporting history: cannot calculate completeness.",
+        i = "This usually happens when there is only 1 reporting date in the data, resulting in 0 weights."
+      )
+    )
+  }
 
   ## OPTIONAL: PROPAGATE MISSING DELAYS ---
   # Since non-cumulative approach, sometimes there are delays with missing completeness.
@@ -418,8 +430,6 @@ nowcast_cl <- function(
             units = time_units, as_difftime = !do_delay_asnumeric
           ) %>%
           select(-!!s_col_rep)
-        # } else if (prediction_date_method == "fixed delay") { ## not good to, just for experimenting.
-        #   mutate(delay = 5)
       } else {
         .
       }
