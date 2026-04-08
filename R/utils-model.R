@@ -38,9 +38,21 @@ fit_model <- function(data, modelname = "monomolecular") {
           warning = function(w) invokeRestart("muffleWarning")
         )
       } else if (modelname == "gompertz") {
-        fit <- withCallingHandlers(
-          stats::nls(y ~ SSgompertz(x, phi1, phi2, phi3), data = data),
-          warning = function(w) invokeRestart("muffleWarning")
+        fit <- tryCatch(
+          withCallingHandlers(
+            stats::nls(y ~ SSgompertz(x, Asym, b2, b3), data = data),
+            warning = function(w) invokeRestart("muffleWarning")
+          ),
+          error = function(e) {
+            withCallingHandlers(
+              stats::nls(y ~ Asym * exp(-b2 * b3^x),
+                data = data,
+                start = list(Asym = max(data$y) * 1.05, b2 = 2, b3 = 0.5),
+                algorithm = "port"
+              ),
+              warning = function(w) invokeRestart("muffleWarning")
+            )
+          }
         )
       } else if (modelname == "asymptotic") { # same as y ~ c + a * (1 - exp(-b * x)) (=monomolecular + a vertical offset)
         fit <- withCallingHandlers(
@@ -61,7 +73,6 @@ fit_model <- function(data, modelname = "monomolecular") {
     }
   )
 }
-
 
 
 #' Select the best fitted model
@@ -139,7 +150,7 @@ detect_model_type <- function(fit) {
     return("linear")
   } else if (grepl("SSlogis", formula_str)) {
     return("logistic")
-  } else if (grepl("SSgompertz", formula_str)) {
+  } else if (grepl("SSgompertz", formula_str) || grepl("exp\\(-b2 \\* b3", formula_str)) {
     return("gompertz")
   } else if (grepl("SSasymp", formula_str)) {
     return("asymptotic")
@@ -151,7 +162,6 @@ detect_model_type <- function(fit) {
     return(formula_str)
   }
 }
-
 
 
 #' Extract model parameters (coefficients)
