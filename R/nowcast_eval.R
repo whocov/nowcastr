@@ -93,16 +93,18 @@ nowcast_eval <- function(
   ## sorted descending: most recent first, we go n_past steps back
   all_rep_dates <- sort(unique(df[[str_col_rep]]), decreasing = TRUE)
 
-  ## remove the very last (most recent) reporting date:
+  ## remove the most recent reporting date:
   ## accuracy at that date is trivially 100% (no future to compare against)
   all_rep_dates <- all_rep_dates[-1]
 
-  if (n_past > length(all_rep_dates)) {
+  ## -1 is because we cannot run nowcating when only 1 reporting period is left
+  max_npast <- length(all_rep_dates) - 1
+  if (n_past > max_npast) {
     rlang::warn(paste0(
       "n_past (", n_past, ") exceeds available reporting periods (",
-      length(all_rep_dates), "). Using all available."
+      length(all_rep_dates), "). Will be using the max available instead: ", max_npast
     ))
-    n_past <- length(all_rep_dates)
+    n_past <- max_npast
   }
 
   list_cut_dates <- all_rep_dates[seq_len(n_past)]
@@ -123,30 +125,34 @@ nowcast_eval <- function(
     df_peeled <- df %>% filter(!!s_col_rep <= cut_date)
 
     ## RUN NOWCAST
-    nc <- tryCatch(
-      nowcast_cl(
-        df = df_peeled,
-        col_date_occurrence = !!rlang::sym(str_col_occ),
-        col_date_reporting = !!rlang::sym(str_col_rep),
-        col_value = !!rlang::sym(str_col_val),
-        group_cols = group_cols,
-        time_units = time_units,
-        max_delay = max_delay,
-        max_reportunits = max_reportunits,
-        max_completeness = max_completeness,
-        min_completeness_samples = min_completeness_samples,
-        use_weighted_method = use_weighted_method,
-        do_propagate_missing_delays = do_propagate_missing_delays,
-        do_model_fitting = do_model_fitting,
-        model_names = model_names,
-        do_use_modelled_completeness = do_use_modelled_completeness,
-        rss_threshold = rss_threshold,
-        output = "nowcast"
-      ),
-      error = function(e) NULL
-    )
+    nc_obj <-
+      tryCatch(
+        nowcast_cl(
+          df = df_peeled,
+          col_date_occurrence = !!rlang::sym(str_col_occ),
+          col_date_reporting = !!rlang::sym(str_col_rep),
+          col_value = !!rlang::sym(str_col_val),
+          group_cols = group_cols,
+          time_units = time_units,
+          max_delay = max_delay,
+          max_reportunits = max_reportunits,
+          max_completeness = max_completeness,
+          min_completeness_samples = min_completeness_samples,
+          use_weighted_method = use_weighted_method,
+          do_propagate_missing_delays = do_propagate_missing_delays,
+          do_model_fitting = do_model_fitting,
+          model_names = model_names,
+          do_use_modelled_completeness = do_use_modelled_completeness,
+          rss_threshold = rss_threshold
+        ),
+        error = function(e) {
+          rlang::warn(paste("SILENCED ERROR:", conditionMessage(e)))
+          NULL
+        }
+      )
 
-    if (!is.null(nc)) {
+    if (!is.null(nc_obj)) {
+      nc <- nc_obj@results
       nc$cut_date <- cut_date
       list_results[[i]] <- nc
     }
@@ -186,15 +192,13 @@ nowcast_eval <- function(
     arrange(!!!s_group_cols, !!s_col_occ, .data$cut_date, .data$delay) %>%
     select(-"completeness") %>%
     select(
-      group_cols,
-      # !!!s_group_cols,
+      all_of(group_cols),
       "cut_date",
-      str_col_occ,
+      all_of(str_col_occ),
       "last_r_date",
-      str_col_val,
+      all_of(str_col_val),
       "value_predicted",
       "value_true",
-      # "completeness",
       everything()
     )
 
@@ -264,13 +268,11 @@ nowcast_eval <- function(
     detail     = df_detail,
     summary    = df_summary,
     params     = params,
-    n_past     = as.numeric(n_past),
+    n_past     = as.integer(n_past),
     time_start = time_start,
     time_end   = Sys.time()
   )
 }
-
-
 
 
 #' S7 object class for `nowcast_eval()` Results
@@ -291,7 +293,7 @@ nowcast_eval <- function(
 #' @param summary data.frame. Aggregated metrics per group x delay:
 #'   SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.
 #' @param params list. Parameters used for the evaluation run.
-#' @param n_past numeric. Number of past reporting periods evaluated.
+#' @param n_past integer. Number of past reporting periods evaluated.
 #' @param time_start POSIXct. Time the function started.
 #' @param time_end POSIXct. Time the function ended.
 #'
