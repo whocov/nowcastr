@@ -29,9 +29,22 @@
 #' @param rss_threshold Minimum RSS threshold to use model-fitted values.
 #'   Only used if do_use_modelled_completeness is NULL.
 #'   If the RSS of the fit is higher than this then observed completeness is used for nowcasting.
-#' @param output What should the function return? 'nowcast' = data.frame / 'all' = S7 object
 #'
-#' @return Either a S7 object of class `nowcast_results`; or a data.frame if `output="nowcast"`.
+#' @return Returns an \bold{S7 object} of class \code{nowcast_results}.
+#' This object serves as a comprehensive container for the analysis results and
+#' metadata. Use the \code{@results} slot to access the primary prediction
+#' data frame.
+#'
+#' The object includes:
+#' \itemize{
+#'   \item \bold{Predictions}: The \code{results} slot contains the latest
+#'   observed values, the calculated \code{completeness} ratio, and the
+#'   \code{value_predicted}.
+#'   \item \bold{Calculation}: Predictions are derived using
+#'   \eqn{value\_predicted = value / completeness}.
+#'   \item \bold{Metadata}: Slots for \code{params}, \code{time_start},
+#'   \code{max_delay}, and model diagnostics (\code{RSS}).
+#' }
 #'
 #' @examples
 #' input <- generate_test_data()
@@ -42,8 +55,9 @@
 #'     col_value = value,
 #'     time_units = "days"
 #'   )
-#' ## plot results:
-#' # res %>% plot(which = "results")
+#'
+#' # Access the predicted data:
+#' head(res@results)
 #'
 #' @importFrom magrittr %>%
 #' @importFrom rlang := !! enquo syms as_name .data
@@ -77,8 +91,7 @@ nowcast_cl <- function(
     "asymptotic", "linear"
   ),
   do_use_modelled_completeness = TRUE,
-  rss_threshold = 1e-2,
-  output = "all"
+  rss_threshold = 1e-2
   #
 ) {
   time_start <- Sys.time() ## save start time
@@ -442,11 +455,6 @@ nowcast_cl <- function(
     )
 
 
-  ### RETURN ONLY NOWCAST DATAFRAME -----
-  if (output == "nowcast") {
-    return(df_nowcasting)
-  }
-
   ### RETURN S7 OBJECT -----
 
   ## MAKE LIST OF PARAMS ---
@@ -515,20 +523,23 @@ nowcast_cl <- function(
 #' @param models Dataframe. The resulting fitted models (empty data frame if do_model_fitting was FALSE)
 #' @param results Dataframe. A data frame with the resulting nowcasting predictions.
 #'
-#' @return An S7 object of class `nowcast_results` with the following slots:
-#'   \describe{
-#'     \item{name}{Character. Timestamp identifier for the run.}
-#'     \item{params}{List. Parameters used in the nowcasting call.}
-#'     \item{time_start}{POSIXct. Time the function started.}
-#'     \item{time_end}{POSIXct. Time the function ended.}
-#'     \item{n_groups}{Numeric. Number of groups processed.}
-#'     \item{max_delay}{Numeric. Maximum delay used in the analysis.}
-#'     \item{data}{Data frame. Original input data (required columns only).}
-#'     \item{completeness}{Data frame. Input data with delay and completeness columns.}
-#'     \item{delays}{Data frame. Aggregated completeness estimates per delay.}
-#'     \item{models}{Data frame. Fitted models, empty if `do_model_fitting = FALSE`.}
-#'     \item{results}{Data frame. Nowcasting predictions.}
-#'   }
+#' @return An \bold{S7 object} of class \code{nowcast_results}. This object is a
+#' structured container for the entire nowcasting pipeline output. It consists
+#' of the following properties (slots):
+#' \describe{
+#'   \item{name}{Character. A unique timestamp identifier for the run (\code{YYYYMMDD_HHMMSS}).}
+#'   \item{params}{List. The evaluated parameters and arguments used in the function call.}
+#'   \item{time_start, time_end}{POSIXct. Timestamps marking the duration of the calculation.}
+#'   \item{n_groups}{Numeric. The total count of unique groups processed.}
+#'   \item{max_delay}{Numeric. The maximum reporting delay (in \code{time_units}) considered.}
+#'   \item{data}{Data frame. The subset of the original input used for the analysis.}
+#'   \item{completeness}{Data frame. Detailed row-level completeness calculations and delays.}
+#'   \item{delays}{Data frame. Aggregated completeness estimates per delay unit, including
+#'   both observed and (optionally) modelled values.}
+#'   \item{models}{Data frame. Results of the non-linear model fitting, including RSS and
+#'   model types. Returns an empty data frame if \code{do_model_fitting} was \code{FALSE}.}
+#'   \item{results}{Data frame. The final nowcasting table containing predicted values.}
+#' }
 #'
 #' @importFrom S7 new_class class_character class_list class_data.frame class_numeric class_POSIXct
 #' @export
