@@ -63,48 +63,51 @@ nowcast_results(name, params, time_start, time_end, n_groups, max_delay,
 
 ## Value
 
-An S7 object of class `nowcast_results` with the following slots:
+An **S7 object** of class `nowcast_results`. This object is a structured
+container for the entire nowcasting pipeline output. It consists of the
+following properties (slots):
 
 - name:
 
-  Character. Timestamp identifier for the run.
+  Character. A unique timestamp identifier for the run
+  (`YYYYMMDD_HHMMSS`).
 
 - params:
 
-  List. Parameters used in the nowcasting call.
+  List. The evaluated parameters and arguments used in the function
+  call.
 
-- time_start:
+- time_start, time_end:
 
-  POSIXct. Time the function started.
-
-- time_end:
-
-  POSIXct. Time the function ended.
+  POSIXct. Timestamps marking the duration of the calculation.
 
 - n_groups:
 
-  Numeric. Number of groups processed.
+  Numeric. The total count of unique groups processed.
 
 - max_delay:
 
-  Numeric. Maximum delay used in the analysis.
+  Numeric. The maximum reporting delay (in `time_units`) considered.
 
 - data:
 
-  Data frame. Original input data (required columns only).
+  Data frame. The subset of the original input used for the analysis.
 
 - completeness:
 
-  Data frame. Input data with delay and completeness columns.
+  Data frame. Detailed row-level completeness calculations and delays.
 
 - delays:
 
-  Data frame. Aggregated completeness estimates per delay.
+  Data frame. Aggregated completeness estimates per delay unit,
+  including both observed and (optionally) modelled values.
 
 - models:
 
-  Data frame. Fitted models, empty if `do_model_fitting = FALSE`.
+  Data frame. Results of the non-linear model fitting, including RSS and
+  model types. Returns an empty data frame if `do_model_fitting` was
+  `FALSE`.
 
 - results:
 
-  Data frame. Nowcasting predictions.
+  Data frame. The final nowcasting table containing predicted values.

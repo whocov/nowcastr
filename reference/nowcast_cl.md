@@ -27,8 +27,7 @@ nowcast_cl(
   model_names = c("monomolecular", "vonbertalanffy", "logistic", "gompertz",
     "asymptotic", "linear"),
   do_use_modelled_completeness = TRUE,
-  rss_threshold = 0.01,
-  output = "all"
+  rss_threshold = 0.01
 )
 ```
 
@@ -108,15 +107,23 @@ nowcast_cl(
   do_use_modelled_completeness is NULL. If the RSS of the fit is higher
   than this then observed completeness is used for nowcasting.
 
-- output:
-
-  What should the function return? 'nowcast' = data.frame / 'all' = S7
-  object
-
 ## Value
 
-Either a S7 object of class `nowcast_results`; or a data.frame if
-`output="nowcast"`.
+Returns an **S7 object** of class `nowcast_results`. This object serves
+as a comprehensive container for the analysis results and metadata. Use
+the `@results` slot to access the primary prediction data frame.
+
+The object includes:
+
+- **Predictions**: The `results` slot contains the latest observed
+  values, the calculated `completeness` ratio, and the
+  `value_predicted`.
+
+- **Calculation**: Predictions are derived using \\value\\predicted =
+  value / completeness\\.
+
+- **Metadata**: Slots for `params`, `time_start`, `max_delay`, and model
+  diagnostics (`RSS`).
 
 ## Examples
 
@@ -129,6 +136,16 @@ res <- input %>%
     col_value = value,
     time_units = "days"
   )
-## plot results:
-# res %>% plot(which = "results")
+
+# Access the predicted data:
+head(res@results)
+#> # A tibble: 6 × 6
+#>   date_occurrence last_r_date delay value value_predicted completeness
+#>   <date>          <date>      <dbl> <dbl>           <dbl>        <dbl>
+#> 1 2025-02-09      2025-02-09      0  50              98.2        0.509
+#> 2 2025-02-08      2025-02-09      1  79.7            99.4        0.802
+#> 3 2025-02-07      2025-02-09      2  91.7            99.7        0.920
+#> 4 2025-02-06      2025-02-09      3  96.6            99.9        0.968
+#> 5 2025-02-05      2025-02-09      4  98.6            99.9        0.987
+#> 6 2025-02-04      2025-02-09      5  99.4           100.0        0.995
 ```

@@ -35,7 +35,7 @@ nowcast_eval_results(
 
 - n_past:
 
-  numeric. Number of past reporting periods evaluated.
+  integer. Number of past reporting periods evaluated.
 
 - time_start:
 

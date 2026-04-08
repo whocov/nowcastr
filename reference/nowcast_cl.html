@@ -76,8 +76,7 @@ You have the option to use model-free completeness ratio calculation (faster) or
 <span>  model_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"monomolecular"</span>, <span class="st">"vonbertalanffy"</span>, <span class="st">"logistic"</span>, <span class="st">"gompertz"</span>,</span>
 <span>    <span class="st">"asymptotic"</span>, <span class="st">"linear"</span><span class="op">)</span>,</span>
 <span>  do_use_modelled_completeness <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  rss_threshold <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>  output <span class="op">=</span> <span class="st">"all"</span></span>
+<span>  rss_threshold <span class="op">=</span> <span class="fl">0.01</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -156,15 +155,21 @@ Boolean or NULL (for auto selective).  (unused if do_model_fitting=FALSE)</p></d
 Only used if do_use_modelled_completeness is NULL.
 If the RSS of the fit is higher than this then observed completeness is used for nowcasting.</p></dd>
 
-
-<dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
-<dd><p>What should the function return? 'nowcast' = data.frame / 'all' = S7 object</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Either a S7 object of class <code>nowcast_results</code>; or a data.frame if <code>output="nowcast"</code>.</p>
-    </div>
+    <p>Returns an <b>S7 object</b> of class <code>nowcast_results</code>.
+This object serves as a comprehensive container for the analysis results and
+metadata. Use the <code>@results</code> slot to access the primary prediction
+data frame.</p>
+<p>The object includes:</p><ul><li><p><b>Predictions</b>: The <code>results</code> slot contains the latest
+observed values, the calculated <code>completeness</code> ratio, and the
+<code>value_predicted</code>.</p></li>
+<li><p><b>Calculation</b>: Predictions are derived using
+\(value\_predicted = value / completeness\).</p></li>
+<li><p><b>Metadata</b>: Slots for <code>params</code>, <code>time_start</code>,
+<code>max_delay</code>, and model diagnostics (<code>RSS</code>).</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -176,8 +181,18 @@ If the RSS of the fit is higher than this then observed completeness is used for
 <span class="r-in"><span>    col_value <span class="op">=</span> <span class="va">value</span>,</span></span>
 <span class="r-in"><span>    time_units <span class="op">=</span> <span class="st">"days"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co">## plot results:</span></span></span>
-<span class="r-in"><span><span class="co"># res %&gt;% plot(which = "results")</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Access the predicted data:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">@</span><span class="va">results</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   date_occurrence last_r_date delay value value_predicted completeness</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 2025-02-09      2025-02-09      0  50              98.2        0.509</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 2025-02-08      2025-02-09      1  79.7            99.4        0.802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 2025-02-07      2025-02-09      2  91.7            99.7        0.920</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 2025-02-06      2025-02-09      3  96.6            99.9        0.968</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 2025-02-05      2025-02-09      4  98.6            99.9        0.987</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> 2025-02-04      2025-02-09      5  99.4           100.0        0.995</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

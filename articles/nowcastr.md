@@ -200,7 +200,7 @@ nc_obj@completeness # Data with completeness estimates
 #> # ℹ 2,468 more rows
 #> # ℹ 1 more variable: reportweight <dbl>
 str(nc_obj@params) # Parameters used
-#> List of 16
+#> List of 15
 #>  $ col_date_occurrence         : chr "date_occurrence"
 #>  $ col_date_reporting          : chr "date_report"
 #>  $ col_value                   : chr "value"
@@ -216,7 +216,6 @@ str(nc_obj@params) # Parameters used
 #>  $ model_names                 : chr [1:6] "monomolecular" "vonbertalanffy" "logistic" "gompertz" ...
 #>  $ do_use_modelled_completeness: logi TRUE
 #>  $ rss_threshold               : num 0.01
-#>  $ output                      : chr "all"
 ```
 
 Plot the results:

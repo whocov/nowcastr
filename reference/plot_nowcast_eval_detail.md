@@ -57,7 +57,7 @@ eval_res <- nowcast_eval(
   n_past = 10,
   time_units = "days"
 )
-#> Warning: n_past (10) exceeds available reporting periods (8). Using all available.
+#> Warning: n_past (10) exceeds available reporting periods (8). Will be using the max available instead: 7
 plot_nowcast_eval_detail(eval_res)
 
 plot_nowcast_eval_detail(eval_res, delay = 7)

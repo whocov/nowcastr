@@ -8,10 +8,10 @@ curve and constant final value. Formula:
 
 ``` r
 generate_test_data(
-  reportdate_from = "2025-02-01",
   n_reportdates = 9,
-  delay_from = 0,
   n_delays = 10,
+  reportdate_from = "2025-02-01",
+  delay_from = 0,
   time_units = "days",
   final_value = 100,
   c = 0.5,
@@ -22,21 +22,21 @@ generate_test_data(
 
 ## Arguments
 
-- reportdate_from:
-
-  Character or Date. Start report date (e.g. "2025-02-01").
-
 - n_reportdates:
 
   Integer. Number of consecutive report dates to generate.
 
-- delay_from:
-
-  Integer \>= 0. Minimum delay value.
-
 - n_delays:
 
   Integer. Number of delay values to generate.
+
+- reportdate_from:
+
+  Character or Date. Start report date (e.g. "2025-02-01").
+
+- delay_from:
+
+  Integer \>= 0. Minimum delay value.
 
 - time_units:
 
