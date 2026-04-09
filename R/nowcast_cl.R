@@ -282,8 +282,8 @@ nowcast_cl <- function(
       completeness_avg = if (isTRUE(use_weighted_method)) stats::weighted.mean(.data$completeness, .data$reportweight, na.rm = TRUE) else mean(.data$completeness, na.rm = TRUE)
     ) %>%
     ungroup() %>%
-    filter(n >= min_completeness_samples) ## default is 1, no impact
-  ## NOTE: completeness_avg is slightly overstimated here. See BIAS1.
+    filter(n >= min_completeness_samples) ## default is 1 -> no impact
+  ## NOTE: completeness_avg is slightly overstimated here; cf. BIAS1
 
   if (all(is.na(df_completeness_observed$completeness_avg) | is.nan(df_completeness_observed$completeness_avg))) {
     rlang::abort(
