@@ -166,6 +166,9 @@ plot_nc_input <- function(
     fig <- fig + facet_wrap(vars(!!!s_group_cols))
   }
 
+  ## theme
+  fig <- fig + theme_nowcastr()
+
   return(fig)
 }
 
@@ -207,7 +210,7 @@ plot_nc_input <- function(
 #' @seealso ggplot2::geom_raster, ggplot2::scale_fill_viridis_c
 #' @import ggplot2
 #' @importFrom scales percent
-#' @export
+#' @noRd
 plot_triangle <- function(
   df,
   col_value,
@@ -284,7 +287,7 @@ plot_triangle <- function(
 #' @seealso ggplot2::geom_line, ggplot2::scale_color_viridis_c
 #' @import ggplot2
 #' @importFrom scales percent
-#' @export
+#' @noRd
 plot_millipede <- function(
   df,
   col_value,
@@ -427,6 +430,9 @@ plot_delays <- function(
     fig <- fig + geom_line()
   }
 
+  ## theme
+  fig <- fig + theme_nowcastr()
+
   return(fig)
 }
 
@@ -505,6 +511,9 @@ plot_nowcast <- function(
       # color = "Groups",
     )
 
+  ## theme
+  fig <- fig + theme_nowcastr()
+
   return(fig)
 }
 
@@ -545,6 +554,7 @@ plot_nowcast <- function(
 #' @param option Either "millipede" or "triangle". Only for `which = "data"`.
 #' @param do_rescale Rescale values 0-1. Boolean. Only for `which = "data"` or `which = "delays"`.
 #' @param add_model_info Add model info to the plot. Boolean. Only for `which = "delays"`.
+#' @param base_size theme base size. (allows to scale geom_text and geom_label sizes)
 #' @param ... Additional arguments passed to methods.
 #' @return A ggplot object.
 #' @import ggplot2
@@ -560,6 +570,7 @@ S7::method(plot, nowcast_results) <- function(
   add_model_info = TRUE,
   color1 = "#333333",
   color2 = "firebrick1",
+  base_size = 12,
   ...
   #
 ) {
@@ -592,7 +603,6 @@ S7::method(plot, nowcast_results) <- function(
 
 
   fig <- NULL ## default
-  base_size <- 15
 
   if (which == "data") {
     fig <- plot_nc_input(
@@ -620,18 +630,13 @@ S7::method(plot, nowcast_results) <- function(
     fig <-
       do.call(plot_delays, args) +
       labs(x = paste0("Delays [", x@params$time_units, "]"))
-    # + facet_wrap(vars(!!!s_group_cols))
 
-    # browser()
 
     if (add_model_info && x@params$do_model_fitting) {
-      # xxx todo:
-      # we should also be able to add stats if no model fitting?: t_to_95_obs
-
       df_model_stats <- x %>%
         tbl_models_stats()
 
-      ggtext_size <- function(base_size, ratio = 0.5) {
+      ggtextresize <- function(base_size, ratio = 0.5) {
         ratio * base_size / ggplot2::.pt
       }
 
@@ -643,24 +648,16 @@ S7::method(plot, nowcast_results) <- function(
           aes(
             label = paste0(
               "model: ", trimws(modelname),
-              # "\niterations: ", iterations,
-              # "\nRSS: ", RSS %>% signif(2),
-              # "\nLog(RSS): ", log_RSS,
               "\nR2: ", signif(R2, 2), # should try R\u00b2, but superscript 2 is not allowed, non-ascii
               ""
             ),
-            # x = Inf, hjust = 1.5, ## far right
             x = x@max_delay * 0.7, hjust = 0, # 70% from the end
-            # y = ifelse(start_completeness_pred < 1, 1.04, .96),
-            # y = 1,
             y = end_completeness_pred,
             vjust = ifelse(start_completeness_pred < 1, 1.9, -.9), ## above or below the line
           ),
           color = "#666666",
           fontface = "bold",
-          # size = rel(3)
-          # size = 7 / .pt
-          size = ggtext_size(base_size)
+          size = ggtextresize(base_size) # size = rel(3) # size = 7 / .pt
         ) +
         ## MODEL TIME TO 95% ---
         geom_vline( ## doesnt force y limit to 0
@@ -669,15 +666,6 @@ S7::method(plot, nowcast_results) <- function(
           alpha = 0.3,
           linetype = "dashed"
         ) +
-        # geom_segment( ## The segment option forces y scale to start at 0
-        #   data = df_model_stats,
-        #   aes(
-        #     x = t_to_95_model, xend = t_to_95_model,
-        #     y = 0, yend = ifelse(start_completeness_pred < 1, 0.95, 1.05)
-        #   ),
-        #   alpha = 0.3, # since overlap
-        #   linetype = "dashed"
-        # ) +
         geom_label(
           data = df_model_stats,
           aes(
@@ -686,11 +674,9 @@ S7::method(plot, nowcast_results) <- function(
             y = ifelse(start_completeness_pred < 1, 0.95, 1.05),
             vjust = ifelse(start_completeness_pred < 1, 1.9, -.9),
           ),
-          # color = "#666666",
           alpha = 0.8,
           fontface = "bold",
-          # size = 7 / .pt
-          size = ggtext_size(base_size)
+          size = ggtextresize(base_size)
         )
     }
 
@@ -735,11 +721,11 @@ S7::method(plot, nowcast_results) <- function(
 
   if (!is.null(fig)) {
     ## theme
-    fig <- fig + theme_minimal(base_size)
+    fig <- fig + theme_nowcastr(base_size = base_size)
 
     ## facet_wrap
     if (x@n_groups > 1) {
-      wrapscales <- case_when(
+      smartscales <- case_when(
         (which == "data" & option == "triangle") ~ "fixed", ## issue is scales cannot have color scale free
         which == "results" ~ "free_y",
         !do_rescale ~ "free_y",
@@ -747,7 +733,7 @@ S7::method(plot, nowcast_results) <- function(
         TRUE ~ "free"
       )
 
-      fig <- fig + facet_wrap(vars(!!!s_group_cols), scales = wrapscales)
+      fig <- fig + facet_wrap(vars(!!!s_group_cols), scales = smartscales)
     }
   }
 

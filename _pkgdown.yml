@@ -16,12 +16,11 @@ reference:
 
 - title: "Visualization"
   contents:
-  - plot_triangle
-  - plot_millipede
   - plot_nc_input
   - plot_delays
   - plot_nowcast
   - explore_nowcast
+  - theme_nowcastr
 
 - title: "Utilities"
   contents:
