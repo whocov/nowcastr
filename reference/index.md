@@ -14,10 +14,6 @@
 
 ## Visualization
 
-- [`plot_triangle()`](https://whocov.github.io/nowcastr/reference/plot_triangle.md)
-  : Triangle plot
-- [`plot_millipede()`](https://whocov.github.io/nowcastr/reference/plot_millipede.md)
-  : Millipede plot
 - [`plot_nc_input()`](https://whocov.github.io/nowcastr/reference/plot_nc_input.md)
   : Plot Nowcast Input Data
 - [`plot_delays()`](https://whocov.github.io/nowcastr/reference/plot_delays.md)
@@ -26,6 +22,8 @@
   : Plot Nowcasting Predictions
 - [`explore_nowcast()`](https://whocov.github.io/nowcastr/reference/explore_nowcast.md)
   : Explore Nowcast Results with Shiny
+- [`theme_nowcastr()`](https://whocov.github.io/nowcastr/reference/theme_nowcastr.md)
+  : Nowcastr ggplot2 Theme
 
 ## Utilities
 

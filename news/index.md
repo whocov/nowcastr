@@ -1,5 +1,10 @@
 # Changelog
 
+## nowcastr 0.2.1
+
+- \[feature\] new theme for plots
+- \[bugfix\] remove 2 internal plot functions from exports
+
 ## nowcastr 0.2.0
 
 - \[feature\] accuracy evaluation function
