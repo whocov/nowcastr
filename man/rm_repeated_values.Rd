@@ -37,10 +37,5 @@ generate_test_data(n_delays = 20, n_reportdates = 20) \%>\%
     col_value = value,
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report
-  ) \%>\%
-  plot_triangle(
-    col_value = value,
-    col_date_occurrence = date_occurrence,
-    col_date_reporting = date_report
   )
 }
