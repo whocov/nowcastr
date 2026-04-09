@@ -57,15 +57,23 @@
       do_model_fitting = TRUE,
     )
 
-  message("Results Delays")
   ## Delays
+  message("Results Delays")
   print(nc_obj@delays)
-  fig <- nc_obj %>% plot(which = "delays")
+  fig <- nc_obj %>% plot(which = "delays") +
+    labs(
+      caption = NULL,
+      subtitle = paste0("From data reported on: ", ISOweek::ISOweek(max(data$date_report)))
+    )
 
-  message("Results Nowcasts")
   ## Results
+  message("Results Nowcasts")
   print(nc_obj@results)
-  fig <- nc_obj %>% plot(which = "results")
+  fig <- nc_obj %>% plot(which = "results") +
+    labs(
+      caption = NULL,
+      subtitle = paste0("From data reported on: ", ISOweek::ISOweek(max(data$date_report)))
+    )
 }
 
 
