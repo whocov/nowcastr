@@ -1,8 +1,7 @@
 Version: 0.2.1.9000
 Package: nowcastr
 Title: Nowcasting with Chain-Ladder Method
-Description: Tools for performing nowcasting using the Chain-Ladder method
-    <https://en.wikipedia.org/wiki/Chain-ladder_method>. It supports both non-cumulative delay-based estimation and model-based completeness fitting (e.g., using logistic or Gompertz curves) to predict final counts from partially reported data.
+Description: Nowcasting using the Chain-Ladder method. Supports both non-cumulative delay-based estimation and model-based completeness fitting (e.g., using logistic or Gompertz curves) to predict final counts from partially reported data.
 Authors@R: 
     c(person("Mathias", "Leroy", , "mathias.leroy.rpkg@gmail.com", role = c("aut", "cre")),
       person("Finlay", "Campbell", role = "aut"))
