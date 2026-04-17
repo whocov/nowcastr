@@ -72,7 +72,7 @@ A typical nowcasting workflow with **nowcastr** involves the following steps.
 
 Before nowcasting, inspect the reporting pattern of your data:
 
-```{r, fig.asp=5.5/10}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 nowcast_demo %>%
   plot_nc_input(
     option = "triangle",
@@ -83,9 +83,10 @@ nowcast_demo %>%
   )
 ```
 
-The "millipede" plot provides an alternative view of delays:
+The "millipede" plot provides an alternative view of delays. 
+Here the different reporting dates are encoded into different lines with different colors. 
 
-```{r}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 nowcast_demo %>%
   plot_nc_input(
     option = "millipede",
@@ -100,9 +101,11 @@ nowcast_demo %>%
 
 ### 2. Prepare Data (Optional)
 
-You may want to fill missing values with the last known reporting values to ensure consistent time units:
+Depending on your data and use case, you may or may not want to fill missing values with the last known reported value.
 
-```{r, fig.asp=5.5/10}
+
+
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 data_filled <- nowcast_demo %>%
   fill_future_reported_values(
     col_date_occurrence = date_occurrence,
@@ -151,21 +154,31 @@ S7::prop_names(nc_obj)
 
 ### 4. Explore Results
 
-Access the components of the result object:
+Access the different datasets.
 
-```{r slots}
+```{r}
 nc_obj@results # Final nowcasted values
-nc_obj@delays # Delay distribution
-nc_obj@completeness # Data with completeness estimates
-str(nc_obj@params) # Parameters used
+nc_obj@delays # Summarised completeness values by delay
+nc_obj@completeness # Detailed completeness estimates
 ```
 
 Plot the results:
 
-```{r plots}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
-plot(nc_obj, which = "delays") # Delay distribution
-plot(nc_obj, which = "results") # Nowcast time series
+# Delay distribution
+plot(nc_obj, which = "delays") +
+  ggplot2::labs(
+    caption = NULL,
+    subtitle = paste0("From data reported on: ", max(data_filled$date_report))
+  )
+
+# Nowcast time series
+plot(nc_obj, which = "results") +
+  ggplot2::labs(
+    caption = NULL,
+    subtitle = paste0("From data reported on: ", max(data_filled$date_report))
+  )
 ```
 
 
@@ -175,6 +188,7 @@ Open a Shiny app to explore results group by group:
 #| eval: false
 explore_nowcast(nc_obj)
 ```
+
 
 
 
@@ -198,7 +212,7 @@ Recent occurrence dates have shorter delays and lower completeness. The method u
 
 You can nowcast multiple groups (e.g., regions, diseases) in a single call by specifying multiple grouping columns:
 
-```{r grouped}
+```{r}
 #| eval: false
 
 nowcast_cl(

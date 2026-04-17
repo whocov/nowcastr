@@ -59,14 +59,15 @@ nc_eval_obj@summary %>% dplyr::glimpse(0)
 - "SMAPE Improvement median" = median of the difference between SMAPE(observed) and SMAPE(predicted)
 - "Proportion Better = proportion of predictions that outperform base values (-50% to center around zero)
 
-```{r}
+
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
 plot_nowcast_eval(nc_eval_obj, delay = 0)
 ```
 
 ### Plot one indicator by delay / for one indicator
 
-```{r}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
 plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "SMAPE_improvement_med")
 ```
@@ -76,7 +77,7 @@ plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "SMAPE_improvement_med")
 - base reported values, at the time
 - last reported values
 
-```{r}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
 ```
 
@@ -87,7 +88,7 @@ plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
 
 We test if accuracy of nowcasts improve with `fill_future_reported_values()`:
 
-```{r}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 nc_eval_obj_with_fill <-
   nowcast_demo %>%
   fill_future_reported_values(
@@ -106,9 +107,7 @@ nc_eval_obj_with_fill <-
     time_units = "weeks",
     do_model_fitting = TRUE
   )
-```
 
-```{r}
 #| warning: false
 plot_nowcast_eval(nc_eval_obj_with_fill, delay = 0)
 ```
