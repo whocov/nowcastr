@@ -500,7 +500,7 @@ plot_nowcast_eval <- function(
       x = NULL,
       y = NULL
     ) +
-    ggplot2::theme_minimal() +
+    theme_nowcastr() +
     ggplot2::theme(
       legend.position = "top",
       # strip.text       = ggplot2::element_text(face = "bold"),
@@ -614,7 +614,7 @@ plot_nowcast_eval_by_delay <- function(
     x@summary,
     ggplot2::aes(x = .data$delay, y = !!rlang::sym(indicator))
   ) +
-    ggplot2::theme_minimal() +
+    theme_nowcastr() +
     ggplot2::geom_ribbon(
       ggplot2::aes(ymin = midpoint, ymax = Inf),
       fill = color_good, alpha = 0.15
@@ -725,7 +725,7 @@ plot_nowcast_eval_detail <- function(
 
   ## PLOT -----
   ggplot2::ggplot(df, ggplot2::aes(x = .data[[str_col_occ]])) +
-    ggplot2::theme_minimal() +
+    theme_nowcastr() +
     ggplot2::geom_segment(
       data = ~ dplyr::filter(.x, !is.na(.data$.seg_yend)),
       ggplot2::aes(
