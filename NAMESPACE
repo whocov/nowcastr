@@ -2,12 +2,12 @@
 
 export("%>%")
 export(calculate_retro_score)
-export(nowcast_explore)
 export(fill_future_reported_values)
 export(generate_test_data)
 export(nowcast_cl)
 export(nowcast_eval)
 export(nowcast_eval_results)
+export(nowcast_explore)
 export(nowcast_results)
 export(plot_delays)
 export(plot_nc_input)
