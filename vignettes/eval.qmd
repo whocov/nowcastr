@@ -1,5 +1,5 @@
 ---
-title: "Evaluate Past Nowcasts Accuracy"
+title: "Evaluate accuracy"
 knitr:
   opts_chunk:
     collapse: true
@@ -7,14 +7,17 @@ knitr:
 # description: |
 #   An overview of the nowcastr package.
 vignette: >
-  %\VignetteIndexEntry{Evaluate Past Nowcasts Accuracy}
+  %\VignetteIndexEntry{Evaluate accuracy}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
+To evaluate the accuracy of the model, we can measure whether the nowcasted 
+values outperformed the reported values in the past. `nowcast_eval()` does 
+this by running `nowcast_cl()` multiple times on past data, each time 
+truncating the knowledge horizon so that only data available at that point 
+in time is used.
 
-```{r}
-```
 
 ## Run evaluation
 
@@ -68,7 +71,7 @@ plot_nowcast_eval(nc_eval_obj, delay = 0)
 plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "SMAPE_improvement_med")
 ```
 
-## Plot raw values / for one delay
+### Plot raw values / for one delay
 - predicted values
 - base reported values, at the time
 - last reported values
@@ -85,7 +88,6 @@ plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
 We test if accuracy of nowcasts improve with `fill_future_reported_values()`:
 
 ```{r}
-library(nowcastr)
 nc_eval_obj_with_fill <-
   nowcast_demo %>%
   fill_future_reported_values(

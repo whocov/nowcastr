@@ -8,6 +8,20 @@ template:
     btn-border-radius: 0.25rem
     danger: "#A6081A"
 
+navbar:
+  # structure:
+  #   left: [reference, articles, news]
+  #   left: [intro, reference, news, articles, extensions]
+  #   right: [search, github, ai]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: "Get started"
+          href: articles/nowcastr.html
+        - text: "Evaluate accuracy"
+          href: articles/eval.html
+
 reference:
 - title: "Core"
   contents:
@@ -22,24 +36,25 @@ reference:
   - explore_nowcast
   - theme_nowcastr
 
-- title: "Utilities"
-  contents:
-  - calculate_retro_score
-  - rm_repeated_values
-  - fill_future_reported_values
-
-- title: "Data Utilities"
-  contents:
-  - nowcast_demo
-  - nowcast_test_data
-  - generate_test_data
-
-- title: "Evaluation Module"
+- title: "Evaluation"
   contents:
   - nowcast_eval
   - nowcast_eval_results
   - plot_nowcast_eval
   - plot_nowcast_eval_by_delay
   - plot_nowcast_eval_detail
+
+- title: "Utilities"
+  contents:
+  - calculate_retro_score
+  - rm_repeated_values
+  - fill_future_reported_values
+
+- title: "Testing Data"
+  contents:
+  - nowcast_demo
+  - nowcast_test_data
+  - generate_test_data
+
 
 
