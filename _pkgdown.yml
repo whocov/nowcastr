@@ -33,7 +33,7 @@ reference:
   - plot_nc_input
   - plot_delays
   - plot_nowcast
-  - explore_nowcast
+  - nowcast_explore
   - theme_nowcastr
 
 - title: "Evaluation"

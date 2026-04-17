@@ -10,7 +10,7 @@
 #' @return A Shiny app object.
 #'
 #' @export
-explore_nowcast <- function(nc_obj) {
+nowcast_explore <- function(nc_obj) {
   if (!requireNamespace("shiny", quietly = TRUE)) stop("Package 'shiny' required.")
   if (!requireNamespace("DT", quietly = TRUE)) stop("Package 'DT' required.")
   if (!requireNamespace("bslib", quietly = TRUE)) stop("Package 'bslib' required.")

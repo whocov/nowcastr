@@ -18,7 +18,7 @@
 #'         reportdate_from may be provided as a Date or parsable character; lubridate units are used for stepping.
 #' @examples
 #' generate_test_data()
-#' generate_test_data(n_reportdates = 3, n_delays = 3) # A tibble: 9 × 4
+#' generate_test_data(n_reportdates = 3, n_delays = 3)
 #' generate_test_data(time_units = "weeks", remove_delay = TRUE)
 #' @export
 generate_test_data <- function(

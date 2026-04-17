@@ -186,7 +186,7 @@ Open a Shiny app to explore results group by group:
 
 ```{r}
 #| eval: false
-explore_nowcast(nc_obj)
+nowcast_explore(nc_obj)
 ```
 
 

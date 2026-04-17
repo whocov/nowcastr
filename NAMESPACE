@@ -2,7 +2,7 @@
 
 export("%>%")
 export(calculate_retro_score)
-export(explore_nowcast)
+export(nowcast_explore)
 export(fill_future_reported_values)
 export(generate_test_data)
 export(nowcast_cl)

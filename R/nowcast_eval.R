@@ -400,10 +400,6 @@ plot_nowcast_eval <- function(
   }
 
 
-  # View(df)
-
-  # browser()
-
   ## BUILD TWO INDICATOR DATA FRAMES THEN BIND -----
   df_smape <-
     df %>%
@@ -507,9 +503,6 @@ plot_nowcast_eval <- function(
       # panel.grid.minor = ggplot2::element_blank()
     )
 }
-
-
-
 
 
 # ### S3 WRAPPER
