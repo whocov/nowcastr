@@ -83,7 +83,7 @@ An S7 object of class \code{nowcast_eval_results} with slots:
 \description{
 Evaluates the historical performance of \code{nowcast_cl()} by repeatedly
 peeling back the most recent reporting period and comparing predictions
-against the eventually-reported true values (highest \code{col_date_reporting}
+against the last reported values (highest \code{col_date_reporting}
 per occurrence date).
 }
 \examples{

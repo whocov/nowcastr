@@ -28,7 +28,7 @@ A \code{ggplot} object.
 }
 \description{
 For a selected delay, plots predicted and observed values over time alongside
-the eventual true value. Vertical segments show which estimate (raw observed
+the last reported value. Vertical segments show which estimate (raw observed
 or predicted) was closer to truth for each occurrence date.
 }
 \examples{

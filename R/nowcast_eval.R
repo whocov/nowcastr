@@ -2,7 +2,7 @@
 #'
 #' Evaluates the historical performance of `nowcast_cl()` by repeatedly
 #' peeling back the most recent reporting period and comparing predictions
-#' against the eventually-reported true values (highest `col_date_reporting`
+#' against the last reported values (highest `col_date_reporting`
 #' per occurrence date).
 #'
 #' @param n_past Integer. Number of past reporting periods to evaluate.
@@ -79,7 +79,7 @@ nowcast_eval <- function(
   }
 
   ## GROUND TRUTH -----
-  ## For each occurrence date (+ groups), the true value is the one reported
+  ## For each occurrence date (+ groups), the 'true value' is the one reported
   ## at the highest col_date_reporting — i.e. what was eventually fully reported.
   df_truth <-
     df %>%
@@ -289,7 +289,7 @@ nowcast_eval <- function(
 #' )
 #'
 #' @param detail data.frame. Per-prediction errors with columns for observed value,
-#'   predicted value, true value.
+#'   predicted value, last reported value.
 #' @param summary data.frame. Aggregated metrics per group x delay:
 #'   SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.
 #' @param params list. Parameters used for the evaluation run.
@@ -300,7 +300,7 @@ nowcast_eval <- function(
 #' @return An S7 object of class `nowcast_eval_results` with the following slots:
 #'   \describe{
 #'     \item{detail}{Data frame. Per-prediction errors with columns for observed value,
-#'       predicted value, true value.}
+#'       predicted value, last reported value.}
 #'     \item{summary}{Data frame. Aggregated metrics per group x delay:
 #'       SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
 #'     \item{params}{List. Parameters used for the evaluation run.}
@@ -476,7 +476,7 @@ plot_nowcast_eval <- function(
       scales = "free_x",
       labeller = ggplot2::labeller(indicator = c(
         "SMAPE improvement" = "SMAPE improvement\n(obs \u2212 pred; positive = better)",
-        "Proportion better" = "Proportion better\n(centered at 0.5)"
+        "Proportion better" = "Proportion better - 50%\n(centerd on 0 = 50%)"
       ))
     ) +
     # ggh4x::facetted_pos_scales(
@@ -637,7 +637,7 @@ plot_nowcast_eval_by_delay <- function(
 #' Plot Nowcast Evaluation Detail Over Time
 #'
 #' For a selected delay, plots predicted and observed values over time alongside
-#' the eventual true value. Vertical segments show which estimate (raw observed
+#' the last reported value. Vertical segments show which estimate (raw observed
 #' or predicted) was closer to truth for each occurrence date.
 #'
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
@@ -743,7 +743,7 @@ plot_nowcast_eval_detail <- function(
     facet +
     ggplot2::labs(
       title = paste0("Nowcast evaluation detail at delay = ", delay),
-      subtitle = paste0("Black = true value  |  Dashed = predicted  |  Solid coloured = raw observed"),
+      subtitle = paste0("Black = last reported value  |  Dashed = predicted  |  Solid coloured = raw observed"),
       x = NULL,
       y = NULL
     ) +

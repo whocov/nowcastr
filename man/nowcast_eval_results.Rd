@@ -15,7 +15,7 @@ nowcast_eval_results(
 }
 \arguments{
 \item{detail}{data.frame. Per-prediction errors with columns for observed value,
-predicted value, true value.}
+predicted value, last reported value.}
 
 \item{summary}{data.frame. Aggregated metrics per group x delay:
 SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
@@ -32,7 +32,7 @@ SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
 An S7 object of class \code{nowcast_eval_results} with the following slots:
 \describe{
 \item{detail}{Data frame. Per-prediction errors with columns for observed value,
-predicted value, true value.}
+predicted value, last reported value.}
 \item{summary}{Data frame. Aggregated metrics per group x delay:
 SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
 \item{params}{List. Parameters used for the evaluation run.}
