@@ -39,7 +39,7 @@ Your dataset must contain at least three columns:
 - **occurrence date**: when the event happened
 - **reporting date**: when the event was reported
 - **value**: the observed count/value
-- \<*groups*\>: none, one or multiple grouping columns: *e.g.* `group_cols = c("group") # or c("region", "disease")`
+- \<*groups*\>: none, one or multiple grouping columns: *e.g.* `group_cols = "species"` # or `group_cols = c("region", "disease")`
 
 The package includes a demo dataset `nowcast_demo` that follows this structure
 
@@ -79,12 +79,12 @@ nowcast_demo %>%
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
-    group_cols = "group"
+    group_cols = "group" # use a vector for multiple columns: c("column1", "column2"... )
   )
 ```
 
 The "millipede" plot provides an alternative view of delays. 
-Here the different reporting dates are encoded into different lines with different colors. 
+Each reporting date is mapped to a distinct line and color. 
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 nowcast_demo %>%
@@ -101,8 +101,8 @@ nowcast_demo %>%
 
 ### 2. Prepare Data (Optional)
 
-Depending on your data and use case, you may or may not want to fill missing values with the last known reported value.
-
+Depending on your data and use case, 
+you may want to fill missing values with the last known reported value.
 
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
@@ -208,18 +208,6 @@ Recent occurrence dates have shorter delays and lower completeness. The method u
 
 
 
-### Grouped Processing
-
-You can nowcast multiple groups (e.g., regions, diseases) in a single call by specifying multiple grouping columns:
-
-```{r}
-#| eval: false
-
-nowcast_cl(
-  # ...
-  group_cols = c("region", "disease")
-)
-```
 
 
 
@@ -230,24 +218,43 @@ nowcast_cl(
 
 ### Calculate Retro Scores of input data
 
-retro_score = number of actual value changes / max possible value changes [0-1]
+The retro-score is the ratio of actual value changes to maximum possible changes [0-1].
+
 
 ```{r calculate_retro_score}
-# Calculate retro-scores (= number of actual value changes / max possible value changes)
-nowcast_demo %>%
+# Calculate retro-scores
+retroscores <- nowcast_demo %>%
   calculate_retro_score(
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
-    group_cols = c("group")
+    group_cols = "group"
+  )
+print(retroscores)
+```
+
+
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
+retroscores %>%
+  ggplot2::ggplot(ggplot2::aes(y = stats::reorder(group, retro_score), x = retro_score)) +
+  ggplot2::geom_bar(stat = "identity", fill = "dodgerblue1") +
+  theme_nowcastr() +
+  ggplot2::scale_x_continuous(
+    limits = c(0, 1),
+    # labels = scales::label_percent()
+  ) +
+  ggplot2::labs(
+    y = "Group",
+    x = "Retro-Score"
   )
 ```
 
 
-### Remove duplicated data
 
-This is the opposite of `fill_future_reported_values()`.
-This can be useful to reduce data size without losing information.  
+
+### Remove repeated values
+
+This is somewhat the opposite of `fill_future_reported_values()`.
 
 ```{r rm_repeated_values}
 # Remove duplicate reported values (same value and higher reporting date)
@@ -256,7 +263,7 @@ nowcast_demo %>%
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
-    group_cols = c("group")
+    group_cols = "group"
   )
 ```
 
