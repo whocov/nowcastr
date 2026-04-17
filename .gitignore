@@ -1,11 +1,13 @@
-# generated
+## GENERATED ---
 docs
 # man ## needed for install from gh
 # NAMESPACE ## needed for install from gh
+vignettes/*.html
 
 
-# private
+## PRIVATE ---
 pkg.R
 notes.R
 notes.md
 tests.R
+
