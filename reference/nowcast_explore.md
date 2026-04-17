@@ -8,7 +8,7 @@ distributions, and nowcast results.
 ## Usage
 
 ``` r
-explore_nowcast(nc_obj)
+nowcast_explore(nc_obj)
 ```
 
 ## Arguments

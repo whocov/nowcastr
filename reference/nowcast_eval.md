@@ -3,8 +3,8 @@
 Evaluates the historical performance of
 [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
 by repeatedly peeling back the most recent reporting period and
-comparing predictions against the eventually-reported true values
-(highest `col_date_reporting` per occurrence date).
+comparing predictions against the last reported values (highest
+`col_date_reporting` per occurrence date).
 
 ## Usage
 

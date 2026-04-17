@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Getting Started with nowcastr • nowcastr</title>
+<title>Get started • nowcastr</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="nowcastr_files/libs/quarto-html/popper.min.js"></script><script src="nowcastr_files/libs/quarto-html/tippy.umd.min.js"></script><link href="nowcastr_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="nowcastr_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with nowcastr">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Get started">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,7 +36,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/eval.html">Evaluate Past Nowcasts Accuracy</a></li>
+<li><a class="dropdown-item" href="../articles/nowcastr.html">Get started</a></li>
+    <li><a class="dropdown-item" href="../articles/eval.html">Evaluate accuracy</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -63,7 +64,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Getting Started with nowcastr</h1>
+      <h1>Get started</h1>
 
 
 
@@ -99,7 +100,7 @@
 <strong>reporting date</strong>: when the event was reported</li>
 <li>
 <strong>value</strong>: the observed count/value</li>
-<li>&lt;<em>groups</em>&gt;: none, one or multiple grouping columns: <em>e.g.</em> <code>group_cols = c("group") # or c("region", "disease")</code>
+<li>&lt;<em>groups</em>&gt;: none, one or multiple grouping columns: <em>e.g.</em> <code>group_cols = "species"</code> # or <code>group_cols = c("region", "disease")</code>
 </li>
 </ul>
 <p>The package includes a demo dataset <code>nowcast_demo</code> that follows this structure</p>
@@ -136,16 +137,16 @@
 <span>    col_date_occurrence <span class="op">=</span> <span class="va">date_occurrence</span>,</span>
 <span>    col_date_reporting <span class="op">=</span> <span class="va">date_report</span>,</span>
 <span>    col_value <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    group_cols <span class="op">=</span> <span class="st">"group"</span></span>
+<span>    group_cols <span class="op">=</span> <span class="st">"group"</span> <span class="co"># use a vector for multiple columns: c("column1", "column2"... )</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-5-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The “millipede” plot provides an alternative view of delays:</p>
+<p>The “millipede” plot provides an alternative view of delays. Each reporting date is mapped to a distinct line and color.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -158,14 +159,14 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-6-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section class="level3"><h3 id="prepare-data-optional">2. Prepare Data (Optional)<a class="anchor" aria-label="anchor" href="#prepare-data-optional"></a>
 </h3>
-<p>You may want to fill missing values with the last known reporting values to ensure consistent time units:</p>
+<p>Depending on your data and use case, you may want to fill missing values with the last known reported value.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_filled</span> <span class="op">&lt;-</span> <span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -186,7 +187,7 @@
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-7-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -218,7 +219,7 @@
 </div>
 </section><section class="level3"><h3 id="explore-results">4. Explore Results<a class="anchor" aria-label="anchor" href="#explore-results"></a>
 </h3>
-<p>Access the components of the result object:</p>
+<p>Access the different datasets.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nc_obj</span><span class="op">@</span><span class="va">results</span> <span class="co"># Final nowcasted values</span></span>
@@ -236,7 +237,7 @@
 <span><span class="co">#&gt;  9 SARS-Co… 2025-09-22      2025-11-17      8    70           121.       0.577  </span></span>
 <span><span class="co">#&gt; 10 SARS-Co… 2025-09-15      2025-11-17      9    60            93.9      0.639  </span></span>
 <span><span class="co">#&gt; # ℹ 85 more rows</span></span>
-<span><span class="va">nc_obj</span><span class="op">@</span><span class="va">delays</span> <span class="co"># Delay distribution</span></span>
+<span><span class="va">nc_obj</span><span class="op">@</span><span class="va">delays</span> <span class="co"># Summarised completeness values by delay</span></span>
 <span><span class="co">#&gt; # A tibble: 96 × 5</span></span>
 <span><span class="co">#&gt;    group                      delay     n completeness_obs completeness_modelled</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                      &lt;dbl&gt; &lt;int&gt;            &lt;dbl&gt;                 &lt;dbl&gt;</span></span>
@@ -251,7 +252,7 @@
 <span><span class="co">#&gt;  9 SARS-CoV-2 Hospital Admis…     8    10          0.611                 0.577  </span></span>
 <span><span class="co">#&gt; 10 SARS-CoV-2 Hospital Admis…     9    10          0.668                 0.639  </span></span>
 <span><span class="co">#&gt; # ℹ 86 more rows</span></span>
-<span><span class="va">nc_obj</span><span class="op">@</span><span class="va">completeness</span> <span class="co"># Data with completeness estimates</span></span>
+<span><span class="va">nc_obj</span><span class="op">@</span><span class="va">completeness</span> <span class="co"># Detailed completeness estimates</span></span>
 <span><span class="co">#&gt; # A tibble: 2,478 × 8</span></span>
 <span><span class="co">#&gt;    group         date_occurrence date_report value delay last_value completeness</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;         &lt;date&gt;          &lt;date&gt;      &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;</span></span>
@@ -266,40 +267,34 @@
 <span><span class="co">#&gt;  9 SARS-CoV-2 H… 2025-10-27      2025-11-03      0     1          6        0    </span></span>
 <span><span class="co">#&gt; 10 SARS-CoV-2 H… 2025-10-20      2025-11-17      7     4          7        1    </span></span>
 <span><span class="co">#&gt; # ℹ 2,468 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: reportweight &lt;dbl&gt;</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">nc_obj</span><span class="op">@</span><span class="va">params</span><span class="op">)</span> <span class="co"># Parameters used</span></span>
-<span><span class="co">#&gt; List of 15</span></span>
-<span><span class="co">#&gt;  $ col_date_occurrence         : chr "date_occurrence"</span></span>
-<span><span class="co">#&gt;  $ col_date_reporting          : chr "date_report"</span></span>
-<span><span class="co">#&gt;  $ col_value                   : chr "value"</span></span>
-<span><span class="co">#&gt;  $ group_cols                  : chr "group"</span></span>
-<span><span class="co">#&gt;  $ time_units                  : chr "weeks"</span></span>
-<span><span class="co">#&gt;  $ max_delay                   : NULL</span></span>
-<span><span class="co">#&gt;  $ max_reportunits             : num 10</span></span>
-<span><span class="co">#&gt;  $ max_completeness            : num 5</span></span>
-<span><span class="co">#&gt;  $ min_completeness_samples    : num 1</span></span>
-<span><span class="co">#&gt;  $ use_weighted_method         : logi TRUE</span></span>
-<span><span class="co">#&gt;  $ do_propagate_missing_delays : logi FALSE</span></span>
-<span><span class="co">#&gt;  $ do_model_fitting            : logi TRUE</span></span>
-<span><span class="co">#&gt;  $ model_names                 : chr [1:6] "monomolecular" "vonbertalanffy" "logistic" "gompertz" ...</span></span>
-<span><span class="co">#&gt;  $ do_use_modelled_completeness: logi TRUE</span></span>
-<span><span class="co">#&gt;  $ rss_threshold               : num 0.01</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 1 more variable: reportweight &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 <p>Plot the results:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nc_obj</span>, which <span class="op">=</span> <span class="st">"delays"</span><span class="op">)</span> <span class="co"># Delay distribution</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Delay distribution</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nc_obj</span>, which <span class="op">=</span> <span class="st">"delays"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"From data reported on: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data_filled</span><span class="op">$</span><span class="va">date_report</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/plots-1.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-11-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nc_obj</span>, which <span class="op">=</span> <span class="st">"results"</span><span class="op">)</span> <span class="co"># Nowcast time series</span></span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Nowcast time series</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">nc_obj</span>, which <span class="op">=</span> <span class="st">"results"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    caption <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"From data reported on: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data_filled</span><span class="op">$</span><span class="va">date_report</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="nowcastr_files/figure-html/plots-2.png" width="672"></p>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-11-2.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -307,7 +302,7 @@
 <p>Open a Shiny app to explore results group by group:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/explore_nowcast.html">explore_nowcast</a></span><span class="op">(</span><span class="va">nc_obj</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/nowcast_explore.html">nowcast_explore</a></span><span class="op">(</span><span class="va">nc_obj</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section></section><section class="level2"><h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h2>
@@ -323,31 +318,22 @@
 <strong>Nowcast</strong> = observed value / average completeness</li>
 </ul>
 <p>Recent occurrence dates have shorter delays and lower completeness. The method upweights these observations to estimate the true count.</p>
-<section class="level3"><h3 id="grouped-processing">Grouped Processing<a class="anchor" aria-label="anchor" href="#grouped-processing"></a>
-</h3>
-<p>You can nowcast multiple groups (e.g., regions, diseases) in a single call by specifying multiple grouping columns:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/nowcast_cl.html">nowcast_cl</a></span><span class="op">(</span></span>
-<span>  <span class="co"># ...</span></span>
-<span>  group_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"region"</span>, <span class="st">"disease"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</section></section><section class="level2"><h2 id="other-utility-functions">Other Utility Functions<a class="anchor" aria-label="anchor" href="#other-utility-functions"></a>
+</section><section class="level2"><h2 id="other-utility-functions">Other Utility Functions<a class="anchor" aria-label="anchor" href="#other-utility-functions"></a>
 </h2>
 <section class="level3"><h3 id="calculate-retro-scores-of-input-data">Calculate Retro Scores of input data<a class="anchor" aria-label="anchor" href="#calculate-retro-scores-of-input-data"></a>
 </h3>
-<p>retro_score = number of actual value changes / max possible value changes [0-1]</p>
+<p>The retro-score is the ratio of actual value changes to maximum possible changes [0-1].</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Calculate retro-scores (= number of actual value changes / max possible value changes)</span></span>
-<span><span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculate retro-scores</span></span>
+<span><span class="va">retroscores</span> <span class="op">&lt;-</span> <span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/calculate_retro_score.html">calculate_retro_score</a></span><span class="op">(</span></span>
 <span>    col_date_occurrence <span class="op">=</span> <span class="va">date_occurrence</span>,</span>
 <span>    col_date_reporting <span class="op">=</span> <span class="va">date_report</span>,</span>
 <span>    col_value <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    group_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span><span class="op">)</span></span>
+<span>    group_cols <span class="op">=</span> <span class="st">"group"</span></span>
 <span>  <span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">retroscores</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 4 × 4</span></span>
 <span><span class="co">#&gt;   group                          n_changes max_retro_adj retro_score</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                              &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;</span></span>
@@ -356,9 +342,30 @@
 <span><span class="co">#&gt; 3 Syndromic ILI                        371           575       0.645</span></span>
 <span><span class="co">#&gt; 4 Syndromic ARI                        299           575       0.52</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="remove-duplicated-data">Remove duplicated data<a class="anchor" aria-label="anchor" href="#remove-duplicated-data"></a>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">retroscores</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html" class="external-link">reorder</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">retro_score</span><span class="op">)</span>, x <span class="op">=</span> <span class="va">retro_score</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span>, fill <span class="op">=</span> <span class="st">"dodgerblue1"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="../reference/theme_nowcastr.html">theme_nowcastr</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span></span>
+<span>    limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="co"># labels = scales::label_percent()</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    y <span class="op">=</span> <span class="st">"Group"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Retro-Score"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="nowcastr_files/figure-html/unnamed-chunk-13-1.png" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section class="level3"><h3 id="remove-repeated-values">Remove repeated values<a class="anchor" aria-label="anchor" href="#remove-repeated-values"></a>
 </h3>
-<p>This is the opposite of <code><a href="../reference/fill_future_reported_values.html">fill_future_reported_values()</a></code>. This can be useful to reduce data size without losing information.</p>
+<p>This is somewhat the opposite of <code><a href="../reference/fill_future_reported_values.html">fill_future_reported_values()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Remove duplicate reported values (same value and higher reporting date)</span></span>
@@ -367,7 +374,7 @@
 <span>    col_date_occurrence <span class="op">=</span> <span class="va">date_occurrence</span>,</span>
 <span>    col_date_reporting <span class="op">=</span> <span class="va">date_report</span>,</span>
 <span>    col_value <span class="op">=</span> <span class="va">value</span>,</span>
-<span>    group_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span><span class="op">)</span></span>
+<span>    group_cols <span class="op">=</span> <span class="st">"group"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1,624 × 4</span></span>
 <span><span class="co">#&gt;    value date_occurrence date_report group                         </span></span>

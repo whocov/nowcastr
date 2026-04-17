@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Evaluate Past Nowcasts Accuracy • nowcastr</title>
+<title>Evaluate accuracy • nowcastr</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="eval_files/libs/quarto-html/popper.min.js"></script><script src="eval_files/libs/quarto-html/tippy.umd.min.js"></script><link href="eval_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="eval_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Evaluate Past Nowcasts Accuracy">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Evaluate accuracy">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,7 +36,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/eval.html">Evaluate Past Nowcasts Accuracy</a></li>
+<li><a class="dropdown-item" href="../articles/nowcastr.html">Get started</a></li>
+    <li><a class="dropdown-item" href="../articles/eval.html">Evaluate accuracy</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -63,7 +64,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Evaluate Past Nowcasts Accuracy</h1>
+      <h1>Evaluate accuracy</h1>
 
 
 
@@ -77,7 +78,8 @@
 
 
 
-    <section class="level2"><h2 id="run-evaluation">Run evaluation<a class="anchor" aria-label="anchor" href="#run-evaluation"></a>
+    <p>To evaluate the accuracy of the model, we can measure whether the nowcasted values outperformed the reported values in the past. <code><a href="../reference/nowcast_eval.html">nowcast_eval()</a></code> does this by running <code><a href="../reference/nowcast_cl.html">nowcast_cl()</a></code> multiple times on past data, each time truncating the knowledge horizon so that only data available at that point in time is used.</p>
+<section class="level2"><h2 id="run-evaluation">Run evaluation<a class="anchor" aria-label="anchor" href="#run-evaluation"></a>
 </h2>
 <p>You can run the evaluation with all the same parameters as <code><a href="../reference/nowcast_cl.html">nowcast_cl()</a></code>.<br><code><a href="../reference/nowcast_eval.html">nowcast_eval()</a></code> has only one additional parameter: <code>n_past</code>, which controls how many steps in the past you wish to run a nowcast on.</p>
 <div class="cell">
@@ -95,47 +97,54 @@
 <span>    do_model_fitting <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; Evaluating nowcast  ■■■■■■■■■■■■■                    4/10 | ETA:  2s</span></span>
-<span><span class="co">#&gt; Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■     9/10 | ETA:  0s</span></span>
+<span><span class="co">#&gt; Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■        8/10 | ETA:  1s</span></span>
 <span><span class="co">#&gt; Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  10/10 | ETA:  0s</span></span></code></pre></div>
 </div>
-<p>This will return an S7 object with 2 slots:</p>
+<p>This will return an S7 object with 2 slots for 2 datasets.</p>
+<ul>
+<li>
+<code>nc_eval_obj@detail</code> contains detailed results, and<br>
+</li>
+<li>
+<code>nc_eval_obj@summary</code> is summarised by <code>group_cols</code> and <code>delay</code>.</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">detail</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 958</span></span>
-<span><span class="co">#&gt; Columns: 12</span></span>
-<span><span class="co">#&gt; $ group            &lt;chr&gt; …</span></span>
-<span><span class="co">#&gt; $ cut_date         &lt;date&gt; …</span></span>
-<span><span class="co">#&gt; $ date_occurrence  &lt;date&gt; …</span></span>
-<span><span class="co">#&gt; $ last_r_date      &lt;date&gt; …</span></span>
-<span><span class="co">#&gt; $ value            &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ value_predicted  &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ value_true       &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ delay            &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SAPE_pred        &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SAPE_obs         &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SAPE_improvement &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ pred_is_better   &lt;int&gt; …</span></span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 96</span></span>
-<span><span class="co">#&gt; Columns: 14</span></span>
-<span><span class="co">#&gt; $ group                     &lt;chr&gt; …</span></span>
-<span><span class="co">#&gt; $ delay                     &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ n_periods                 &lt;int&gt; …</span></span>
-<span><span class="co">#&gt; $ n_obs                     &lt;int&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_pred                &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_obs                 &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_improvement_mean    &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_improvement_med     &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_improvement_q1      &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ SMAPE_improvement_q3      &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ proportion_pred_is_better &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ n_pairs                   &lt;int&gt; …</span></span>
-<span><span class="co">#&gt; $ CI_lower                  &lt;dbl&gt; …</span></span>
-<span><span class="co">#&gt; $ CI_upper                  &lt;dbl&gt; …</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">detail</span></span>
+<span><span class="co">#&gt; # A tibble: 958 × 12</span></span>
+<span><span class="co">#&gt;    group cut_date   date_occurrence last_r_date value value_predicted value_true</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt; &lt;date&gt;     &lt;date&gt;          &lt;date&gt;      &lt;dbl&gt;           &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 SARS… 2025-09-08 2025-03-31      2025-09-08     19            19.4         19</span></span>
+<span><span class="co">#&gt;  2 SARS… 2025-09-08 2025-04-07      2025-09-08     26            26.7         27</span></span>
+<span><span class="co">#&gt;  3 SARS… 2025-09-15 2025-04-07      2025-09-15     27            29.0         27</span></span>
+<span><span class="co">#&gt;  4 SARS… 2025-09-08 2025-04-14      2025-09-08     21            21.8         21</span></span>
+<span><span class="co">#&gt;  5 SARS… 2025-09-15 2025-04-14      2025-09-15     21            22.6         21</span></span>
+<span><span class="co">#&gt;  6 SARS… 2025-09-22 2025-04-14      2025-09-22     21            22.6         21</span></span>
+<span><span class="co">#&gt;  7 SARS… 2025-09-08 2025-04-21      2025-09-08     29            30.4         32</span></span>
+<span><span class="co">#&gt;  8 SARS… 2025-09-15 2025-04-21      2025-09-15     28            30.2         32</span></span>
+<span><span class="co">#&gt;  9 SARS… 2025-09-22 2025-04-21      2025-09-22     30            32.3         32</span></span>
+<span><span class="co">#&gt; 10 SARS… 2025-09-29 2025-04-21      2025-09-29     32            34.4         32</span></span>
+<span><span class="co">#&gt; # ℹ 948 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 5 more variables: delay &lt;dbl&gt;, SAPE_pred &lt;dbl&gt;, SAPE_obs &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   SAPE_improvement &lt;dbl&gt;, pred_is_better &lt;int&gt;</span></span>
+<span><span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">summary</span></span>
+<span><span class="co">#&gt; # A tibble: 96 × 14</span></span>
+<span><span class="co">#&gt;    group       delay n_periods n_obs SMAPE_pred SMAPE_obs SMAPE_improvement_mean</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;dbl&gt;     &lt;int&gt; &lt;int&gt;      &lt;dbl&gt;     &lt;dbl&gt;                  &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 SARS-CoV-2…     0        10    10     1          1                     0     </span></span>
+<span><span class="co">#&gt;  2 SARS-CoV-2…     1        10    10     0.806      0.992                 0.186 </span></span>
+<span><span class="co">#&gt;  3 SARS-CoV-2…     2        10    10     0.364      0.799                 0.435 </span></span>
+<span><span class="co">#&gt;  4 SARS-CoV-2…     3        10    10     0.274      0.665                 0.391 </span></span>
+<span><span class="co">#&gt;  5 SARS-CoV-2…     4        10    10     0.227      0.525                 0.297 </span></span>
+<span><span class="co">#&gt;  6 SARS-CoV-2…     5        10    10     0.164      0.444                 0.280 </span></span>
+<span><span class="co">#&gt;  7 SARS-CoV-2…     6        10    10     0.115      0.320                 0.205 </span></span>
+<span><span class="co">#&gt;  8 SARS-CoV-2…     7        10    10     0.0964     0.256                 0.160 </span></span>
+<span><span class="co">#&gt;  9 SARS-CoV-2…     8        10    10     0.0736     0.204                 0.130 </span></span>
+<span><span class="co">#&gt; 10 SARS-CoV-2…     9        10    10     0.0705     0.169                 0.0986</span></span>
+<span><span class="co">#&gt; # ℹ 86 more rows</span></span>
+<span><span class="co">#&gt; # ℹ 7 more variables: SMAPE_improvement_med &lt;dbl&gt;, SMAPE_improvement_q1 &lt;dbl&gt;,</span></span>
+<span><span class="co">#&gt; #   SMAPE_improvement_q3 &lt;dbl&gt;, proportion_pred_is_better &lt;dbl&gt;, n_pairs &lt;int&gt;,</span></span>
+<span><span class="co">#&gt; #   CI_lower &lt;dbl&gt;, CI_upper &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
 </h2>
@@ -146,11 +155,11 @@
 <li>“Proportion Better = proportion of predictions that outperform base values (-50% to center around zero)</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval.html">plot_nowcast_eval</a></span><span class="op">(</span><span class="va">nc_eval_obj</span>, delay <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="eval_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<figure><p><img src="eval_files/figure-html/unnamed-chunk-3-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -158,41 +167,38 @@
 </section><section class="level3"><h3 id="plot-one-indicator-by-delay-for-one-indicator">Plot one indicator by delay / for one indicator<a class="anchor" aria-label="anchor" href="#plot-one-indicator-by-delay-for-one-indicator"></a>
 </h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval_by_delay.html">plot_nowcast_eval_by_delay</a></span><span class="op">(</span><span class="va">nc_eval_obj</span>, indicator <span class="op">=</span> <span class="st">"SMAPE_improvement_med"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="eval_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<figure><p><img src="eval_files/figure-html/unnamed-chunk-4-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-</section></section><section class="level2"><h2 id="plot-raw-values-for-one-delay">Plot raw values / for one delay<a class="anchor" aria-label="anchor" href="#plot-raw-values-for-one-delay"></a>
-</h2>
+</section><section class="level3"><h3 id="plot-raw-values-for-one-delay">Plot raw values / for one delay<a class="anchor" aria-label="anchor" href="#plot-raw-values-for-one-delay"></a>
+</h3>
 <ul>
 <li>predicted values</li>
 <li>base reported values, at the time</li>
 <li>last reported values</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval_detail.html">plot_nowcast_eval_detail</a></span><span class="op">(</span><span class="va">nc_eval_obj</span>, delay <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval_detail.html">plot_nowcast_eval_detail</a></span><span class="op">(</span><span class="va">nc_eval_obj</span>, delay <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="eval_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<figure><p><img src="eval_files/figure-html/unnamed-chunk-5-1.png" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
 </div>
-</section><section class="level2"><h2 id="evaluate-scenarios">Evaluate Scenarios<a class="anchor" aria-label="anchor" href="#evaluate-scenarios"></a>
+</section></section><section class="level2"><h2 id="evaluate-scenarios">Evaluate Scenarios<a class="anchor" aria-label="anchor" href="#evaluate-scenarios"></a>
 </h2>
-<p>We test if accuracy of nowcasts improve with <code><a href="../reference/fill_future_reported_values.html">fill_future_reported_values()</a></code>:</p>
+<p>We can test if accuracy of nowcasts improve with or without <code><a href="../reference/fill_future_reported_values.html">fill_future_reported_values()</a></code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/whocov/nowcastr" class="external-link">nowcastr</a></span><span class="op">)</span></span>
-<span><span class="va">nc_eval_obj_with_fill</span> <span class="op">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nc_eval_obj_with_fill</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">nowcast_demo</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/fill_future_reported_values.html">fill_future_reported_values</a></span><span class="op">(</span></span>
 <span>    col_date_occurrence <span class="op">=</span> <span class="va">date_occurrence</span>,</span>
@@ -210,18 +216,63 @@
 <span>    time_units <span class="op">=</span> <span class="st">"weeks"</span>,</span>
 <span>    do_model_fitting <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Evaluating nowcast  ■■■■■■■■■■■■■■■■                 5/10 | ETA:  1s</span></span>
-<span><span class="co">#&gt; Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  10/10 | ETA:  0s</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># plot_nowcast_eval(nc_eval_obj_with_fill, delay = 0)</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># indicator &lt;- "proportion_pred_is_better"</span></span>
+<span><span class="va">indicator</span> <span class="op">&lt;-</span> <span class="st">"SMAPE_improvement_mean"</span></span>
+<span></span>
+<span><span class="va">scenario_a</span> <span class="op">&lt;-</span> <span class="va">nc_eval_obj</span><span class="op">@</span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"group"</span>, <span class="st">"delay"</span>, ind <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">indicator</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>scenario <span class="op">=</span> <span class="st">"A = no fill"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">scenario_b</span> <span class="op">&lt;-</span> <span class="va">nc_eval_obj_with_fill</span><span class="op">@</span><span class="va">summary</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="st">"group"</span>, <span class="st">"delay"</span>, ind <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/all_of.html" class="external-link">all_of</a></span><span class="op">(</span><span class="va">indicator</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>scenario <span class="op">=</span> <span class="st">"B = fill"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## quick mean of everything</span></span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">scenario_a</span>, <span class="va">scenario_b</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">delay</span> <span class="op">&lt;=</span> <span class="fl">3</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">## predictions for older data are not that interesting</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">scenario</span><span class="op">)</span>,</span>
+<span>    ind <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ind</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>tag <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/if_else.html" class="external-link">if_else</a></span><span class="op">(</span><span class="va">ind</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ind</span><span class="op">)</span>, <span class="st">"better"</span>, <span class="st">"worse"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span><span class="co">#&gt;   scenario       ind tag   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt; </span></span>
+<span><span class="co">#&gt; 1 A = no fill 0.0971 better</span></span>
+<span><span class="co">#&gt; 2 B = fill    0.0767 worse</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_nowcast_eval.html">plot_nowcast_eval</a></span><span class="op">(</span><span class="va">nc_eval_obj_with_fill</span>, delay <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure><p><img src="eval_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
-</figure>
-</div>
-</div>
+<code class="sourceCode R"><span></span>
+<span><span class="co">## Example comparison plot</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">scenario_a</span>, <span class="va">scenario_b</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    .by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">delay</span>, <span class="va">scenario</span>, <span class="va">group</span><span class="op">)</span>,</span>
+<span>    ind <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ind</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">delay</span>, y <span class="op">=</span> <span class="va">ind</span>, color <span class="op">=</span> <span class="va">scenario</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">group</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># ggplot2::scale_y_continuous(</span></span>
+<span>  <span class="co">#   labels = scales::label_percent()</span></span>
+<span>  <span class="co"># ) +</span></span>
+<span>  <span class="fu"><a href="../reference/theme_nowcastr.html">theme_nowcastr</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    y <span class="op">=</span> <span class="st">"Mean SMAPE improvement"</span>, x <span class="op">=</span> <span class="st">"Delay"</span>,</span>
+<span>    color <span class="op">=</span> <span class="st">"Scenario"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Compare accuracy of 2 scenarios"</span>,</span>
+<span>    subtitle <span class="op">=</span> <span class="st">"Higher is better"</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

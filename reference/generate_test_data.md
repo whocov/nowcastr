@@ -89,7 +89,7 @@ generate_test_data()
 #>  9 2025-02-06      2025-02-07      1  79.7
 #> 10 2025-02-06      2025-02-06      0  50  
 #> # ℹ 80 more rows
-generate_test_data(n_reportdates = 3, n_delays = 3) # A tibble: 9 × 4
+generate_test_data(n_reportdates = 3, n_delays = 3)
 #> # A tibble: 9 × 4
 #>   date_occurrence date_report delay value
 #>   <date>          <date>      <int> <dbl>

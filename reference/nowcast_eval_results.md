@@ -22,7 +22,7 @@ nowcast_eval_results(
 - detail:
 
   data.frame. Per-prediction errors with columns for observed value,
-  predicted value, true value.
+  predicted value, last reported value.
 
 - summary:
 
@@ -52,7 +52,7 @@ An S7 object of class `nowcast_eval_results` with the following slots:
 - detail:
 
   Data frame. Per-prediction errors with columns for observed value,
-  predicted value, true value.
+  predicted value, last reported value.
 
 - summary:
 

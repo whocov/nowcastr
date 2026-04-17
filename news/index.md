@@ -7,6 +7,8 @@
 
 ## nowcastr 0.2.0
 
+CRAN release: 2026-04-16
+
 - \[feature\] accuracy evaluation function
 - \[feature\] accuracy evaluation plots
 - \[feature\] shiny to visualize model results

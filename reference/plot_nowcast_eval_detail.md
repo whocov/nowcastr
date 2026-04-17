@@ -1,7 +1,7 @@
 # Plot Nowcast Evaluation Detail Over Time
 
 For a selected delay, plots predicted and observed values over time
-alongside the eventual true value. Vertical segments show which estimate
+alongside the last reported value. Vertical segments show which estimate
 (raw observed or predicted) was closer to truth for each occurrence
 date.
 

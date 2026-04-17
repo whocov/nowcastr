@@ -1,4 +1,4 @@
-# Getting Started with nowcastr
+# Get started
 
 Nowcasting is the process of estimating the current state of a
 phenomenon when the data are incomplete due to reporting delays. The
@@ -28,7 +28,7 @@ Your dataset must contain at least three columns:
 - **reporting date**: when the event was reported
 - **value**: the observed count/value
 - \<*groups*\>: none, one or multiple grouping columns: *e.g.*
-  `group_cols = c("group") # or c("region", "disease")`
+  `group_cols = "species"` \# or `group_cols = c("region", "disease")`
 
 The package includes a demo dataset `nowcast_demo` that follows this
 structure
@@ -70,13 +70,14 @@ nowcast_demo %>%
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
-    group_cols = "group"
+    group_cols = "group" # use a vector for multiple columns: c("column1", "column2"... )
   )
 ```
 
 ![](nowcastr_files/figure-html/unnamed-chunk-5-1.png)
 
-The “millipede” plot provides an alternative view of delays:
+The “millipede” plot provides an alternative view of delays. Each
+reporting date is mapped to a distinct line and color.
 
 ``` r
 nowcast_demo %>%
@@ -93,8 +94,8 @@ nowcast_demo %>%
 
 ### 2. Prepare Data (Optional)
 
-You may want to fill missing values with the last known reporting values
-to ensure consistent time units:
+Depending on your data and use case, you may want to fill missing values
+with the last known reported value.
 
 ``` r
 data_filled <- nowcast_demo %>%
@@ -150,7 +151,7 @@ S7::prop_names(nc_obj)
 
 ### 4. Explore Results
 
-Access the components of the result object:
+Access the different datasets.
 
 ``` r
 nc_obj@results # Final nowcasted values
@@ -168,7 +169,7 @@ nc_obj@results # Final nowcasted values
 #>  9 SARS-Co… 2025-09-22      2025-11-17      8    70           121.       0.577  
 #> 10 SARS-Co… 2025-09-15      2025-11-17      9    60            93.9      0.639  
 #> # ℹ 85 more rows
-nc_obj@delays # Delay distribution
+nc_obj@delays # Summarised completeness values by delay
 #> # A tibble: 96 × 5
 #>    group                      delay     n completeness_obs completeness_modelled
 #>    <chr>                      <dbl> <int>            <dbl>                 <dbl>
@@ -183,7 +184,7 @@ nc_obj@delays # Delay distribution
 #>  9 SARS-CoV-2 Hospital Admis…     8    10          0.611                 0.577  
 #> 10 SARS-CoV-2 Hospital Admis…     9    10          0.668                 0.639  
 #> # ℹ 86 more rows
-nc_obj@completeness # Data with completeness estimates
+nc_obj@completeness # Detailed completeness estimates
 #> # A tibble: 2,478 × 8
 #>    group         date_occurrence date_report value delay last_value completeness
 #>    <chr>         <date>          <date>      <dbl> <dbl>      <dbl>        <dbl>
@@ -199,43 +200,37 @@ nc_obj@completeness # Data with completeness estimates
 #> 10 SARS-CoV-2 H… 2025-10-20      2025-11-17      7     4          7        1    
 #> # ℹ 2,468 more rows
 #> # ℹ 1 more variable: reportweight <dbl>
-str(nc_obj@params) # Parameters used
-#> List of 15
-#>  $ col_date_occurrence         : chr "date_occurrence"
-#>  $ col_date_reporting          : chr "date_report"
-#>  $ col_value                   : chr "value"
-#>  $ group_cols                  : chr "group"
-#>  $ time_units                  : chr "weeks"
-#>  $ max_delay                   : NULL
-#>  $ max_reportunits             : num 10
-#>  $ max_completeness            : num 5
-#>  $ min_completeness_samples    : num 1
-#>  $ use_weighted_method         : logi TRUE
-#>  $ do_propagate_missing_delays : logi FALSE
-#>  $ do_model_fitting            : logi TRUE
-#>  $ model_names                 : chr [1:6] "monomolecular" "vonbertalanffy" "logistic" "gompertz" ...
-#>  $ do_use_modelled_completeness: logi TRUE
-#>  $ rss_threshold               : num 0.01
 ```
 
 Plot the results:
 
 ``` r
-plot(nc_obj, which = "delays") # Delay distribution
+# Delay distribution
+plot(nc_obj, which = "delays") +
+  ggplot2::labs(
+    caption = NULL,
+    subtitle = paste0("From data reported on: ", max(data_filled$date_report))
+  )
 ```
 
-![](nowcastr_files/figure-html/plots-1.png)
+![](nowcastr_files/figure-html/unnamed-chunk-11-1.png)
 
 ``` r
-plot(nc_obj, which = "results") # Nowcast time series
+
+# Nowcast time series
+plot(nc_obj, which = "results") +
+  ggplot2::labs(
+    caption = NULL,
+    subtitle = paste0("From data reported on: ", max(data_filled$date_report))
+  )
 ```
 
-![](nowcastr_files/figure-html/plots-2.png)
+![](nowcastr_files/figure-html/unnamed-chunk-11-2.png)
 
 Open a Shiny app to explore results group by group:
 
 ``` r
-explore_nowcast(nc_obj)
+nowcast_explore(nc_obj)
 ```
 
 ## How It Works
@@ -251,34 +246,23 @@ The chain-ladder method estimates “completeness” for each delay bucket:
 Recent occurrence dates have shorter delays and lower completeness. The
 method upweights these observations to estimate the true count.
 
-### Grouped Processing
-
-You can nowcast multiple groups (e.g., regions, diseases) in a single
-call by specifying multiple grouping columns:
-
-``` r
-nowcast_cl(
-  # ...
-  group_cols = c("region", "disease")
-)
-```
-
 ## Other Utility Functions
 
 ### Calculate Retro Scores of input data
 
-retro_score = number of actual value changes / max possible value
-changes \[0-1\]
+The retro-score is the ratio of actual value changes to maximum possible
+changes \[0-1\].
 
 ``` r
-# Calculate retro-scores (= number of actual value changes / max possible value changes)
-nowcast_demo %>%
+# Calculate retro-scores
+retroscores <- nowcast_demo %>%
   calculate_retro_score(
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
-    group_cols = c("group")
+    group_cols = "group"
   )
+print(retroscores)
 #> # A tibble: 4 × 4
 #>   group                          n_changes max_retro_adj retro_score
 #>   <chr>                              <dbl>         <dbl>       <dbl>
@@ -288,11 +272,27 @@ nowcast_demo %>%
 #> 4 Syndromic ARI                        299           575       0.52
 ```
 
-### Remove duplicated data
+``` r
+retroscores %>%
+  ggplot2::ggplot(ggplot2::aes(y = stats::reorder(group, retro_score), x = retro_score)) +
+  ggplot2::geom_bar(stat = "identity", fill = "dodgerblue1") +
+  theme_nowcastr() +
+  ggplot2::scale_x_continuous(
+    limits = c(0, 1),
+    # labels = scales::label_percent()
+  ) +
+  ggplot2::labs(
+    y = "Group",
+    x = "Retro-Score"
+  )
+```
 
-This is the opposite of
+![](nowcastr_files/figure-html/unnamed-chunk-13-1.png)
+
+### Remove repeated values
+
+This is somewhat the opposite of
 [`fill_future_reported_values()`](https://whocov.github.io/nowcastr/reference/fill_future_reported_values.md).
-This can be useful to reduce data size without losing information.
 
 ``` r
 # Remove duplicate reported values (same value and higher reporting date)
@@ -301,7 +301,7 @@ nowcast_demo %>%
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
-    group_cols = c("group")
+    group_cols = "group"
   )
 #> # A tibble: 1,624 × 4
 #>    value date_occurrence date_report group                         
