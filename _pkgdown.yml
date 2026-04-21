@@ -17,7 +17,7 @@ navbar:
     articles:
       text: Articles
       menu:
-        - text: "Get started"
+        - text: "Getting started"
           href: articles/nowcastr.html
         - text: "Evaluate accuracy"
           href: articles/eval.html

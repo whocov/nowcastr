@@ -1,5 +1,5 @@
 ---
-title: "Get started"
+title: "Getting started"
 knitr:
   opts_chunk:
     collapse: true
@@ -7,7 +7,7 @@ knitr:
 # description: |
 #   An overview of the nowcastr package.
 vignette: >
-  %\VignetteIndexEntry{Get started}
+  %\VignetteIndexEntry{Getting started}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
