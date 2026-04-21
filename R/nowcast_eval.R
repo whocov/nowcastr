@@ -183,7 +183,7 @@ nowcast_eval <- function(
       SAPE_obs = abs(!!s_col_val - .data$value_true) / (abs(!!s_col_val) + abs(.data$value_true)),
       SAPE_improvement = .data$SAPE_obs - .data$SAPE_pred,
       ## Pairwise: is prediction closer to truth than raw observed?
-      pred_is_better = dplyr::case_when(
+      isWin = dplyr::case_when(
         abs(.data$value_predicted - .data$value_true) < abs(!!s_col_val - .data$value_true) ~ 1L, # TRUE
         abs(.data$value_predicted - .data$value_true) > abs(!!s_col_val - .data$value_true) ~ 0L, # FALSE
         TRUE ~ NA_integer_ ## tie
@@ -211,23 +211,22 @@ nowcast_eval <- function(
       n_periods = dplyr::n_distinct(.data$cut_date),
       n_obs = dplyr::n(),
 
-      ## SMAPE: mean of per-prediction SAPE, excluding Inf (0/0 case)
-      SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
-      SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
-      ## Positive = prediction is better than raw observed
-      # SMAPE_improvement = .data$SMAPE_obs - .data$SMAPE_pred,
+      # SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
+      # SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
 
-      ## Improvement statistics (from per-row SAPE_improvement)
-      SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      ## ?
+      # SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+
+      ## median + IQR
       SMAPE_improvement_med = stats::median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
       SMAPE_improvement_q1 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
       SMAPE_improvement_q3 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
 
-      ## Proportion of predictions that beat raw observed (pairwise)
-      winrate = mean(.data$pred_is_better, na.rm = TRUE),
-      n_pairs = sum(!is.na(.data$pred_is_better)),
+      ## winrate
+      winrate = mean(.data$isWin, na.rm = TRUE),
 
       ## Wilson score 95% CI on winrate
+      n_pairs = sum(!is.na(.data$isWin)),
       .p = .data$winrate,
       .z = stats::qnorm(0.975),
       .n = .data$n_pairs,
@@ -238,7 +237,7 @@ nowcast_eval <- function(
         .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
         (1 + .data$.z^2 / .data$.n)
     ) %>%
-    select(-".p", -".z", -".n") %>%
+    select(-".p", -".z", -".n", -"n_pairs") %>%
     arrange(!!!s_group_cols, .data$delay)
 
 

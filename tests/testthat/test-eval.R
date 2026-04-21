@@ -32,7 +32,7 @@ test_that("nowcast_eval detail has expected columns", {
 
   expected_cols <- c(
     "cut_date", "delay", "value_predicted", "value_true",
-    "SAPE_pred", "SAPE_obs", "SAPE_improvement", "pred_is_better"
+    "SAPE_pred", "SAPE_obs", "SAPE_improvement", "isWin"
   )
   expect_true(all(expected_cols %in% names(res@detail)))
   expect_true(nrow(res@detail) > 0)
@@ -50,8 +50,8 @@ test_that("nowcast_eval summary has expected columns", {
   )
 
   expected_cols <- c(
-    "delay", "SMAPE_pred", "SMAPE_obs", "SMAPE_improvement_med",
-    "winrate", "CI_lower", "CI_upper", "n_obs", "n_pairs"
+    "delay", "SMAPE_improvement_med",
+    "winrate", "CI_lower", "CI_upper", "n_obs"
   )
   expect_true(all(expected_cols %in% names(res@summary)))
 })
