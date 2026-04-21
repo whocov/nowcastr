@@ -17,7 +17,7 @@ plot_nowcast_eval_by_delay(
 
 \item{indicator}{Character. Which metric to plot on the y-axis. One of:
 \code{"SMAPE_improvement_med"} (default), \code{"SMAPE_improvement_mean"},
-or \code{"proportion_pred_is_better"}.}
+or \code{"winrate"}.}
 
 \item{color_good}{Character. Fill colour for the "better" region.`.}
 
@@ -44,6 +44,6 @@ eval_res <- nowcast_eval(
   time_units = "days"
 )
 plot_nowcast_eval_by_delay(eval_res)
-plot_nowcast_eval_by_delay(eval_res, indicator = "proportion_pred_is_better")
+plot_nowcast_eval_by_delay(eval_res, indicator = "winrate")
 
 }

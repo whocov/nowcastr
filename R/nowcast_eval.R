@@ -11,7 +11,7 @@
 #' @return An S7 object of class `nowcast_eval_results` with slots:
 #'   \describe{
 #'     \item{detail}{data.frame with per-prediction errors (one row per occurrence date x delay x past period).}
-#'     \item{summary}{data.frame with aggregated SMAPE and proportion_pred_is_better, by group and delay.}
+#'     \item{summary}{data.frame with aggregated SMAPE and winrate, by group and delay.}
 #'     \item{params}{list of parameters used.}
 #'     \item{n_past}{number of past periods evaluated.}
 #'     \item{time_start}{POSIXct start time.}
@@ -224,11 +224,11 @@ nowcast_eval <- function(
       SMAPE_improvement_q3 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
 
       ## Proportion of predictions that beat raw observed (pairwise)
-      proportion_pred_is_better = mean(.data$pred_is_better, na.rm = TRUE),
+      winrate = mean(.data$pred_is_better, na.rm = TRUE),
       n_pairs = sum(!is.na(.data$pred_is_better)),
 
-      ## Wilson score 95% CI on proportion_pred_is_better
-      .p = .data$proportion_pred_is_better,
+      ## Wilson score 95% CI on winrate
+      .p = .data$winrate,
       .z = stats::qnorm(0.975),
       .n = .data$n_pairs,
       CI_lower = (.data$.p + .data$.z^2 / (2 * .data$.n) -
@@ -291,7 +291,7 @@ nowcast_eval <- function(
 #' @param detail data.frame. Per-prediction errors with columns for observed value,
 #'   predicted value, last reported value.
 #' @param summary data.frame. Aggregated metrics per group x delay:
-#'   SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.
+#'   SMAPE (pred and obs), SMAPE improvement, winrate, Wilson CIs.
 #' @param params list. Parameters used for the evaluation run.
 #' @param n_past integer. Number of past reporting periods evaluated.
 #' @param time_start POSIXct. Time the function started.
@@ -302,7 +302,7 @@ nowcast_eval <- function(
 #'     \item{detail}{Data frame. Per-prediction errors with columns for observed value,
 #'       predicted value, last reported value.}
 #'     \item{summary}{Data frame. Aggregated metrics per group x delay:
-#'       SMAPE (pred and obs), SMAPE improvement, proportion_pred_is_better, Wilson CIs.}
+#'       SMAPE (pred and obs), SMAPE improvement, winrate, Wilson CIs.}
 #'     \item{params}{List. Parameters used for the evaluation run.}
 #'     \item{n_past}{Numeric. Number of past reporting periods evaluated.}
 #'     \item{time_start}{POSIXct. Time the function started.}
@@ -416,7 +416,7 @@ plot_nowcast_eval <- function(
     df %>%
     dplyr::mutate(
       indicator = "Proportion better",
-      value     = .data$proportion_pred_is_better - 0.50, ## to center on 0
+      value     = .data$winrate - 0.50, ## to center on 0
       q1        = .data$CI_lower - 0.50, ## to center on 0
       q3        = .data$CI_upper - 0.50, ## to center on 0
       n_label   = .data$n_pairs
@@ -543,7 +543,7 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
 #' @param indicator Character. Which metric to plot on the y-axis. One of:
 #'   `"SMAPE_improvement_med"` (default), `"SMAPE_improvement_mean"`,
-#'   or `"proportion_pred_is_better"`.
+#'   or `"winrate"`.
 #' @param color_good Character. Fill colour for the "better" region.`.
 #' @param color_bad  Character. Fill colour for the "worse" region.`.
 #' @param ... Ignored.
@@ -561,7 +561,7 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 #'   time_units = "days"
 #' )
 #' plot_nowcast_eval_by_delay(eval_res)
-#' plot_nowcast_eval_by_delay(eval_res, indicator = "proportion_pred_is_better")
+#' plot_nowcast_eval_by_delay(eval_res, indicator = "winrate")
 #'
 #' @import ggplot2
 #' @importFrom dplyr filter
@@ -580,11 +580,11 @@ plot_nowcast_eval_by_delay <- function(
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
     rlang::abort("x must be a nowcast_eval_results object.")
   }
-  valid_indicators <- c("SMAPE_improvement_med", "SMAPE_improvement_mean", "proportion_pred_is_better")
+  valid_indicators <- c("SMAPE_improvement_med", "SMAPE_improvement_mean", "winrate")
   indicator <- match.arg(indicator, valid_indicators)
 
   ## midpoint: 0 for SMAPE indicators, 0.5 for proportion
-  midpoint <- if (indicator == "proportion_pred_is_better") 0.5 else 0
+  midpoint <- if (indicator == "winrate") 0.5 else 0
 
   group_cols <- x@params$group_cols
 
@@ -599,7 +599,7 @@ plot_nowcast_eval_by_delay <- function(
   y_label <- switch(indicator,
     "SMAPE_improvement_med" = "SMAPE improvement (median)",
     "SMAPE_improvement_mean" = "SMAPE improvement (mean)",
-    "proportion_pred_is_better" = "Proportion of predictions better than observed"
+    "winrate" = "Proportion of predictions better than observed"
   )
 
   ## PLOT -----
