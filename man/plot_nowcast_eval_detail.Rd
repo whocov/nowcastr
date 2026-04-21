@@ -15,7 +15,7 @@ plot_nowcast_eval_detail(
 \arguments{
 \item{x}{A \code{nowcast_eval_results} S7 object from \code{nowcast_eval()}.}
 
-\item{delay}{Numeric. Which delay to plot. Defaults to the minimum delay in the data.}
+\item{delay}{Numeric. Which delay to plot. Defaults to the minimum delay in the data if missing.}
 
 \item{color_good}{Character. Colour when prediction beats raw observed.`.}
 

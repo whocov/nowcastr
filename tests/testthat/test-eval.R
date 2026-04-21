@@ -50,8 +50,8 @@ test_that("nowcast_eval summary has expected columns", {
   )
 
   expected_cols <- c(
-    "delay", "SMAPE_improvement_med",
-    "winrate", "CI_lower", "CI_upper", "n_obs"
+    "delay", "smape_diff_med",
+    "winrate", "winrate_low", "winrate_high", "n_obs"
   )
   expect_true(all(expected_cols %in% names(res@summary)))
 })
@@ -120,7 +120,7 @@ test_that("plot_nowcast_eval_by_delay returns a ggplot for each indicator", {
     time_units = "days"
   )
 
-  for (ind in c("SMAPE_improvement_med", "SMAPE_improvement_mean", "winrate")) {
+  for (ind in c("smape_diff_med", "winrate")) {
     p <- plot_nowcast_eval_by_delay(res, indicator = ind)
     expect_s3_class(p, "ggplot")
   }

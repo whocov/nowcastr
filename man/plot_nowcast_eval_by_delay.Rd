@@ -6,7 +6,7 @@
 \usage{
 plot_nowcast_eval_by_delay(
   x,
-  indicator = "SMAPE_improvement_med",
+  indicator = "smape_diff_med",
   color_good = "dodgerblue1",
   color_bad = "firebrick1",
   ...
@@ -16,8 +16,7 @@ plot_nowcast_eval_by_delay(
 \item{x}{A \code{nowcast_eval_results} S7 object from \code{nowcast_eval()}.}
 
 \item{indicator}{Character. Which metric to plot on the y-axis. One of:
-\code{"SMAPE_improvement_med"} (default), \code{"SMAPE_improvement_mean"},
-or \code{"winrate"}.}
+\code{"smape_diff_med"}, or \code{"winrate"}.}
 
 \item{color_good}{Character. Fill colour for the "better" region.`.}
 

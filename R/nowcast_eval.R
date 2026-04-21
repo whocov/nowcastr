@@ -214,30 +214,25 @@ nowcast_eval <- function(
       # SMAPE_pred = mean(.data$SAPE_pred[is.finite(.data$SAPE_pred)], na.rm = TRUE),
       # SMAPE_obs = mean(.data$SAPE_obs[is.finite(.data$SAPE_obs)], na.rm = TRUE),
 
-      ## ?
-      # SMAPE_improvement_mean = mean(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
-
       ## median + IQR
-      SMAPE_improvement_med = stats::median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
-      SMAPE_improvement_q1 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
-      SMAPE_improvement_q3 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
+      # smape_diff_n = sum(!is.na(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)])),
+      smape_diff_med = stats::median(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], na.rm = TRUE),
+      smape_diff_q1 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .25, na.rm = TRUE),
+      smape_diff_q3 = stats::quantile(.data$SAPE_improvement[is.finite(.data$SAPE_improvement)], .75, na.rm = TRUE),
 
-      ## winrate
+      ## winrate + Wilson score 95% CI
       winrate = mean(.data$isWin, na.rm = TRUE),
-
-      ## Wilson score 95% CI on winrate
-      n_pairs = sum(!is.na(.data$isWin)),
       .p = .data$winrate,
       .z = stats::qnorm(0.975),
-      .n = .data$n_pairs,
-      CI_lower = (.data$.p + .data$.z^2 / (2 * .data$.n) -
+      .n = sum(!is.na(.data$isWin)), ## n_pairs
+      winrate_low = (.data$.p + .data$.z^2 / (2 * .data$.n) -
         .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
         (1 + .data$.z^2 / .data$.n),
-      CI_upper = (.data$.p + .data$.z^2 / (2 * .data$.n) +
+      winrate_high = (.data$.p + .data$.z^2 / (2 * .data$.n) +
         .data$.z * sqrt((.data$.p * (1 - .data$.p) + .data$.z^2 / (4 * .data$.n)) / .data$.n)) /
-        (1 + .data$.z^2 / .data$.n)
+        (1 + .data$.z^2 / .data$.n),
     ) %>%
-    select(-".p", -".z", -".n", -"n_pairs") %>%
+    select(-".p", -".z", -".n") %>%
     arrange(!!!s_group_cols, .data$delay)
 
 
@@ -290,7 +285,7 @@ nowcast_eval <- function(
 #' @param detail data.frame. Per-prediction errors with columns for observed value,
 #'   predicted value, last reported value.
 #' @param summary data.frame. Aggregated metrics per group x delay:
-#'   SMAPE (pred and obs), SMAPE improvement, winrate, Wilson CIs.
+#'   smape_diff_med, winrate.
 #' @param params list. Parameters used for the evaluation run.
 #' @param n_past integer. Number of past reporting periods evaluated.
 #' @param time_start POSIXct. Time the function started.
@@ -301,7 +296,7 @@ nowcast_eval <- function(
 #'     \item{detail}{Data frame. Per-prediction errors with columns for observed value,
 #'       predicted value, last reported value.}
 #'     \item{summary}{Data frame. Aggregated metrics per group x delay:
-#'       SMAPE (pred and obs), SMAPE improvement, winrate, Wilson CIs.}
+#'       smape_diff_med, winrate.}
 #'     \item{params}{List. Parameters used for the evaluation run.}
 #'     \item{n_past}{Numeric. Number of past reporting periods evaluated.}
 #'     \item{time_start}{POSIXct. Time the function started.}
@@ -328,16 +323,16 @@ nowcast_eval_results <-
 #' Plots a horizontal bar chart of nowcasting evaluation metrics per group,
 #' at a selected delay. Two panels are shown side by side:
 #' \itemize{
-#'   \item \strong{SMAPE improvement}: median per-prediction SMAPE difference
+#'   \item \strong{Differential SMAPE}: median per-prediction SMAPE difference
 #'     (obs minus pred; positive = prediction is better), with IQR as error bar.
-#'   \item \strong{Proportion better}: share of past periods where prediction beat
+#'   \item \strong{winrate}: share of past periods where prediction beat
 #'     raw observed, centered at 0 (0.5 = no improvement), with Wilson 95% CI.
 #' }
 #' Bars are coloured by whether the improvement is significant (IQR / CI fully
 #' above or below zero) or not.
 #'
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
-#' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data.
+#' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data if missing.
 #' @param color_good Character. Colour for significantly better predictions.`.
 #' @param color_bad  Character. Colour for significantly worse predictions.`.
 #' @param alpha_less alpha value for the "less significant" bars, 0-1.
@@ -403,38 +398,35 @@ plot_nowcast_eval <- function(
   df_smape <-
     df %>%
     dplyr::mutate(
-      indicator = "SMAPE improvement",
-      value     = .data$SMAPE_improvement_med,
-      q1        = .data$SMAPE_improvement_q1,
-      q3        = .data$SMAPE_improvement_q3,
-      n_label   = .data$n_obs
+      indicator = "dsmape",
+      value = .data$smape_diff_med,
+      low = .data$smape_diff_q1,
+      high = .data$smape_diff_q3,
     ) %>%
-    dplyr::select("indicator", "value", "q1", "q3", "n_label", ".y")
+    dplyr::select("indicator", "value", "low", "high", ".y")
 
-  df_prop <-
+  df_winrate <-
     df %>%
     dplyr::mutate(
-      indicator = "Proportion better",
-      value     = .data$winrate - 0.50, ## to center on 0
-      q1        = .data$CI_lower - 0.50, ## to center on 0
-      q3        = .data$CI_upper - 0.50, ## to center on 0
-      n_label   = .data$n_pairs
+      indicator = "winrate",
+      value = .data$winrate - 0.50, ## to center on 0
+      low = .data$winrate_low - 0.50, ## to center on 0
+      high = .data$winrate_high - 0.50, ## to center on 0
     ) %>%
-    dplyr::select("indicator", "value", "q1", "q3", "n_label", ".y")
+    dplyr::select("indicator", "value", "low", "high", ".y")
 
   df_plot <-
-    dplyr::bind_rows(df_smape, df_prop) %>%
-    # dplyr::select(".y", "indicator", "value", "q1", "q3", "n_label") %>%
+    dplyr::bind_rows(df_smape, df_winrate) %>%
     ## SIGNIFICANCE COLOUR
-    ## good     = value >= 0 and q1 >= 0  (interval fully above zero)
-    ## lessgood = value >= 0 and q1 <  0  (positive but interval crosses zero)
-    ## bad      = value <  0 and q3 <= 0  (interval fully below zero)
-    ## lessbad  = value <  0 and q3 >  0  (negative but interval crosses zero)
+    ## good     = value >= 0 and low >= 0  (interval fully above zero)
+    ## lessgood = value >= 0 and low <  0  (positive but interval crosses zero)
+    ## bad      = value <  0 and high <= 0  (interval fully below zero)
+    ## lessbad  = value <  0 and high >  0  (negative but interval crosses zero)
     dplyr::mutate(
       .fill = dplyr::case_when(
-        .data$value >= 0 & .data$q1 >= 0 ~ "good",
-        .data$value >= 0 & .data$q1 < 0 ~ "lessgood",
-        .data$value < 0 & .data$q3 <= 0 ~ "bad",
+        .data$value >= 0 & .data$low >= 0 ~ "good",
+        .data$value >= 0 & .data$low < 0 ~ "lessgood",
+        .data$value < 0 & .data$high <= 0 ~ "bad",
         TRUE ~ "lessbad"
       )
     )
@@ -462,11 +454,11 @@ plot_nowcast_eval <- function(
     ) +
     ## error bars: white outline for contrast, then grey on top
     ggplot2::geom_segment(
-      ggplot2::aes(x = .data$q1, xend = .data$q3, yend = .data$.y),
+      ggplot2::aes(x = .data$low, xend = .data$high, yend = .data$.y),
       colour = "white", linewidth = 1.4
     ) +
     ggplot2::geom_segment(
-      ggplot2::aes(x = .data$q1, xend = .data$q3, yend = .data$.y),
+      ggplot2::aes(x = .data$low, xend = .data$high, yend = .data$.y),
       colour = "#555555", linewidth = 0.9
     ) +
     ggplot2::geom_vline(xintercept = 0, linetype = "22", alpha = 0.7) +
@@ -474,16 +466,17 @@ plot_nowcast_eval <- function(
       ~indicator,
       scales = "free_x",
       labeller = ggplot2::labeller(indicator = c(
-        "SMAPE improvement" = "SMAPE improvement\n(obs \u2212 pred; positive = better)",
-        "Proportion better" = "Proportion better - 50%\n(centerd on 0 = 50%)"
+        "dsmape" = "Differential sMAPE", # expression(Delta * sMAPE),
+        "winrate" = "Win Rate - 50%"
       ))
     ) +
+    #
     # ggh4x::facetted_pos_scales(
     #   x = list(
-    #     indicator == "Proportion better" ~ scale_x_continuous(
+    #     indicator == "winrate" ~ scale_x_continuous(
     #       labels = function(x) scales::percent(x + 0.5)
     #     ),
-    #     indicator == "SMAPE improvement" ~ scale_x_continuous(
+    #     indicator == "dsmape" ~ scale_x_continuous(
     #       labels = scales::percent
     #     )
     #   )
@@ -541,8 +534,7 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 #'
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
 #' @param indicator Character. Which metric to plot on the y-axis. One of:
-#'   `"SMAPE_improvement_med"` (default), `"SMAPE_improvement_mean"`,
-#'   or `"winrate"`.
+#'   `"smape_diff_med"`, or `"winrate"`.
 #' @param color_good Character. Fill colour for the "better" region.`.
 #' @param color_bad  Character. Fill colour for the "worse" region.`.
 #' @param ... Ignored.
@@ -570,7 +562,7 @@ S7::method(plot, nowcast_eval_results) <- function(x, delay = NULL, ...) {
 #' @export
 plot_nowcast_eval_by_delay <- function(
   x,
-  indicator = "SMAPE_improvement_med",
+  indicator = "smape_diff_med",
   color_good = "dodgerblue1",
   color_bad = "firebrick1",
   ...
@@ -579,7 +571,7 @@ plot_nowcast_eval_by_delay <- function(
   if (!S7::S7_inherits(x, nowcast_eval_results)) {
     rlang::abort("x must be a nowcast_eval_results object.")
   }
-  valid_indicators <- c("SMAPE_improvement_med", "SMAPE_improvement_mean", "winrate")
+  valid_indicators <- c("smape_diff_med", "winrate")
   indicator <- match.arg(indicator, valid_indicators)
 
   ## midpoint: 0 for SMAPE indicators, 0.5 for proportion
@@ -596,8 +588,7 @@ plot_nowcast_eval_by_delay <- function(
 
   ## Y-AXIS LABEL -----
   y_label <- switch(indicator,
-    "SMAPE_improvement_med" = "SMAPE improvement (median)",
-    "SMAPE_improvement_mean" = "SMAPE improvement (mean)",
+    "smape_diff_med" = "Differential sMAPE",
     "winrate" = "Proportion of predictions better than observed"
   )
 
@@ -640,7 +631,7 @@ plot_nowcast_eval_by_delay <- function(
 #' or predicted) was closer to truth for each occurrence date.
 #'
 #' @param x A `nowcast_eval_results` S7 object from `nowcast_eval()`.
-#' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data.
+#' @param delay Numeric. Which delay to plot. Defaults to the minimum delay in the data if missing.
 #' @param color_good Character. Colour when prediction beats raw observed.`.
 #' @param color_bad  Character. Colour when raw observed beats prediction.`.
 #' @param ... Ignored.

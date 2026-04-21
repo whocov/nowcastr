@@ -12,11 +12,21 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-To evaluate the accuracy of the model, we can measure whether the nowcasted 
-values outperformed the reported values in the past. `nowcast_eval()` does 
-this by running `nowcast_cl()` multiple times on past data, each time 
-truncating the knowledge horizon so that only data available at that point 
-in time is used.
+
+
+To evaluate model accuracy, `nowcast_eval()` performs historical backtesting. 
+It iteratively applies `nowcast_cl()` to past dates, censoring data that would have been unavailable at each point in time. By comparing these predicted values against the observed values (the raw data available at the time), we can quantify the model's added value.
+
+We use two indicators:
+
+- **Win Rate**: The frequency with which the model's absolute error is lower than the observation's absolute error. A value **>50%** suggests the nowcast is more reliable than the raw data.
+
+- Differential SMAPE ($\Delta\text{sMAPE}$):
+
+  $$\Delta\text{sMAPE} = \text{sMAPE}_{\text{obs}} - \text{sMAPE}_{\text{pred}}$$
+
+  This measures the average reduction in symmetric error. A **positive value** indicates the model improves accuracy over the initial report, while a **negative value** suggests the raw data was already more accurate.
+
 
 
 ## Run evaluation
@@ -55,26 +65,22 @@ nc_eval_obj@summary
 
 ### Plot aggregated indicators
 
-- "SMAPE Improvement median" = median of the difference between SMAPE(observed) and SMAPE(predicted)
-- "Proportion Better = proportion of predictions that outperform base values (-50% to center around zero)
-
-
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
 plot_nowcast_eval(nc_eval_obj, delay = 0)
 ```
 
-### Plot one indicator by delay / for one indicator
+### Plot one indicator by delay
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
-plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "SMAPE_improvement_med")
+plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "smape_diff_med")
 ```
 
-### Plot raw values / for one delay
+### Plot raw values, for one delay
 - predicted values
-- base reported values, at the time
-- last reported values
+- observed values (i.e. reported at the time)
+- last reported values (ground truth)
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
@@ -109,18 +115,15 @@ nc_eval_obj_with_fill <-
     time_units = "weeks",
     do_model_fitting = TRUE
   )
-
-# plot_nowcast_eval(nc_eval_obj_with_fill, delay = 0)
 ```
 
 
-```{r}
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
 
 library(dplyr)
 
-# indicator <- "proportion_pred_is_better"
-indicator <- "SMAPE_improvement_mean"
+indicator <- "smape_diff_med" # or "winrate"
 
 scenario_a <- nc_eval_obj@summary %>%
   dplyr::select("group", "delay", ind = all_of(indicator)) %>%
@@ -142,11 +145,11 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
 ```
 
 
-```{r}
-#| eval: false
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
+#| warning: false
 
 
-## Example comparison plot
+## Example of comparison plot
 library(ggplot2)
 dplyr::bind_rows(scenario_a, scenario_b) %>%
   dplyr::summarise(
@@ -157,12 +160,11 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
   geom_point() +
   geom_line() +
   facet_wrap(~group) +
-  # ggplot2::scale_y_continuous(
-  #   labels = scales::label_percent()
-  # ) +
-  theme_nowcastr(20) +
+  # ggplot2::scale_y_continuous(labels = scales::label_percent()) +
+  theme_nowcastr() +
   labs(
-    y = "Mean SMAPE improvement", x = "Delay",
+    y = "Differential sMAPE",
+    x = "Delay",
     color = "Scenario",
     title = "Compare accuracy of 2 scenarios",
     subtitle = "Higher is better"

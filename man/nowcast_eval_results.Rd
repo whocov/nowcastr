@@ -18,7 +18,7 @@ nowcast_eval_results(
 predicted value, last reported value.}
 
 \item{summary}{data.frame. Aggregated metrics per group x delay:
-SMAPE (pred and obs), SMAPE improvement, winrate, Wilson CIs.}
+smape_diff_med, winrate.}
 
 \item{params}{list. Parameters used for the evaluation run.}
 
@@ -34,7 +34,7 @@ An S7 object of class \code{nowcast_eval_results} with the following slots:
 \item{detail}{Data frame. Per-prediction errors with columns for observed value,
 predicted value, last reported value.}
 \item{summary}{Data frame. Aggregated metrics per group x delay:
-SMAPE (pred and obs), SMAPE improvement, winrate, Wilson CIs.}
+smape_diff_med, winrate.}
 \item{params}{List. Parameters used for the evaluation run.}
 \item{n_past}{Numeric. Number of past reporting periods evaluated.}
 \item{time_start}{POSIXct. Time the function started.}

@@ -16,7 +16,7 @@ plot_nowcast_eval(
 \arguments{
 \item{x}{A \code{nowcast_eval_results} S7 object from \code{nowcast_eval()}.}
 
-\item{delay}{Numeric. Which delay to plot. Defaults to the minimum delay in the data.}
+\item{delay}{Numeric. Which delay to plot. Defaults to the minimum delay in the data if missing.}
 
 \item{color_good}{Character. Colour for significantly better predictions.`.}
 
@@ -33,9 +33,9 @@ A \code{ggplot} object.
 Plots a horizontal bar chart of nowcasting evaluation metrics per group,
 at a selected delay. Two panels are shown side by side:
 \itemize{
-\item \strong{SMAPE improvement}: median per-prediction SMAPE difference
+\item \strong{Differential SMAPE}: median per-prediction SMAPE difference
 (obs minus pred; positive = prediction is better), with IQR as error bar.
-\item \strong{Proportion better}: share of past periods where prediction beat
+\item \strong{winrate}: share of past periods where prediction beat
 raw observed, centered at 0 (0.5 = no improvement), with Wilson 95\% CI.
 }
 Bars are coloured by whether the improvement is significant (IQR / CI fully
