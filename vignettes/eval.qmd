@@ -21,7 +21,7 @@ We use two indicators:
 
 - **Win Rate**: The frequency with which the model's absolute error is lower than the observation's absolute error. A value **>50%** suggests the nowcast is more reliable than the raw data.
 
-- **Differential SMAPE ($\Delta\text{sMAPE}$)**:
+- **Differential sMAPE ($\Delta\text{sMAPE}$)**:
 
   $$\Delta\text{sMAPE} = \text{sMAPE}_{\text{obs}} - \text{sMAPE}_{\text{pred}}$$
 
@@ -122,25 +122,24 @@ nc_eval_obj_with_fill <-
 #| warning: false
 
 library(dplyr)
-
-indicator <- "smape_diff_med" # or "winrate"
+indicator <- "smape_diff_med"
 
 scenario_a <- nc_eval_obj@summary %>%
-  dplyr::select("group", "delay", ind = all_of(indicator)) %>%
-  mutate(scenario = "A = no fill")
+  dplyr::select("group", "delay", "smape_diff_med") %>%
+  dplyr::mutate(scenario = "A = no fill")
 
 scenario_b <- nc_eval_obj_with_fill@summary %>%
-  dplyr::select("group", "delay", ind = all_of(indicator)) %>%
-  mutate(scenario = "B = fill")
+  dplyr::select("group", "delay", "smape_diff_med") %>%
+  dplyr::mutate(scenario = "B = fill")
 
 ## quick mean of everything
 dplyr::bind_rows(scenario_a, scenario_b) %>%
-  filter(delay <= 3) %>% ## predictions for older data are not that interesting
+  dplyr::filter(delay <= 3) %>% ## predictions for older data are not that interesting
   dplyr::summarise(
     .by = c(scenario),
-    ind = mean(ind, na.rm = T)
+    avg_smape_diff_med = mean(smape_diff_med, na.rm = T)
   ) %>%
-  mutate(tag = if_else(ind == max(ind), "better", "worse")) %>%
+  dplyr::mutate(tag = dplyr::if_else(avg_smape_diff_med == max(avg_smape_diff_med), "better", "worse")) %>%
   print()
 ```
 
@@ -148,15 +147,14 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
 
-
-## Example of comparison plot
+## Comparison plot
 library(ggplot2)
 dplyr::bind_rows(scenario_a, scenario_b) %>%
   dplyr::summarise(
     .by = c(delay, scenario, group),
-    ind = mean(ind, na.rm = T)
+    smape_diff_med = mean(smape_diff_med, na.rm = T)
   ) %>%
-  ggplot(aes(x = delay, y = ind, color = scenario)) +
+  ggplot(aes(x = delay, y = smape_diff_med, color = scenario)) +
   geom_point() +
   geom_line() +
   facet_wrap(~group) +
@@ -166,7 +164,7 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
     y = "Differential sMAPE",
     x = "Delay",
     color = "Scenario",
-    title = "Compare accuracy of 2 scenarios",
+    title = "Compare Differential sMAPE of 2 scenarios",
     subtitle = "Higher is better"
   )
 ```
