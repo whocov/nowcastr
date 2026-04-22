@@ -70,15 +70,7 @@ Only used if do_use_modelled_completeness is NULL.
 If the RSS of the fit is higher than this then observed completeness is used for nowcasting.}
 }
 \value{
-An S7 object of class \code{nowcast_eval_results} with slots:
-\describe{
-\item{detail}{data.frame with per-prediction errors (one row per occurrence date x delay x past period).}
-\item{summary}{data.frame with aggregated SMAPE and winrate, by group and delay.}
-\item{params}{list of parameters used.}
-\item{n_past}{number of past periods evaluated.}
-\item{time_start}{POSIXct start time.}
-\item{time_end}{POSIXct end time.}
-}
+An S7 object of class \link{nowcast_eval_results}.
 }
 \description{
 Evaluates the historical performance of \code{nowcast_cl()} by repeatedly

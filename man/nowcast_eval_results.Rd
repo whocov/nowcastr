@@ -2,45 +2,57 @@
 % Please edit documentation in R/nowcast_eval.R
 \name{nowcast_eval_results}
 \alias{nowcast_eval_results}
-\title{S7 object class for \code{nowcast_eval()} Results}
+\title{S7 object class for Nowcast Evaluation Results}
 \usage{
-nowcast_eval_results(
-  detail,
-  summary,
-  params,
-  n_past,
-  time_start,
-  time_end
-)
+nowcast_eval_results(detail, summary, params, n_past, time_start, time_end)
 }
 \arguments{
-\item{detail}{data.frame. Per-prediction errors with columns for observed value,
-predicted value, last reported value.}
+\item{detail}{data.frame.}
 
-\item{summary}{data.frame. Aggregated metrics per group x delay:
-smape_diff_med, winrate.}
+\item{summary}{data.frame.}
 
-\item{params}{list. Parameters used for the evaluation run.}
+\item{params}{list.}
 
-\item{n_past}{integer. Number of past reporting periods evaluated.}
+\item{n_past}{integer.}
 
-\item{time_start}{POSIXct. Time the function started.}
+\item{time_start}{POSIXct.}
 
-\item{time_end}{POSIXct. Time the function ended.}
+\item{time_end}{POSIXct.}
 }
 \value{
-An S7 object of class \code{nowcast_eval_results} with the following slots:
-\describe{
-\item{detail}{Data frame. Per-prediction errors with columns for observed value,
-predicted value, last reported value.}
-\item{summary}{Data frame. Aggregated metrics per group x delay:
-smape_diff_med, winrate.}
-\item{params}{List. Parameters used for the evaluation run.}
-\item{n_past}{Numeric. Number of past reporting periods evaluated.}
-\item{time_start}{POSIXct. Time the function started.}
-\item{time_end}{POSIXct. Time the function ended.}
-}
+An S7 object of class \code{nowcast_eval_results}.
 }
 \description{
-The \code{nowcast_eval()} function returns an object of this class.
+The object returned by \code{\link{nowcast_eval}}. It is an S7 class with
+the following slots (accessible with \code{@}):
+}
+\details{
+\describe{
+\item{detail}{data.frame with per-prediction errors (observed, predicted, last reported values).}
+\item{summary}{data.frame with aggregated SMAPE and winrate, by group and delay.}
+\item{params}{list of parameters used.}
+\item{n_past}{number of past periods evaluated.}
+\item{time_start}{POSIXct start time.}
+\item{time_end}{POSIXct end time.}
+}
+}
+\examples{
+input <- generate_test_data()
+eval_res <- nowcast_eval(
+  df = input,
+  col_date_occurrence = date_occurrence,
+  col_date_reporting = date_report,
+  col_value = value,
+  n_past = 10,
+  time_units = "days"
+)
+
+# Access slots
+eval_res@summary
+eval_res@detail
+
+}
+\seealso{
+\code{\link{nowcast_eval}}, \code{\link{plot_nowcast_eval}},
+\code{\link{plot_nowcast_eval_by_delay}}, \code{\link{plot_nowcast_eval_detail}}
 }

@@ -8,15 +8,8 @@
 #' @param n_past Integer. Number of past reporting periods to evaluate.
 #'   Each iteration peels off one reporting period (in `time_units`).
 #' @inheritParams nowcast_cl
-#' @return An S7 object of class `nowcast_eval_results` with slots:
-#'   \describe{
-#'     \item{detail}{data.frame with per-prediction errors (one row per occurrence date x delay x past period).}
-#'     \item{summary}{data.frame with aggregated SMAPE and winrate, by group and delay.}
-#'     \item{params}{list of parameters used.}
-#'     \item{n_past}{number of past periods evaluated.}
-#'     \item{time_start}{POSIXct start time.}
-#'     \item{time_end}{POSIXct end time.}
-#'   }
+#'
+#' @return An S7 object of class \link{nowcast_eval_results}.
 #'
 #' @examples
 #' input <- generate_test_data()
@@ -269,39 +262,50 @@ nowcast_eval <- function(
 }
 
 
-#' S7 object class for `nowcast_eval()` Results
+
+
+
+#' S7 object class for Nowcast Evaluation Results
 #'
-#' The `nowcast_eval()` function returns an object of this class.
+#' The object returned by \code{\link{nowcast_eval}}. It is an S7 class with
+#' the following slots (accessible with \code{@}):
 #'
-#' @usage nowcast_eval_results(
-#'   detail,
-#'   summary,
-#'   params,
-#'   n_past,
-#'   time_start,
-#'   time_end
+#' \describe{
+#'   \item{detail}{data.frame with per-prediction errors (observed, predicted, last reported values).}
+#'   \item{summary}{data.frame with aggregated SMAPE and winrate, by group and delay.}
+#'   \item{params}{list of parameters used.}
+#'   \item{n_past}{number of past periods evaluated.}
+#'   \item{time_start}{POSIXct start time.}
+#'   \item{time_end}{POSIXct end time.}
+#' }
+#'
+#' @usage nowcast_eval_results(detail, summary, params, n_past, time_start, time_end)
+#'
+#' @param detail data.frame.
+#' @param summary data.frame.
+#' @param params list.
+#' @param n_past integer.
+#' @param time_start POSIXct.
+#' @param time_end POSIXct.
+#'
+#' @return An S7 object of class `nowcast_eval_results`.
+#' @seealso \code{\link{nowcast_eval}}, \code{\link{plot_nowcast_eval}},
+#'   \code{\link{plot_nowcast_eval_by_delay}}, \code{\link{plot_nowcast_eval_detail}}
+#'
+#' @examples
+#' input <- generate_test_data()
+#' eval_res <- nowcast_eval(
+#'   df = input,
+#'   col_date_occurrence = date_occurrence,
+#'   col_date_reporting = date_report,
+#'   col_value = value,
+#'   n_past = 10,
+#'   time_units = "days"
 #' )
 #'
-#' @param detail data.frame. Per-prediction errors with columns for observed value,
-#'   predicted value, last reported value.
-#' @param summary data.frame. Aggregated metrics per group x delay:
-#'   smape_diff_med, winrate.
-#' @param params list. Parameters used for the evaluation run.
-#' @param n_past integer. Number of past reporting periods evaluated.
-#' @param time_start POSIXct. Time the function started.
-#' @param time_end POSIXct. Time the function ended.
-#'
-#' @return An S7 object of class `nowcast_eval_results` with the following slots:
-#'   \describe{
-#'     \item{detail}{Data frame. Per-prediction errors with columns for observed value,
-#'       predicted value, last reported value.}
-#'     \item{summary}{Data frame. Aggregated metrics per group x delay:
-#'       smape_diff_med, winrate.}
-#'     \item{params}{List. Parameters used for the evaluation run.}
-#'     \item{n_past}{Numeric. Number of past reporting periods evaluated.}
-#'     \item{time_start}{POSIXct. Time the function started.}
-#'     \item{time_end}{POSIXct. Time the function ended.}
-#'   }
+#' # Access slots
+#' eval_res@summary
+#' eval_res@detail
 #'
 #' @importFrom S7 new_class class_list class_data.frame class_numeric class_POSIXct
 #' @export
