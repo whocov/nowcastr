@@ -719,8 +719,6 @@ plot_nowcast_eval_detail <- function(
         xend   = .data[[str_col_occ]],
         y      = .data$value_true,
         yend   = .data$.seg_yend,
-        # y      = .data$value,
-        # yend   = .data$value_predicted,
         color  = .data$.seg_color
       ),
       linewidth = 3
@@ -728,7 +726,7 @@ plot_nowcast_eval_detail <- function(
     ggplot2::scale_color_manual(
       values = c(good = color_good, bad = color_bad),
       labels = c(good = "Prediction better", bad = "Observed better"),
-      name   = NULL
+      name   = "Absolute Error"
     ) +
     ggplot2::geom_line(ggplot2::aes(y = .data[[str_col_val]]), color = color_bad, alpha = 0.8) +
     ggplot2::geom_line(ggplot2::aes(y = .data$value_predicted), color = color_good, linetype = "3131") +
@@ -737,13 +735,12 @@ plot_nowcast_eval_detail <- function(
     facet +
     ggplot2::labs(
       title = paste0("Nowcast evaluation detail at delay = ", delay),
-      subtitle = paste0("Black = last reported value  |  Dashed = predicted  |  Solid coloured = raw observed"),
-      x = NULL,
-      y = NULL
+      subtitle = paste0("Solid Black = last reported values  |  Dashed Blue = predicted values  |  Solid Red = raw observed values"),
+      x = "Date of Occurence",
+      y = "Value",
+      color = "Absolute Error",
     ) +
     ggplot2::theme(
-      # strip.text       = ggplot2::element_text(face = "bold"),
-      # panel.grid.minor = ggplot2::element_blank(),
       legend.position = "top"
     )
 }
