@@ -21,7 +21,7 @@ We use two indicators:
 
 - **Win Rate**: The frequency with which the model's absolute error is lower than the observation's absolute error. A value **>50%** suggests the nowcast is more reliable than the raw data.
 
-- Differential SMAPE ($\Delta\text{sMAPE}$):
+- **Differential SMAPE ($\Delta\text{sMAPE}$)**:
 
   $$\Delta\text{sMAPE} = \text{sMAPE}_{\text{obs}} - \text{sMAPE}_{\text{pred}}$$
 
