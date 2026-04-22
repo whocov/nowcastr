@@ -1,4 +1,4 @@
-# Get started
+# Getting started
 
 Nowcasting is the process of estimating the current state of a
 phenomenon when the data are incomplete due to reporting delays. The

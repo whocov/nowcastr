@@ -29,20 +29,12 @@
 
 - [`nowcast_eval()`](https://whocov.github.io/nowcastr/reference/nowcast_eval.md)
   : Evaluate Nowcasting Performance
-
 - [`nowcast_eval_results()`](https://whocov.github.io/nowcastr/reference/nowcast_eval_results.md)
-  :
-
-  S7 object class for
-  [`nowcast_eval()`](https://whocov.github.io/nowcastr/reference/nowcast_eval.md)
-  Results
-
+  : S7 object class for Nowcast Evaluation Results
 - [`plot_nowcast_eval()`](https://whocov.github.io/nowcastr/reference/plot_nowcast_eval.md)
   : Plot Nowcast Evaluation Results
-
 - [`plot_nowcast_eval_by_delay()`](https://whocov.github.io/nowcastr/reference/plot_nowcast_eval_by_delay.md)
   : Plot Nowcast Evaluation by Delay
-
 - [`plot_nowcast_eval_detail()`](https://whocov.github.io/nowcastr/reference/plot_nowcast_eval_detail.md)
   : Plot Nowcast Evaluation Detail Over Time
 

@@ -10,7 +10,7 @@ improvement.
 ``` r
 plot_nowcast_eval_by_delay(
   x,
-  indicator = "SMAPE_improvement_med",
+  indicator = "smape_diff_med",
   color_good = "dodgerblue1",
   color_bad = "firebrick1",
   ...
@@ -27,8 +27,7 @@ plot_nowcast_eval_by_delay(
 - indicator:
 
   Character. Which metric to plot on the y-axis. One of:
-  `"SMAPE_improvement_med"` (default), `"SMAPE_improvement_mean"`, or
-  `"proportion_pred_is_better"`.
+  `"smape_diff_med"`, or `"winrate"`.
 
 - color_good:
 
@@ -61,6 +60,6 @@ eval_res <- nowcast_eval(
 #> Warning: n_past (10) exceeds available reporting periods (8). Will be using the max available instead: 7
 plot_nowcast_eval_by_delay(eval_res)
 
-plot_nowcast_eval_by_delay(eval_res, indicator = "proportion_pred_is_better")
+plot_nowcast_eval_by_delay(eval_res, indicator = "winrate")
 
 ```

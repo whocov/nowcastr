@@ -4,6 +4,7 @@
 
 - \[feature\] new theme for plots
 - \[bugfix\] remove 2 internal plot functions from exports
+- \[bugfix\] simplify evaluation results column names
 
 ## nowcastr 0.2.0
 

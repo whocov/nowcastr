@@ -25,7 +25,7 @@ per occurrence date)."></head><body>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/nowcastr.html">Get started</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/nowcastr.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/eval.html">Evaluate accuracy</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -165,26 +165,8 @@ If the RSS of the fit is higher than this then observed completeness is used for
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An S7 object of class <code>nowcast_eval_results</code> with slots:</p><dl><dt>detail</dt>
-<dd><p>data.frame with per-prediction errors (one row per occurrence date x delay x past period).</p></dd>
-
-<dt>summary</dt>
-<dd><p>data.frame with aggregated SMAPE and proportion_pred_is_better, by group and delay.</p></dd>
-
-<dt>params</dt>
-<dd><p>list of parameters used.</p></dd>
-
-<dt>n_past</dt>
-<dd><p>number of past periods evaluated.</p></dd>
-
-<dt>time_start</dt>
-<dd><p>POSIXct start time.</p></dd>
-
-<dt>time_end</dt>
-<dd><p>POSIXct end time.</p></dd>
-
-
-</dl></div>
+    <p>An S7 object of class <a href="nowcast_eval_results.html">nowcast_eval_results</a>.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

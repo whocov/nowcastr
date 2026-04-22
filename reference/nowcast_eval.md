@@ -114,33 +114,8 @@ nowcast_eval(
 
 ## Value
 
-An S7 object of class `nowcast_eval_results` with slots:
-
-- detail:
-
-  data.frame with per-prediction errors (one row per occurrence date x
-  delay x past period).
-
-- summary:
-
-  data.frame with aggregated SMAPE and proportion_pred_is_better, by
-  group and delay.
-
-- params:
-
-  list of parameters used.
-
-- n_past:
-
-  number of past periods evaluated.
-
-- time_start:
-
-  POSIXct start time.
-
-- time_end:
-
-  POSIXct end time.
+An S7 object of class
+[nowcast_eval_results](https://whocov.github.io/nowcastr/reference/nowcast_eval_results.md).
 
 ## Examples
 

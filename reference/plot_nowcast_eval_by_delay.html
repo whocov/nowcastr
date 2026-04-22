@@ -23,7 +23,7 @@ across all delays. Background shading indicates the direction of improvement."><
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/nowcastr.html">Get started</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/nowcastr.html">Getting started</a></li>
     <li><a class="dropdown-item" href="../articles/eval.html">Evaluate accuracy</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -59,7 +59,7 @@ across all delays. Background shading indicates the direction of improvement.</p
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_nowcast_eval_by_delay</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  indicator <span class="op">=</span> <span class="st">"SMAPE_improvement_med"</span>,</span>
+<span>  indicator <span class="op">=</span> <span class="st">"smape_diff_med"</span>,</span>
 <span>  color_good <span class="op">=</span> <span class="st">"dodgerblue1"</span>,</span>
 <span>  color_bad <span class="op">=</span> <span class="st">"firebrick1"</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -76,8 +76,7 @@ across all delays. Background shading indicates the direction of improvement.</p
 
 <dt id="arg-indicator">indicator<a class="anchor" aria-label="anchor" href="#arg-indicator"></a></dt>
 <dd><p>Character. Which metric to plot on the y-axis. One of:
-<code>"SMAPE_improvement_med"</code> (default), <code>"SMAPE_improvement_mean"</code>,
-or <code>"proportion_pred_is_better"</code>.</p></dd>
+<code>"smape_diff_med"</code>, or <code>"winrate"</code>.</p></dd>
 
 
 <dt id="arg-color-good">color_good<a class="anchor" aria-label="anchor" href="#arg-color-good"></a></dt>
@@ -111,7 +110,7 @@ or <code>"proportion_pred_is_better"</code>.</p></dd>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>n_past (10) exceeds available reporting periods (8). Will be using the max available instead: 7</span>
 <span class="r-in"><span><span class="fu">plot_nowcast_eval_by_delay</span><span class="op">(</span><span class="va">eval_res</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_nowcast_eval_by_delay-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">plot_nowcast_eval_by_delay</span><span class="op">(</span><span class="va">eval_res</span>, indicator <span class="op">=</span> <span class="st">"proportion_pred_is_better"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plot_nowcast_eval_by_delay</span><span class="op">(</span><span class="va">eval_res</span>, indicator <span class="op">=</span> <span class="st">"winrate"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot_nowcast_eval_by_delay-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

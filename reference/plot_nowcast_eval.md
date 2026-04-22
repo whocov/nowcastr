@@ -3,11 +3,11 @@
 Plots a horizontal bar chart of nowcasting evaluation metrics per group,
 at a selected delay. Two panels are shown side by side:
 
-- **SMAPE improvement**: median per-prediction SMAPE difference (obs
+- **Differential SMAPE**: median per-prediction SMAPE difference (obs
   minus pred; positive = prediction is better), with IQR as error bar.
 
-- **Proportion better**: share of past periods where prediction beat raw
-  observed, centered at 0 (0.5 = no improvement), with Wilson 95% CI.
+- **winrate**: share of past periods where prediction beat raw observed,
+  centered at 0 (0.5 = no improvement), with Wilson 95% CI.
 
 Bars are coloured by whether the improvement is significant (IQR / CI
 fully above or below zero) or not.
@@ -35,7 +35,7 @@ plot_nowcast_eval(
 - delay:
 
   Numeric. Which delay to plot. Defaults to the minimum delay in the
-  data.
+  data if missing.
 
 - color_good:
 

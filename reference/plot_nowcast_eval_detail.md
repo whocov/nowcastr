@@ -27,7 +27,7 @@ plot_nowcast_eval_detail(
 - delay:
 
   Numeric. Which delay to plot. Defaults to the minimum delay in the
-  data.
+  data if missing.
 
 - color_good:
 

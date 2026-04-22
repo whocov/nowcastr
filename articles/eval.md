@@ -1,12 +1,28 @@
 # Evaluate accuracy
 
-To evaluate the accuracy of the model, we can measure whether the
-nowcasted values outperformed the reported values in the past.
+To evaluate model accuracy,
 [`nowcast_eval()`](https://whocov.github.io/nowcastr/reference/nowcast_eval.md)
-does this by running
+performs historical backtesting. It iteratively applies
 [`nowcast_cl()`](https://whocov.github.io/nowcastr/reference/nowcast_cl.md)
-multiple times on past data, each time truncating the knowledge horizon
-so that only data available at that point in time is used.
+to past dates, censoring data that would have been unavailable at each
+point in time. By comparing these predicted values against the observed
+values (the raw data available at the time), we can quantify the model’s
+added value.
+
+We use two indicators:
+
+- **Win Rate**: The frequency with which the model’s absolute error is
+  lower than the observation’s absolute error. A value **\>50%**
+  suggests the nowcast is more reliable than the raw data.
+
+- **Differential sMAPE ($\Delta\text{sMAPE}$)**:
+
+  $$\Delta\text{sMAPE} = \text{sMAPE}_{\text{obs}} - \text{sMAPE}_{\text{pred}}$$
+
+  This measures the average reduction in symmetric error. A **positive
+  value** indicates the model improves accuracy over the initial report,
+  while a **negative value** suggests the raw data was already more
+  accurate.
 
 ## Run evaluation
 
@@ -30,7 +46,7 @@ nc_eval_obj <-
     do_model_fitting = TRUE
   )
 #> Evaluating nowcast  ■■■■■■■■■■■■■                    4/10 | ETA:  2s
-#> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■        8/10 | ETA:  1s
+#> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■     9/10 | ETA:  0s
 #> Evaluating nowcast  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  10/10 | ETA:  0s
 ```
 
@@ -56,35 +72,28 @@ nc_eval_obj@detail
 #> 10 SARS… 2025-09-29 2025-04-21      2025-09-29     32            34.4         32
 #> # ℹ 948 more rows
 #> # ℹ 5 more variables: delay <dbl>, SAPE_pred <dbl>, SAPE_obs <dbl>,
-#> #   SAPE_improvement <dbl>, pred_is_better <int>
+#> #   SAPE_improvement <dbl>, isWin <int>
 nc_eval_obj@summary
-#> # A tibble: 96 × 14
-#>    group       delay n_periods n_obs SMAPE_pred SMAPE_obs SMAPE_improvement_mean
-#>    <chr>       <dbl>     <int> <int>      <dbl>     <dbl>                  <dbl>
-#>  1 SARS-CoV-2…     0        10    10     1          1                     0     
-#>  2 SARS-CoV-2…     1        10    10     0.806      0.992                 0.186 
-#>  3 SARS-CoV-2…     2        10    10     0.364      0.799                 0.435 
-#>  4 SARS-CoV-2…     3        10    10     0.274      0.665                 0.391 
-#>  5 SARS-CoV-2…     4        10    10     0.227      0.525                 0.297 
-#>  6 SARS-CoV-2…     5        10    10     0.164      0.444                 0.280 
-#>  7 SARS-CoV-2…     6        10    10     0.115      0.320                 0.205 
-#>  8 SARS-CoV-2…     7        10    10     0.0964     0.256                 0.160 
-#>  9 SARS-CoV-2…     8        10    10     0.0736     0.204                 0.130 
-#> 10 SARS-CoV-2…     9        10    10     0.0705     0.169                 0.0986
+#> # A tibble: 96 × 10
+#>    group        delay n_periods n_obs smape_diff_med smape_diff_q1 smape_diff_q3
+#>    <chr>        <dbl>     <int> <int>          <dbl>         <dbl>         <dbl>
+#>  1 SARS-CoV-2 …     0        10    10          0             0             0    
+#>  2 SARS-CoV-2 …     1        10    10          0             0             0.217
+#>  3 SARS-CoV-2 …     2        10    10          0.581         0.303         0.664
+#>  4 SARS-CoV-2 …     3        10    10          0.573         0.253         0.647
+#>  5 SARS-CoV-2 …     4        10    10          0.416         0.243         0.467
+#>  6 SARS-CoV-2 …     5        10    10          0.379         0.247         0.428
+#>  7 SARS-CoV-2 …     6        10    10          0.274         0.233         0.300
+#>  8 SARS-CoV-2 …     7        10    10          0.236         0.192         0.237
+#>  9 SARS-CoV-2 …     8        10    10          0.201         0.154         0.203
+#> 10 SARS-CoV-2 …     9        10    10          0.131         0.124         0.144
 #> # ℹ 86 more rows
-#> # ℹ 7 more variables: SMAPE_improvement_med <dbl>, SMAPE_improvement_q1 <dbl>,
-#> #   SMAPE_improvement_q3 <dbl>, proportion_pred_is_better <dbl>, n_pairs <int>,
-#> #   CI_lower <dbl>, CI_upper <dbl>
+#> # ℹ 3 more variables: winrate <dbl>, winrate_low <dbl>, winrate_high <dbl>
 ```
 
 ## Plots
 
 ### Plot aggregated indicators
-
-- “SMAPE Improvement median” = median of the difference between
-  SMAPE(observed) and SMAPE(predicted)
-- “Proportion Better = proportion of predictions that outperform base
-  values (-50% to center around zero)
 
 ``` r
 plot_nowcast_eval(nc_eval_obj, delay = 0)
@@ -92,19 +101,19 @@ plot_nowcast_eval(nc_eval_obj, delay = 0)
 
 ![](eval_files/figure-html/unnamed-chunk-3-1.png)
 
-### Plot one indicator by delay / for one indicator
+### Plot one indicator by delay
 
 ``` r
-plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "SMAPE_improvement_med")
+plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "smape_diff_med")
 ```
 
 ![](eval_files/figure-html/unnamed-chunk-4-1.png)
 
-### Plot raw values / for one delay
+### Plot raw values, for one delay
 
 - predicted values
-- base reported values, at the time
-- last reported values
+- observed values (i.e. reported at the time)
+- last reported values (ground truth)
 
 ``` r
 plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
@@ -136,61 +145,57 @@ nc_eval_obj_with_fill <-
     time_units = "weeks",
     do_model_fitting = TRUE
   )
-
-# plot_nowcast_eval(nc_eval_obj_with_fill, delay = 0)
 ```
 
 ``` r
 library(dplyr)
-
-# indicator <- "proportion_pred_is_better"
-indicator <- "SMAPE_improvement_mean"
+indicator <- "smape_diff_med"
 
 scenario_a <- nc_eval_obj@summary %>%
-  dplyr::select("group", "delay", ind = all_of(indicator)) %>%
-  mutate(scenario = "A = no fill")
+  dplyr::select("group", "delay", "smape_diff_med") %>%
+  dplyr::mutate(scenario = "A = no fill")
 
 scenario_b <- nc_eval_obj_with_fill@summary %>%
-  dplyr::select("group", "delay", ind = all_of(indicator)) %>%
-  mutate(scenario = "B = fill")
+  dplyr::select("group", "delay", "smape_diff_med") %>%
+  dplyr::mutate(scenario = "B = fill")
 
 ## quick mean of everything
 dplyr::bind_rows(scenario_a, scenario_b) %>%
-  filter(delay <= 3) %>% ## predictions for older data are not that interesting
+  dplyr::filter(delay <= 3) %>% ## predictions for older data are not that interesting
   dplyr::summarise(
     .by = c(scenario),
-    ind = mean(ind, na.rm = T)
+    avg_smape_diff_med = mean(smape_diff_med, na.rm = T)
   ) %>%
-  mutate(tag = if_else(ind == max(ind), "better", "worse")) %>%
+  dplyr::mutate(tag = dplyr::if_else(avg_smape_diff_med == max(avg_smape_diff_med), "better", "worse")) %>%
   print()
 #> # A tibble: 2 × 3
-#>   scenario       ind tag   
-#>   <chr>        <dbl> <chr> 
-#> 1 A = no fill 0.0971 better
-#> 2 B = fill    0.0767 worse
+#>   scenario    avg_smape_diff_med tag   
+#>   <chr>                    <dbl> <chr> 
+#> 1 A = no fill             0.115  better
+#> 2 B = fill                0.0799 worse
 ```
 
 ``` r
-
-## Example comparison plot
+## Comparison plot
 library(ggplot2)
 dplyr::bind_rows(scenario_a, scenario_b) %>%
   dplyr::summarise(
     .by = c(delay, scenario, group),
-    ind = mean(ind, na.rm = T)
+    smape_diff_med = mean(smape_diff_med, na.rm = T)
   ) %>%
-  ggplot(aes(x = delay, y = ind, color = scenario)) +
+  ggplot(aes(x = delay, y = smape_diff_med, color = scenario)) +
   geom_point() +
   geom_line() +
   facet_wrap(~group) +
-  # ggplot2::scale_y_continuous(
-  #   labels = scales::label_percent()
-  # ) +
-  theme_nowcastr(20) +
+  # ggplot2::scale_y_continuous(labels = scales::label_percent()) +
+  theme_nowcastr() +
   labs(
-    y = "Mean SMAPE improvement", x = "Delay",
+    y = "Differential sMAPE",
+    x = "Delay",
     color = "Scenario",
-    title = "Compare accuracy of 2 scenarios",
+    title = "Compare Differential sMAPE of 2 scenarios",
     subtitle = "Higher is better"
   )
 ```
+
+![](eval_files/figure-html/unnamed-chunk-8-1.png)
