@@ -1,9 +1,9 @@
 #' Nowcasting with Chain-Ladder Method
 #'
 #' Performs nowcasting using non-cumulative Chain-Ladder Method.
-#' Input dataset with 2 date columns; 1 value column and a flexible number of group columns.
-#' Output dataset with latest reported data joined with `completeness` ratio and final `value_predicted`
-#' You have the option to use model-free completeness ratio calculation (faster) or use model-fitted completeness (slower).
+#' Input dataset with 2 date columns; 1 value column; and a flexible number of group columns.
+#' Output dataset with latest reported data joined with `completeness` ratio and final `value_predicted`.
+#' You have the option to use model-free completeness ratio calculation or use model-fitted completeness.
 #'
 #' @param df A data.frame or tibble.
 #' @param col_date_occurrence Column name for the date of occurrence/reference.
@@ -182,10 +182,12 @@ nowcast_cl <- function(
       units = time_units, as_difftime = !do_delay_asnumeric
     )
 
+  if (exists("verbose") && verbose) print(df_data_delays)
 
   ### SET AUTO MAX DELAY -----
   if (is.null(max_delay)) {
     max_delay <- max(df_data_delays$delay)
+    if (exists("verbose") && verbose) message("max_delay set to ", max_delay)
   }
 
   list_delays_input <- sort(unique(df_data_delays$delay))
@@ -199,15 +201,8 @@ nowcast_cl <- function(
   ## MAKE A THEORETICAL LIST OF DELAYS FROM MIN-MAX ---
   ## if some delays are missing then we add them here
   ## this will be used for model fitting
-  ## should follow pattern: c(min_delay, min_delay+1*time_units, min_delay+2*time_units, ..., max_delay ) )
-  # if (inherits(list_delays_input, "difftime")) {
-  list_delays <- as.difftime((as.numeric(min_delay)):as.numeric(max_delay), units = time_units)
-  # } else if (inherits(list_delays_input, "numeric")) {
-  #   list_delays <- as.numeric(min_delay):as.numeric(max_delay)
-  # } else {
-  #   rlang::abort("incorrect class for delays")
-  # }
 
+  list_delays <- as.difftime((as.numeric(min_delay)):as.numeric(max_delay), units = time_units)
   if (do_delay_asnumeric) {
     list_delays <- as.numeric(list_delays)
   }
@@ -217,16 +212,10 @@ nowcast_cl <- function(
   # -> smoother fits
 
 
-  # seq(as.numeric(min_delay), max_delay, by = time_units)
-  # seq(as.numeric(min_delay), max_delay)
-  # browser()
-  # seq(from = as.numeric(min_delay), to = as.numeric(max_delay), by = as.numeric(time_units)) %>% print()
-
-
   # todo: optimisation
   # trim data to speed up calculations
   # df_data_delays <- df_data_delays %>% filter(as.numeric(.data$delay) <= max_delay + 2)
-  # (2 is minimum to not impact df_completeness_details)
+  # (2 is minimum to not impact df_completeness_details, to verify)
 
   ### CALCULATE COMPLETENESS -----
   df_completeness_details <-
@@ -275,6 +264,8 @@ nowcast_cl <- function(
     df_completeness_details %>%
     ## 2 filters to select only trapeze of (max_delay x max_reportunits)
     filter(as.numeric(.data$delay) <= max_delay) %>%
+    ## get the last report date, by groups+delay, but only up to max_reportunits
+    ## (each group+delay, will have 10 different report dates)
     slice_max(!!s_col_rep, n = max_reportunits, by = c(!!!s_group_cols, "delay")) %>%
     group_by(!!!s_group_cols, .data$delay) %>%
     summarise(
