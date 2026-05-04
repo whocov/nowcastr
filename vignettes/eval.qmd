@@ -41,12 +41,14 @@ nc_eval_obj <-
   nowcast_demo %>%
   nowcast_eval(
     n_past = 10,
+    max_delay = 5,
+    max_reportunits = 8,
+    do_model_fitting = FALSE,
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
     group_cols = "group",
-    time_units = "weeks",
-    do_model_fitting = TRUE
+    time_units = "weeks"
   )
 ```
 
@@ -74,7 +76,8 @@ plot_nowcast_eval(nc_eval_obj, delay = 0)
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
-plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "smape_diff_med")
+plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "smape_diff_med") +
+  facet_wrap(. ~ group, scales = "free_y")
 ```
 
 ### Plot raw values, for one delay
@@ -92,6 +95,8 @@ plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
 
 ## Evaluate Scenarios
 
+## Vary fill_future_reported_values
+
 We can test if accuracy of nowcasts improve with or without `fill_future_reported_values()`:
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
@@ -108,12 +113,14 @@ nc_eval_obj_with_fill <-
   ) %>%
   nowcast_eval(
     n_past = 10,
+    max_delay = 5,
+    max_reportunits = 8,
+    do_model_fitting = FALSE,
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
     group_cols = "group",
-    time_units = "weeks",
-    do_model_fitting = TRUE
+    time_units = "weeks"
   )
 ```
 
@@ -126,11 +133,11 @@ indicator <- "smape_diff_med"
 
 scenario_a <- nc_eval_obj@summary %>%
   dplyr::select("group", "delay", "smape_diff_med") %>%
-  dplyr::mutate(scenario = "A = no fill")
+  dplyr::mutate(scenario = "No fill")
 
 scenario_b <- nc_eval_obj_with_fill@summary %>%
   dplyr::select("group", "delay", "smape_diff_med") %>%
-  dplyr::mutate(scenario = "B = fill")
+  dplyr::mutate(scenario = "Fill")
 
 ## quick mean of everything
 dplyr::bind_rows(scenario_a, scenario_b) %>%
@@ -139,7 +146,7 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
     .by = c(scenario),
     avg_smape_diff_med = mean(smape_diff_med, na.rm = T)
   ) %>%
-  dplyr::mutate(tag = dplyr::if_else(avg_smape_diff_med == max(avg_smape_diff_med), "better", "worse")) %>%
+  dplyr::mutate(tag = dplyr::if_else(avg_smape_diff_med == max(avg_smape_diff_med), "best overall", "")) %>%
   print()
 ```
 
@@ -157,7 +164,7 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
   ggplot(aes(x = delay, y = smape_diff_med, color = scenario)) +
   geom_point() +
   geom_line() +
-  facet_wrap(~group) +
+  facet_wrap(~group, scales = "free_y") +
   # ggplot2::scale_y_continuous(labels = scales::label_percent()) +
   theme_nowcastr() +
   labs(
@@ -167,4 +174,82 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
     title = "Compare Differential sMAPE of 2 scenarios",
     subtitle = "Higher is better"
   )
+```
+
+
+### Vary max_reportunits
+```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
+#| warning: false
+
+# devtools::load_all("~/gh/nowcastr")
+
+library(dplyr)
+{
+  results <- tibble()
+  results_details <- tibble()
+  for (ii in seq(2, 15, 1)) {
+    nc_eval_obj_i <-
+      nowcast_demo %>%
+      filter(group == "Syndromic ILI") %>%
+      nowcast_eval(
+        n_past = 99,
+        max_delay = 3,
+        max_reportunits = ii, ## this varies
+        do_model_fitting = FALSE,
+        col_date_occurrence = date_occurrence,
+        col_date_reporting = date_report,
+        col_value = value,
+        group_cols = "group",
+        time_units = "weeks"
+      )
+    res_i <- nc_eval_obj_i@summary %>% mutate(max_reportunits = ii)
+    res_d_i <- nc_eval_obj_i@detail %>% mutate(max_reportunits = ii)
+
+    results <- bind_rows(results, res_i)
+    results_details <- bind_rows(results_details, res_d_i)
+
+    # avg <- mean(res_i$smape_diff_med) |> signif(2)
+    # message(max_reportunits, ": ", avg)
+  }
+}
+
+library(ggplot2)
+results %>%
+  filter(group == "Syndromic ILI") %>%
+  filter(delay < 3) %>%
+  summarise(
+    .by = c(group, max_reportunits, delay),
+    avg_smape_diff_med = mean(smape_diff_med, na.rm = T)
+  ) %>%
+  mutate(
+    .by = c(group, delay),
+    best = if_else(avg_smape_diff_med == max(avg_smape_diff_med), "best", "")
+  ) %>%
+  mutate(delay = factor(delay)) %>%
+  ggplot(aes(x = max_reportunits, y = avg_smape_diff_med, color = delay, group = delay)) +
+  geom_line() +
+  geom_point() +
+  theme_nowcastr() +
+  # geom_text(aes(label = best)) +
+  # geom_point(color='red') +
+  # geom_point(aes(fill = best == 'best')) +
+  geom_point(shape = 21, aes(fill = best == "best")) +
+  scale_fill_manual(values = c("FALSE" = "transparent", "TRUE" = "red"), guide = "none") +
+  scale_color_viridis_d(option = "mako", begin = .4, end = .8) +
+  # ggplot2::scale_y_continuous(labels = scales::label_percent()) +
+  # facet_wrap(. ~ delay, scales = "free_y") +
+  facet_wrap(. ~ group, scales = "free_y") +
+  labs(y = "Differential sMAPE", x = "max_reportunits", color = "Delay")
+
+
+results %>%
+  filter(group == "Syndromic ILI") %>%
+  filter(delay < 3) %>%
+  summarise(
+    .by = c(max_reportunits),
+    n = n(),
+    avg_smape_diff_med = mean(smape_diff_med, na.rm = T)
+  ) %>%
+  mutate(tag = if_else(avg_smape_diff_med == max(avg_smape_diff_med), "best overall", "")) %>%
+  print()
 ```
