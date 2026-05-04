@@ -1,18 +1,18 @@
-<!-- Major.Minor.Patch -->
+<!-- Major.Minor.Patch <.dev> -->
 
 <!-- 
-* [feature] plot theme
+# nowcastr x.x.x
 * [feature] iterative last value convergence
 * [feature] horizontal gap filling
 * [feature] CI range propagation from fitted-model 
-* (work with tidytable)
+* [feature] work with tidytable
 -->
 
 
 # nowcastr 0.2.1
 - [feature] new theme for plots
 - [bugfix] remove 2 internal plot functions from exports
-- [bugfix] simplify evaluation results column names
+- [refactor] simplify evaluation results columns
 
 # nowcastr 0.2.0
 - [feature] accuracy evaluation function
@@ -37,10 +37,7 @@
 - [feature] testing data generator
 - [feature] testing and demo datasets
 
-
 <!-- 
 # nowcastr 0.0.1
-- Project started in Jan 2024 
-- oldest file: 2024-01-30
-- First git commit: May 2024
+- Project started in Jan 2024
 -->
