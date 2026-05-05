@@ -764,7 +764,7 @@ tbl_models_stats <- function(
     nc_obj@models %>%
       mutate(
         R2 = purrr::map2_dbl(.data$data, .data$RSS, function(dat, rss) {
-          ss_tot <- sum((dat$y - mean(dat$y, na.rm = TRUE))^2)
+          ss_tot <- sum((dat$y - mean(dat$y, na.rm = TRUE))^2, na.rm = TRUE)
           if (ss_tot == 0) {
             return(NA_real_)
           } # Prevent division by zero if data is perfectly flat
