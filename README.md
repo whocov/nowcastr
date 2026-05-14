@@ -20,7 +20,11 @@ R package for nowcasting with non-cumulative chain-ladder method.
   - `calculate_retro_score()`: Calculate retro-scores for all groups
   - `rm_repeated_values()`: Remove duplicated reported values in reporting matrix
   - `fill_future_reported_values()`: Fill future reported values with last known values
-
+- Accuracy Evaluation
+  - `nowcast_eval()`: perform evaluation
+  - `plot_nowcast_eval()`: plot main eval results
+  - `plot_nowcast_eval_by_delay()`: plot eval results by delay
+  - `plot_nowcast_eval_detail()`: plot detailed eval results
 
 ## Installation
 
@@ -29,29 +33,57 @@ install.packages("nowcastr")
 ``` -->
 
 ``` r
-pak::pak("whocov/nowcastr")
+## install from GitHub
+pak::pak("whocov/nowcastr") # recommended, more up to date versions
+
+## install from CRAN
+install.packages("nowcastr")
 ```
 
 
 ## Quick Start
 
-
-```r
+``` r
 library(nowcastr)
 
-# Run nowcast with built-in demo data
-result <- nowcast_demo %>% 
-  nowcast_cl(
+## Get your data
+nc_data <- nowcast_demo
+
+## Plot input data
+nc_data %>%
+  plot_nc_input(
+    option = "triangle", # or "millipede"
     col_date_occurrence = date_occurrence,
     col_date_reporting = date_report,
     col_value = value,
     group_cols = "group"
   )
 
-# View results
-print(result@results)
-plot(result, which = "results")
+## Run nowcast with built-in demo data
+nc_obj <- nc_data %>% 
+  nowcast_cl(
+    max_delay = 5, # optional
+    max_reportunits = 8, # optional
+    col_date_occurrence = date_occurrence,
+    col_date_reporting = date_report,
+    col_value = value,
+    group_cols = "group",
+    time_units = "weeks",
+    do_model_fitting = TRUE
+  )
+
+## Plot nowcasted time series
+plot(nc_obj, which = "results")
+print(nc_obj@results) # inspect data frame
+
+## Plot delay distribution
+plot(nc_obj, which = "delays")
+print(nc_obj@delays) # inspect data frame
 ```
+
+
+More detailed examples are available in the [Getting started](https://whocov.github.io/nowcastr/articles/nowcastr.html) vignette.
+
 
 
 ## Data Requirements
@@ -61,127 +93,41 @@ Dataset with at least 2 date columns and a value column. The dataset can also ha
 Note that the delays (difference between the 2 dates) should have constant intervals, *i.e.*, multiples of 1 day or 7 days.
 
 ``` r
-print(nowcast_demo)
+dplyr::glimpse(nowcast_demo, 70)
 
-# # A tibble: 1,624 × 4
-#     value date_occurrence date_report group        
-#     <dbl> <date>         <date>      <chr>
-#  1 251563 2024-12-16     2025-05-26  Syndromic ARI
-#  2 219818 2024-12-23     2025-05-26  Syndromic ARI
-#  3 219815 2024-12-23     2025-06-02  Syndromic ARI
-#  4 253451 2024-12-30     2025-05-26  Syndromic ARI
-#  5 253454 2024-12-30     2025-06-09  Syndromic ARI
-#  6 311660 2025-01-06     2025-05-26  Syndromic ARI
-#  7 311666 2025-01-06     2025-06-02  Syndromic ARI
-#  8 311654 2025-01-06     2025-06-09  Syndromic ARI
-#  9 311657 2025-01-06     2025-06-16  Syndromic ARI
-# 10 313798 2025-01-13     2025-05-26  Syndromic ARI
-# # ℹ 1,614 more rows
-```
+# Rows: 1,624
+# Columns: 4
+# $ value           <dbl> 251563, 219818, 219815, 253451, 253454, 3116…
+# $ date_occurrence <date> 2024-12-16, 2024-12-23, 2024-12-23, 2024-12…
+# $ date_report     <date> 2025-05-26, 2025-05-26, 2025-06-02, 2025-05…
+# $ group           <chr> "Syndromic ARI", "Syndromic ARI", "Syndromic…
 
-## Usage
-
-
-### Data Preparation
-
-``` r
-## Visualize input data
-nowcast_demo %>%
-  plot_nc_input(
-    option = "triangle",
-    col_date_occurrence = date_occurrence,
-    col_date_reporting = date_report,
-    col_value = value,
-    group_cols = "group"
-  )
-
-## Fill the missing (optional)
-data <-
-  nowcast_demo %>%
-  fill_future_reported_values(
-    col_date_occurrence = date_occurrence,
-    col_date_reporting = date_report,
-    col_value = value,
-    group_cols = "group",
-    max_delay = "auto"
-  )
-
-## Visualize the change
-data %>%
-  plot_nc_input(
-    option = "triangle",
-    col_date_occurrence = date_occurrence,
-    col_date_reporting = date_report,
-    col_value = value,
-    group_cols = "group"
-  )
-```
-
-### Nowcast
-
-``` r
-nowcast <- data %>%
-  nowcast_cl(
-    col_date_occurrence = date_occurrence,
-    col_date_reporting = date_report,
-    col_value = value,
-    group_cols = "group",
-    time_units = "weeks",
-    do_model_fitting = TRUE,
-  )
-```
-
-
-### Plotting Results
-
-``` r
-print(nowcast@delays)
-nowcast %>% plot(which = "delays")
-```
-
-``` r
-print(nowcast@results)
-nowcast %>% plot(which = "results")
 ```
 
 
 
 ## Output Object
 
-`nowcast_cl()` returns an S7 object of class `nowcast_results` with the following properties:
+`nowcast_cl()` returns an S7 object of class `nowcast_results` with the following slots (access with `@`):
 
-| Property | Type | Description |
+| Slot | Type | Description |
 |----------|------|-------------|
-| `name` | character | Timestamp identifier for the run |
-| `params` | list | Parameters used for nowcasting (unevaluated call) |
-| `time_start` | POSIXct | Sys time when function started |
-| `time_end` | POSIXct | Sys time when function ended |
-| `n_groups` | numeric | Number of groups processed |
-| `max_delay` | numeric | Maximum delay used |
-| `data` | data.frame | Original input data (required columns only) |
-| `completeness` | data.frame | Input data with delays and completeness columns |
-| `delays` | data.frame | Aggregated completeness per delay (+ `modelled` column if fitted) |
-| `models` | data.frame | Fitted models (empty if `do_model_fitting = FALSE`) |
-| `results` | data.frame | Final nowcasting predictions |
-
-Access properties with `@`:
-
-```r
-nowcast@delays
-nowcast@results
-nowcast@params
-```
-
-Available methods:
-- `print(nowcast)` - Summary of nowcast results
-- `plot(nowcast, which = "delays")` - Delay distribution
-- `plot(nowcast, which = "results")` - Nowcast time series
+| `@name` | character | Timestamp identifier for the run |
+| `@params` | list | Parameters used for nowcasting (unevaluated call) |
+| `@time_start` | POSIXct | Sys time when function started |
+| `@time_end` | POSIXct | Sys time when function ended |
+| `@n_groups` | numeric | Number of groups processed |
+| `@max_delay` | numeric | Maximum delay used |
+| `@data` | data.frame | Original input data (required columns only) |
+| `@completeness` | data.frame | Input data with delays and completeness columns |
+| `@delays` | data.frame | Aggregated completeness per delay (+ `modelled` column if fitted) |
+| `@models` | data.frame | Fitted models (empty if `do_model_fitting = FALSE`) |
+| `@results` | data.frame | Final nowcasting predictions |
 
 
 
-## Methods
 
-Summary:  
+## Methods Summary
 
 <ol>
 
