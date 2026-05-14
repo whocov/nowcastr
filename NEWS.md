@@ -12,8 +12,8 @@
 # nowcastr 0.2.1
 - [feature] new theme for plots
 - [refactor] simplify evaluation results columns
-- [bugfix] remove 2 internal plot functions from exports
-- [bugfix] r squared calculation with na.rm in plot delays <!-- rm.na in ss_tot calculation  -->
+- [refactor] remove 2 internal plot functions from exports
+- [bugfix] r squared calculation with na.rm in plot delays <!-- added `rm.na=T` in ss_tot calculation  -->
 
 # nowcastr 0.2.0
 - [feature] accuracy evaluation function
