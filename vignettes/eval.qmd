@@ -76,8 +76,9 @@ plot_nowcast_eval(nc_eval_obj, delay = 0)
 
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
+# library(ggplot2)
 plot_nowcast_eval_by_delay(nc_eval_obj, indicator = "smape_diff_med") +
-  facet_wrap(. ~ group, scales = "free_y")
+  ggplot2::facet_wrap(. ~ group, scales = "free_y")
 ```
 
 ### Plot raw values, for one delay
