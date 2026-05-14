@@ -164,12 +164,12 @@ nowcast %>% plot(which = "results")
 | `models` | data.frame | Fitted models (empty if `do_model_fitting = FALSE`) |
 | `results` | data.frame | Final nowcasting predictions |
 
-Access properties with `$`:
+Access properties with `@`:
 
 ```r
-nowcast$delays
-nowcast$results
-nowcast$params
+nowcast@delays
+nowcast@results
+nowcast@params
 ```
 
 Available methods:
