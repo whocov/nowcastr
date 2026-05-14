@@ -84,9 +84,9 @@ observed values, the calculated \code{completeness} ratio, and the
 }
 \description{
 Performs nowcasting using non-cumulative Chain-Ladder Method.
-Input dataset with 2 date columns; 1 value column and a flexible number of group columns.
-Output dataset with latest reported data joined with \code{completeness} ratio and final \code{value_predicted}
-You have the option to use model-free completeness ratio calculation (faster) or use model-fitted completeness (slower).
+Input dataset with 2 date columns; 1 value column; and a flexible number of group columns.
+Output dataset with latest reported data joined with \code{completeness} ratio and final \code{value_predicted}.
+You have the option to use model-free completeness ratio calculation or use model-fitted completeness.
 }
 \examples{
 input <- generate_test_data()
