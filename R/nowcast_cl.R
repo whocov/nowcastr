@@ -182,12 +182,9 @@ nowcast_cl <- function(
       units = time_units, as_difftime = !do_delay_asnumeric
     )
 
-  if (exists("verbose") && verbose) print(df_data_delays)
-
   ### SET AUTO MAX DELAY -----
   if (is.null(max_delay)) {
     max_delay <- max(df_data_delays$delay)
-    if (exists("verbose") && verbose) message("max_delay set to ", max_delay)
   }
 
   list_delays_input <- sort(unique(df_data_delays$delay))
