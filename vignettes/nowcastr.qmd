@@ -141,6 +141,8 @@ nc_obj <-
     col_value = value,
     group_cols = "group",
     time_units = "weeks",
+    # max_delay = 5,
+    # max_reportunits = 8,
     do_model_fitting = TRUE
   )
 ```
