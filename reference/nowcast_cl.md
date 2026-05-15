@@ -1,11 +1,11 @@
 # Nowcasting with Chain-Ladder Method
 
 Performs nowcasting using non-cumulative Chain-Ladder Method. Input
-dataset with 2 date columns; 1 value column and a flexible number of
+dataset with 2 date columns; 1 value column; and a flexible number of
 group columns. Output dataset with latest reported data joined with
-`completeness` ratio and final `value_predicted` You have the option to
-use model-free completeness ratio calculation (faster) or use
-model-fitted completeness (slower).
+`completeness` ratio and final `value_predicted`. You have the option to
+use model-free completeness ratio calculation or use model-fitted
+completeness.
 
 ## Usage
 

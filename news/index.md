@@ -3,8 +3,9 @@
 ## nowcastr 0.2.1
 
 - \[feature\] new theme for plots
-- \[bugfix\] remove 2 internal plot functions from exports
-- \[bugfix\] simplify evaluation results column names
+- \[refactor\] simplify evaluation results columns
+- \[refactor\] remove 2 internal plot functions from exports
+- \[bugfix\] r squared calculation with na.rm in plot delays
 
 ## nowcastr 0.2.0
 

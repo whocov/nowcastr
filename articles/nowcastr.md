@@ -13,10 +13,12 @@ data.
 The package is available on GitHub. Install it with:
 
 ``` r
+
 pak::pak("whocov/nowcastr")
 ```
 
 ``` r
+
 library(nowcastr)
 ```
 
@@ -34,6 +36,7 @@ The package includes a demo dataset `nowcast_demo` that follows this
 structure
 
 ``` r
+
 print(nowcast_demo)
 #> # A tibble: 1,624 × 4
 #>     value date_occurrence date_report group        
@@ -64,6 +67,7 @@ steps.
 Before nowcasting, inspect the reporting pattern of your data:
 
 ``` r
+
 nowcast_demo %>%
   plot_nc_input(
     option = "triangle",
@@ -80,6 +84,7 @@ The “millipede” plot provides an alternative view of delays. Each
 reporting date is mapped to a distinct line and color.
 
 ``` r
+
 nowcast_demo %>%
   plot_nc_input(
     option = "millipede",
@@ -98,6 +103,7 @@ Depending on your data and use case, you may want to fill missing values
 with the last known reported value.
 
 ``` r
+
 data_filled <- nowcast_demo %>%
   fill_future_reported_values(
     col_date_occurrence = date_occurrence,
@@ -125,6 +131,7 @@ This step is optional; `nowcast_cl` can handle unfilled data.
 Perform the nowcasting using the chain-ladder method:
 
 ``` r
+
 nc_obj <-
   data_filled %>%
   nowcast_cl(
@@ -133,6 +140,8 @@ nc_obj <-
     col_value = value,
     group_cols = "group",
     time_units = "weeks",
+    # max_delay = 5,
+    # max_reportunits = 8,
     do_model_fitting = TRUE
   )
 ```
@@ -143,6 +152,7 @@ function returns a `nowcast_results` object containing predictions,
 delay distributions, completeness estimates, and parameters.
 
 ``` r
+
 S7::prop_names(nc_obj)
 #>  [1] "name"         "params"       "time_start"   "time_end"     "n_groups"    
 #>  [6] "max_delay"    "data"         "completeness" "delays"       "models"      
@@ -154,6 +164,7 @@ S7::prop_names(nc_obj)
 Access the different datasets.
 
 ``` r
+
 nc_obj@results # Final nowcasted values
 #> # A tibble: 95 × 7
 #>    group    date_occurrence last_r_date delay value value_predicted completeness
@@ -205,6 +216,7 @@ nc_obj@completeness # Detailed completeness estimates
 Plot the results:
 
 ``` r
+
 # Delay distribution
 plot(nc_obj, which = "delays") +
   ggplot2::labs(
@@ -216,6 +228,7 @@ plot(nc_obj, which = "delays") +
 ![](nowcastr_files/figure-html/unnamed-chunk-11-1.png)
 
 ``` r
+
 
 # Nowcast time series
 plot(nc_obj, which = "results") +
@@ -230,6 +243,7 @@ plot(nc_obj, which = "results") +
 Open a Shiny app to explore results group by group:
 
 ``` r
+
 nowcast_explore(nc_obj)
 ```
 
@@ -254,6 +268,7 @@ The retro-score is the ratio of actual value changes to maximum possible
 changes \[0-1\].
 
 ``` r
+
 # Calculate retro-scores
 retroscores <- nowcast_demo %>%
   calculate_retro_score(
@@ -273,6 +288,7 @@ print(retroscores)
 ```
 
 ``` r
+
 retroscores %>%
   ggplot2::ggplot(ggplot2::aes(y = stats::reorder(group, retro_score), x = retro_score)) +
   ggplot2::geom_bar(stat = "identity", fill = "dodgerblue1") +
@@ -295,6 +311,7 @@ This is somewhat the opposite of
 [`fill_future_reported_values()`](https://whocov.github.io/nowcastr/reference/fill_future_reported_values.md).
 
 ``` r
+
 # Remove duplicate reported values (same value and higher reporting date)
 nowcast_demo %>%
   rm_repeated_values(
