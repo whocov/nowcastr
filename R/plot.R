@@ -752,7 +752,7 @@ S7::method(plot, nowcast_results) <- function(
 #' @param nc_obj A `nowcast_results` object.
 #' @param thresholds_r2 R squared threshold to classify `eval` into good or bad fit
 #' @return A tibble.
-#' @noRd
+#' @export
 tbl_models_stats <- function(
   nc_obj,
   thresholds_r2 = 0.8
