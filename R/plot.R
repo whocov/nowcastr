@@ -633,8 +633,9 @@ S7::method(plot, nowcast_results) <- function(
 
 
     if (add_model_info && x@params$do_model_fitting) {
-      df_model_stats <- x %>%
-        tbl_models_stats()
+      df_model_stats <-
+        tbl_models_stats(x) %>%
+        filter(t_to_95_model <= x@max_delay) # solve t_to_95_model > max_delay
 
       ggtextresize <- function(base_size, ratio = 0.5) {
         ratio * base_size / ggplot2::.pt
@@ -660,9 +661,10 @@ S7::method(plot, nowcast_results) <- function(
           size = ggtextresize(base_size) # size = rel(3) # size = 7 / .pt
         ) +
         ## MODEL TIME TO 95% ---
+        # scale_x_continuous(limits = c(NA, x@max_delay)) + # solve t_to_95_model > max_delay. but cant override scale_x later.
         geom_vline( ## doesnt force y limit to 0
           data = df_model_stats,
-          aes(xintercept = t_to_95_model),
+          aes(xintercept = t_to_95_model), ## can be > max_delay
           alpha = 0.3,
           linetype = "dashed"
         ) +
@@ -670,7 +672,7 @@ S7::method(plot, nowcast_results) <- function(
           data = df_model_stats,
           aes(
             label = t_to_95_model,
-            x = t_to_95_model,
+            x = t_to_95_model, ## can be > max_delay
             y = ifelse(start_completeness_pred < 1, 0.95, 1.05),
             vjust = ifelse(start_completeness_pred < 1, 1.9, -.9),
           ),
@@ -678,6 +680,8 @@ S7::method(plot, nowcast_results) <- function(
           fontface = "bold",
           size = ggtextresize(base_size)
         )
+      ## avoid decimals, without changing number of breaks
+      # scale_x_continuous(breaks = function(x) unique(floor(pretty(x)))) +
     }
 
     # ## add t_to_95_model
