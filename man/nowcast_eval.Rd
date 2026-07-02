@@ -22,7 +22,8 @@ nowcast_eval(
   model_names = c("monomolecular", "vonbertalanffy", "logistic", "gompertz",
     "asymptotic", "linear"),
   do_use_modelled_completeness = TRUE,
-  rss_threshold = 0.01
+  rss_threshold = 0.01,
+  show_cli_progress_bar = FALSE
 )
 }
 \arguments{
@@ -68,6 +69,8 @@ Boolean or NULL (for auto selective).  (unused if do_model_fitting=FALSE)}
 \item{rss_threshold}{Minimum RSS threshold to use model-fitted values.
 Only used if do_use_modelled_completeness is NULL.
 If the RSS of the fit is higher than this then observed completeness is used for nowcasting.}
+
+\item{show_cli_progress_bar}{Logical. Should a progress bar be shown? (using cli package)}
 }
 \value{
 An S7 object of class \link{nowcast_eval_results}.

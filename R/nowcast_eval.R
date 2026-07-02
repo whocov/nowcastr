@@ -7,6 +7,7 @@
 #'
 #' @param n_past Integer. Number of past reporting periods to evaluate.
 #'   Each iteration peels off one reporting period (in `time_units`).
+#' @param show_cli_progress_bar Logical. Should a progress bar be shown? (using cli package)
 #' @inheritParams nowcast_cl
 #'
 #' @return An S7 object of class \link{nowcast_eval_results}.
@@ -49,7 +50,8 @@ nowcast_eval <- function(
     "asymptotic", "linear"
   ),
   do_use_modelled_completeness = TRUE,
-  rss_threshold = 1e-2
+  rss_threshold = 1e-2,
+  show_cli_progress_bar = FALSE
 ) {
   time_start <- Sys.time()
 
@@ -103,11 +105,13 @@ nowcast_eval <- function(
   list_cut_dates <- all_rep_dates[seq_len(n_past)]
 
   ## LOOP -----
-  cli::cli_progress_bar(
-    name = "Evaluating nowcast",
-    total = n_past,
-    format = "{cli::pb_name} {cli::pb_bar} {cli::pb_current}/{cli::pb_total} | ETA: {cli::pb_eta}"
-  )
+  if (show_cli_progress_bar) {
+    cli::cli_progress_bar(
+      name = "Evaluating nowcast",
+      total = n_past,
+      format = "{cli::pb_name} {cli::pb_bar} {cli::pb_current}/{cli::pb_total} | Elapsed: {cli::pb_elapsed} | ETA: {cli::pb_eta}"
+    )
+  }
 
   list_results <- vector("list", n_past)
 
@@ -150,10 +154,10 @@ nowcast_eval <- function(
       list_results[[i]] <- nc
     }
 
-    cli::cli_progress_update()
+    if (show_cli_progress_bar) cli::cli_progress_update()
   }
 
-  cli::cli_progress_done()
+  if (show_cli_progress_bar) cli::cli_progress_done()
 
   ## ASSEMBLE ALL PREDICTIONS -----
   df_all <- dplyr::bind_rows(list_results)
@@ -260,9 +264,6 @@ nowcast_eval <- function(
     time_end   = Sys.time()
   )
 }
-
-
-
 
 
 #' S7 object class for Nowcast Evaluation Results
