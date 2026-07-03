@@ -35,6 +35,7 @@ reference:
   - plot_nowcast
   - nowcast_explore
   - theme_nowcastr
+  - tbl_models_stats
 
 - title: "Evaluation"
   contents:
