@@ -27,7 +27,8 @@ nowcast_eval(
   model_names = c("monomolecular", "vonbertalanffy", "logistic", "gompertz",
     "asymptotic", "linear"),
   do_use_modelled_completeness = TRUE,
-  rss_threshold = 0.01
+  rss_threshold = 0.01,
+  show_cli_progress_bar = FALSE
 )
 ```
 
@@ -111,6 +112,10 @@ nowcast_eval(
   Minimum RSS threshold to use model-fitted values. Only used if
   do_use_modelled_completeness is NULL. If the RSS of the fit is higher
   than this then observed completeness is used for nowcasting.
+
+- show_cli_progress_bar:
+
+  Logical. Should a progress bar be shown? (using cli package)
 
 ## Value
 

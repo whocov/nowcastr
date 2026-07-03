@@ -24,6 +24,8 @@
   : Explore Nowcast Results with Shiny
 - [`theme_nowcastr()`](https://whocov.github.io/nowcastr/reference/theme_nowcastr.md)
   : Nowcastr ggplot2 Theme
+- [`tbl_models_stats()`](https://whocov.github.io/nowcastr/reference/tbl_models_stats.md)
+  : Compute table with models result stats.
 
 ## Evaluation
 

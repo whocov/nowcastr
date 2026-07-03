@@ -129,9 +129,9 @@ plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
 
 ![](eval_files/figure-html/unnamed-chunk-5-1.png)
 
-## Evaluate Scenarios
+## Examples: Evaluate Scenarios
 
-## Vary fill_future_reported_values
+### Example 1: Vary fill_future_reported_values
 
 We can test if accuracy of nowcasts improve with or without
 [`fill_future_reported_values()`](https://whocov.github.io/nowcastr/reference/fill_future_reported_values.md):
@@ -215,7 +215,7 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
 
 ![](eval_files/figure-html/unnamed-chunk-8-1.png)
 
-### Vary max_reportunits
+### Example 2: Vary max_reportunits
 
 ``` r
 
