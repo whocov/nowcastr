@@ -2,18 +2,29 @@
 % Please edit documentation in R/plot.R
 \name{tbl_models_stats}
 \alias{tbl_models_stats}
-\title{Unwrap nowcast models stats}
+\title{Compute table with models result stats.}
 \usage{
 tbl_models_stats(nc_obj, thresholds_r2 = 0.8)
 }
 \arguments{
 \item{nc_obj}{A \code{nowcast_results} object.}
 
-\item{thresholds_r2}{R squared threshold to classify \code{eval} into good or bad fit}
+\item{thresholds_r2}{Numeric scalar. R-squared threshold above which
+(combined with end completeness near 1) a model is classified \code{"Good Fit"}.}
 }
 \value{
-A tibble.
+A tibble with one row per fitted model, including columns for
+group variables, \code{R2}, \code{RSS}, model coefficients (\code{a}, \code{b}, \code{c}),
+completeness at start/end, and \code{eval} ("Good Fit"/"Bad Fit"). If
+\code{nc_obj@models} has no rows, it is returned unchanged.
 }
 \description{
-Unwrap nowcast models stats
+Summarizes fitted growth models per group, computing R-squared, fit
+evaluation (good/bad), and completeness at start/end of observed data.
+}
+\examples{
+\dontrun{
+tbl_models_stats(nc_obj)
+tbl_models_stats(nc_obj, thresholds_r2 = 0.9)
+}
 }
