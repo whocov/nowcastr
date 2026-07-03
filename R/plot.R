@@ -816,8 +816,8 @@ tbl_models_stats <- function(
 ) {
   group_cols <- nc_obj@params$group_cols
 
-  if (ncol(nc_obj@models) == 0) {
-    return(nc_obj@models) ## has different col structure
+  if (nrow(nc_obj@models) == 0) {
+    return(nc_obj@models)
   } else {
     nc_obj@models %>%
       mutate(
