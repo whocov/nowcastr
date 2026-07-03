@@ -94,9 +94,9 @@ plot_nowcast_eval_detail(nc_eval_obj, delay = 0)
 
 
 
-## Evaluate Scenarios
+## Examples: Evaluate Scenarios
 
-## Vary fill_future_reported_values
+### Example 1: Vary fill_future_reported_values
 
 We can test if accuracy of nowcasts improve with or without `fill_future_reported_values()`:
 
@@ -178,7 +178,7 @@ dplyr::bind_rows(scenario_a, scenario_b) %>%
 ```
 
 
-### Vary max_reportunits
+### Example 2: Vary max_reportunits
 ```{r, fig.width=9, fig.asp=5.5/10, out.width="100%"}
 #| warning: false
 
