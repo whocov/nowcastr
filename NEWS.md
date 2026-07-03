@@ -14,6 +14,7 @@
 - [refactor] simplify evaluation results columns
 - [refactor] remove 2 internal plot functions from exports
 - [bugfix] r squared calculation with na.rm in plot delays <!-- added `rm.na=T` in ss_tot calculation  -->
+- [refactor] Add good fit/bad fit color to delays and results plots.
 
 # nowcastr 0.2.0
 - [feature] accuracy evaluation function
