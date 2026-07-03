@@ -1,4 +1,4 @@
-Version: 0.2.1.9000
+Version: 0.2.1
 Package: nowcastr
 Title: Nowcasting with Chain-Ladder Method
 Description: Nowcasting using the Chain-Ladder method. Supports both non-cumulative delay-based estimation and model-based completeness fitting (e.g., using logistic or Gompertz curves) to predict final counts from partially reported data.
