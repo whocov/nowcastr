@@ -553,7 +553,7 @@ plot_nowcast <- function(
 #' @param which Which plot to draw, one of "results", "data", or "delays".
 #' @param option Either "millipede" or "triangle". Only for `which = "data"`.
 #' @param do_rescale Rescale values 0-1. Boolean. Only for `which = "data"` or `which = "delays"`.
-#' @param add_model_info Add model info to the plot. Boolean. Only for `which = "delays"`.
+#' @param add_model_info Add model info to the plot. Boolean. Colors plots blue or red. Only for `which = "delays" and "results"`.
 #' @param base_size theme base size. (allows to scale geom_text and geom_label sizes)
 #' @param ... Additional arguments passed to methods.
 #' @return A ggplot object.
@@ -563,7 +563,7 @@ plot_nowcast <- function(
 #' @importFrom scales rescale
 #' @noRd
 S7::method(plot, nowcast_results) <- function(
-  nc_obj,
+  x,
   which = "results",
   option = "millipede",
   do_rescale = FALSE,
@@ -576,10 +576,10 @@ S7::method(plot, nowcast_results) <- function(
 ) {
   ## PREP INPUT ---
   ## extract from @params
-  col_value <- rlang::syms(nc_obj@params$col_value)[[1]]
-  col_date_occurrence <- rlang::syms(nc_obj@params$col_date_occurrence)[[1]]
-  col_date_reporting <- rlang::syms(nc_obj@params$col_date_reporting)[[1]]
-  group_cols <- nc_obj@params$group_cols
+  col_value <- rlang::syms(x@params$col_value)[[1]]
+  col_date_occurrence <- rlang::syms(x@params$col_date_occurrence)[[1]]
+  col_date_reporting <- rlang::syms(x@params$col_date_reporting)[[1]]
+  group_cols <- x@params$group_cols
   ## names and symbols
   str_col_val <- rlang::as_name(rlang::enquo(col_value))
   str_col_occ <- rlang::as_name(rlang::enquo(col_date_occurrence))
@@ -596,17 +596,32 @@ S7::method(plot, nowcast_results) <- function(
 
 
   ## force modify do_rescale
-  if (!do_rescale && which == "data" && option == "triangle" && nc_obj@n_groups > 1) {
+  if (!do_rescale && which == "data" && option == "triangle" && x@n_groups > 1) {
     do_rescale <- TRUE
     message("Note: do_rescale has been changed to TRUE because multiple groups are present and color scales are free in facets")
   }
 
 
+  if (add_model_info && x@params$do_model_fitting) {
+    df_model_stats <-
+      tbl_models_stats(x) %>%
+      # solve t_to_95_model > max_delay
+      mutate(t_to_95_model = ifelse(t_to_95_model > x@max_delay, NA_real_, t_to_95_model)) %>%
+      rename()
+
+    color_good <- "dodgerblue2"
+    color_bad <- "firebrick2"
+
+    ggtextresize <- function(base_size, ratio = 0.5) {
+      ratio * base_size / ggplot2::.pt
+    }
+  }
+
   fig <- NULL ## default
 
   if (which == "data") {
     fig <- plot_nc_input(
-      df = nc_obj@data,
+      df = x@data,
       col_value = !!s_col_val,
       col_date_occurrence = !!s_col_occ,
       col_date_reporting = !!s_col_rep,
@@ -618,37 +633,22 @@ S7::method(plot, nowcast_results) <- function(
     # do_rescale <- FALSE
 
     args <- list(
-      df = nc_obj@delays,
+      df = x@delays,
       col_completeness_obs = "completeness_obs",
       group_cols = group_cols
     )
 
-    if ("completeness_modelled" %in% names(nc_obj@delays)) {
+    if ("completeness_modelled" %in% names(x@delays)) {
       args$col_completeness_modelled <- "completeness_modelled"
     }
 
     fig <-
       do.call(plot_delays, args) +
-      labs(x = paste0("Delays [", nc_obj@params$time_units, "]"))
+      labs(x = paste0("Delays [", x@params$time_units, "]"))
 
 
-    if (add_model_info && nc_obj@params$do_model_fitting) {
-      df_model_stats <-
-        tbl_models_stats(nc_obj) %>%
-        # solve t_to_95_model > max_delay
-        mutate(t_to_95_model = ifelse(t_to_95_model > nc_obj@max_delay, NA_real_, t_to_95_model)) %>%
-        rename()
-
-
-      ggtextresize <- function(base_size, ratio = 0.5) {
-        ratio * base_size / ggplot2::.pt
-      }
-
-      color_good <- "dodgerblue2"
-      color_bad <- "firebrick2"
-
-      fig <-
-        fig +
+    if (add_model_info && x@params$do_model_fitting) {
+      fig <- fig +
         geom_hline(
           yintercept = 1,
           alpha = 0.3,
@@ -675,7 +675,7 @@ S7::method(plot, nowcast_results) <- function(
               "\nR2: ", signif(R2, 2), # should try R\u00b2, but superscript 2 is not allowed, non-ascii
               ""
             ),
-            x = nc_obj@max_delay * 0.7, hjust = 0, # 70% from the end
+            x = x@max_delay * 0.7, hjust = 0, # 70% from the end
             y = end_completeness_pred,
             vjust = ifelse(start_completeness_pred < 1, 1.9, -.9), ## above or below the line
           ),
@@ -684,11 +684,11 @@ S7::method(plot, nowcast_results) <- function(
           size = ggtextresize(base_size) # size = rel(3) # size = 7 / .pt
         ) +
         ## MODEL TIME TO 95% ---
-        # scale_x_continuous(limits = c(NA, nc_obj@max_delay)) + # solve t_to_95_model > max_delay. but cant override scale_x later.
+        # scale_x_continuous(limits = c(NA, x@max_delay)) + # solve t_to_95_model > max_delay. but cant override scale_x later.
         geom_vline( ## doesnt force y limit to 0
           data = df_model_stats,
           aes(xintercept = t_to_95_model), ## can be > max_delay
-          # aes(xintercept = min(t_to_95_model, nc_obj@max_delay)), ## can be > max_delay
+          # aes(xintercept = min(t_to_95_model, x@max_delay)), ## can be > max_delay
           alpha = 0.3,
           linetype = "dashed"
         ) +
@@ -697,7 +697,7 @@ S7::method(plot, nowcast_results) <- function(
           aes(
             label = t_to_95_model,
             x = t_to_95_model, ## can be > max_delay
-            # x = min(t_to_95_model, nc_obj@max_delay), ## can be > max_delay
+            # x = min(t_to_95_model, x@max_delay), ## can be > max_delay
             y = ifelse(start_completeness_pred < 1, 0.95, 1.05),
             vjust = ifelse(start_completeness_pred < 1, 1.9, -.9),
           ),
@@ -715,13 +715,13 @@ S7::method(plot, nowcast_results) <- function(
     #   fig <-
     #     fig +
     #     geom_vline(
-    #       data = nc_obj@models,
+    #       data = x@models,
     #       aes(xintercept = t_to_95_model),
     #       alpha = 0.3,
     #       linetype = "dashed"
     #     ) +
     #     geom_label(
-    #       data = nc_obj@models,
+    #       data = x@models,
     #       aes(
     #         x = t_to_95_model,
     #         label = t_to_95_model
@@ -735,7 +735,7 @@ S7::method(plot, nowcast_results) <- function(
     do_rescale <- FALSE
     fig <-
       plot_nowcast(
-        df = nc_obj@results,
+        df = x@results,
         col_date_occurrence = !!s_col_occ,
         # col_date_reporting = !!s_col_rep,
         col_value = !!s_col_val,
@@ -744,6 +744,23 @@ S7::method(plot, nowcast_results) <- function(
         color1 = color1,
         color2 = color2
       )
+
+
+    if (add_model_info && x@params$do_model_fitting) {
+      fig <- fig +
+        ## GOOD / BAD: RECT COLOR ---
+        geom_rect(
+          data = df_model_stats,
+          inherit.aes = FALSE,
+          aes(fill = eval),
+          xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf,
+          alpha = 0.05
+        ) +
+        scale_fill_manual(
+          values = c("Good Fit" = color_good, "Bad Fit" = color_bad),
+          name = "Model Evaluation"
+        )
+    }
   } else {
     rlang::abort('invalid `which`. must be one of: "results", "data", "delays"')
   }
@@ -753,7 +770,7 @@ S7::method(plot, nowcast_results) <- function(
     fig <- fig + theme_nowcastr(base_size = base_size)
 
     ## facet_wrap
-    if (nc_obj@n_groups > 1) {
+    if (x@n_groups > 1) {
       smartscales <- case_when(
         (which == "data" & option == "triangle") ~ "fixed", ## issue is scales cannot have color scale free
         which == "results" ~ "free_y",
@@ -767,7 +784,7 @@ S7::method(plot, nowcast_results) <- function(
   }
 
   ## add caption
-  fig <- fig + labs(caption = paste("Generated on", Sys.Date(), "; Last report date:", max(nc_obj@data[[str_col_rep]])))
+  fig <- fig + labs(caption = paste("Generated on", Sys.Date(), "; Last report date:", max(x@data[[str_col_rep]])))
 
   return(fig)
 }
@@ -824,7 +841,7 @@ tbl_models_stats <- function(
       ## eval good or bad fit
       mutate(eval = case_when(
         modelname != "linear" &
-          # RSS < thresholds_rss[1] &
+          # RSS < thresholds_rss[1] & ## RSS is not good measure
           ## 1. THE FIT IS CORRECT : THERE IS ALIGNMENT BETWEEN POINTS
           R2 > thresholds_r2 &
           ## 2. THE LINE ENDS TOWARDS 100% COMPLETENESS
