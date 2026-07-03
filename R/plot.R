@@ -790,22 +790,34 @@ S7::method(plot, nowcast_results) <- function(
 }
 
 
-#' Unwrap nowcast models stats
+#' Compute table with models result stats.
+#'
+#' Summarizes fitted growth models per group, computing R-squared, fit
+#' evaluation (good/bad), and completeness at start/end of observed data.
+#'
 #' @param nc_obj A `nowcast_results` object.
-#' @param thresholds_r2 R squared threshold to classify `eval` into good or bad fit
-#' @return A tibble.
+#' @param thresholds_r2 Numeric scalar. R-squared threshold above which
+#'   (combined with end completeness near 1) a model is classified `"Good Fit"`.
+#'
+#' @return A tibble with one row per fitted model, including columns for
+#'   group variables, `R2`, `RSS`, model coefficients (`a`, `b`, `c`),
+#'   completeness at start/end, and `eval` ("Good Fit"/"Bad Fit"). If
+#'   `nc_obj@models` has no rows, it is returned unchanged.
+#'
+#' @examples
+#' \dontrun{
+#' tbl_models_stats(nc_obj)
+#' tbl_models_stats(nc_obj, thresholds_r2 = 0.9)
+#' }
 #' @export
 tbl_models_stats <- function(
   nc_obj,
   thresholds_r2 = 0.8
-  # ,thresholds_rss = 0.011
 ) {
   group_cols <- nc_obj@params$group_cols
-  # s_group_cols <- if (is.null(group_cols) || length(group_cols) == 0) list(rlang::expr(1)) else rlang::syms(group_cols)
-
 
   if (ncol(nc_obj@models) == 0) {
-    return(nc_obj@models)
+    return(nc_obj@models) ## has different col structure
   } else {
     nc_obj@models %>%
       mutate(
@@ -827,9 +839,8 @@ tbl_models_stats <- function(
       mutate(
         coefs_str = purrr::map_chr(.data$fit, ~ paste(signif(coef(.x), 2), collapse = ", "))
       ) %>%
-      # mutate(log_RSS = log10(.data$RSS) %>% round(1), ) %>%
       mutate(
-        t_to_95_model = .data$t_to_95_model %>% signif(2) # %>% paste(., nc_obj@params$unit),
+        t_to_95_model = .data$t_to_95_model %>% signif(2)
       ) %>%
       tidyr::separate(
         .data$coefs_str,
@@ -838,25 +849,23 @@ tbl_models_stats <- function(
         convert = TRUE,
         fill = "right"
       ) %>%
-      ## eval good or bad fit
+      ## eval good or bad fit ---
       mutate(eval = case_when(
-        modelname != "linear" &
-          # RSS < thresholds_rss[1] & ## RSS is not good measure
+        .data$modelname != "linear" &
           ## 1. THE FIT IS CORRECT : THERE IS ALIGNMENT BETWEEN POINTS
-          R2 > thresholds_r2 &
+          .data$R2 > thresholds_r2 &
           ## 2. THE LINE ENDS TOWARDS 100% COMPLETENESS
-          end_completeness_pred > .95 & end_completeness_pred < 1.05
+          .data$end_completeness_pred > .95 &
+          .data$end_completeness_pred < 1.05
         ~ "Good Fit",
         TRUE ~ "Bad Fit"
       )) %>%
-      # select( -c("data", "pred", "fit") ) %>%
       select(
         all_of(group_cols),
         "iterations",
         "modelname",
         "a", "b", "c",
         "R2", "RSS",
-        # "log_RSS",
         "t_to_95_obs", "t_to_95_model",
         "start_completeness_obs",
         "start_completeness_pred",
