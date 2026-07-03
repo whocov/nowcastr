@@ -6,6 +6,7 @@
 #' @param nc_obj A `nowcast_results` object.
 #' @param thresholds_r2 Numeric scalar. R-squared threshold above which
 #'   (combined with end completeness near 1) a model is classified `"Good Fit"`.
+#' @param thresholds_asymptote Numeric double. Gap from 100% Completeness tolerated to end_completeness_pred to categorise the model with good or bad fit.
 #'
 #' @return A tibble with one row per fitted model, including columns for
 #'   group variables, `R2`, `RSS`, model coefficients (`a`, `b`, `c`),
@@ -15,12 +16,13 @@
 #' @examples
 #' \dontrun{
 #' tbl_models_stats(nc_obj)
-#' tbl_models_stats(nc_obj, thresholds_r2 = 0.9)
+#' tbl_models_stats(nc_obj, thresholds_r2 = 0.9, thresholds_asymptote = 0.05)
 #' }
 #' @export
 tbl_models_stats <- function(
   nc_obj,
-  thresholds_r2 = 0.8
+  thresholds_r2 = 0.8,
+  thresholds_asymptote = 0.07
 ) {
   group_cols <- nc_obj@params$group_cols
 
@@ -63,8 +65,8 @@ tbl_models_stats <- function(
           ## 1. THE FIT IS CORRECT : THERE IS ALIGNMENT BETWEEN POINTS
           .data$R2 > thresholds_r2 &
           ## 2. THE LINE ENDS TOWARDS 100% COMPLETENESS
-          .data$end_completeness_pred > .95 &
-          .data$end_completeness_pred < 1.05
+          .data$end_completeness_pred > 1 - thresholds_asymptote &
+          .data$end_completeness_pred < 1 + thresholds_asymptote
         ~ "Good Fit",
         TRUE ~ "Bad Fit"
       )) %>%
