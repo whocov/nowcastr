@@ -54,7 +54,7 @@ evaluation (good/bad), and completeness at start/end of observed data.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tbl_models_stats</span><span class="op">(</span><span class="va">nc_obj</span>, thresholds_r2 <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tbl_models_stats</span><span class="op">(</span><span class="va">nc_obj</span>, thresholds_r2 <span class="op">=</span> <span class="fl">0.8</span>, thresholds_asymptote <span class="op">=</span> <span class="fl">0.07</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,6 +69,10 @@ evaluation (good/bad), and completeness at start/end of observed data.</p>
 <dd><p>Numeric scalar. R-squared threshold above which
 (combined with end completeness near 1) a model is classified <code>"Good Fit"</code>.</p></dd>
 
+
+<dt id="arg-thresholds-asymptote">thresholds_asymptote<a class="anchor" aria-label="anchor" href="#arg-thresholds-asymptote"></a></dt>
+<dd><p>Numeric double. Gap from 100% Completeness tolerated to end_completeness_pred to categorise the model with good or bad fit.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -82,7 +86,7 @@ completeness at start/end, and <code>eval</code> ("Good Fit"/"Bad Fit"). If
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">tbl_models_stats</span><span class="op">(</span><span class="va">nc_obj</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">tbl_models_stats</span><span class="op">(</span><span class="va">nc_obj</span>, thresholds_r2 <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">tbl_models_stats</span><span class="op">(</span><span class="va">nc_obj</span>, thresholds_r2 <span class="op">=</span> <span class="fl">0.9</span>, thresholds_asymptote <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
