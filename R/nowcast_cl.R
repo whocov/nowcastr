@@ -262,7 +262,8 @@ nowcast_cl <- function(
     ## 2 filters to select only trapeze of (max_delay x max_reportunits)
     filter(as.numeric(.data$delay) <= max_delay) %>%
     ## get the last report date, by groups+delay, but only up to max_reportunits
-    ## (each group+delay, will have 10 different report dates)
+    ## (each group+delay, will have {max_reportunits} different report dates)
+    ## the oldest have higher reportweight
     slice_max(!!s_col_rep, n = max_reportunits, by = c(!!!s_group_cols, "delay")) %>%
     group_by(!!!s_group_cols, .data$delay) %>%
     summarise(
