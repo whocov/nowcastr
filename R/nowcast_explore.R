@@ -137,13 +137,15 @@ nowcast_explore <- function(nc_obj) {
     output$plot_delays <- shiny::renderPlot({
       shiny::req(selected_group())
       filtered_obj <- filter_nc(nc_obj, selected_group())
-      plot(filtered_obj, which = "delays")
+      plot(filtered_obj, which = "delays") +
+        theme(legend.position = "none")
     })
 
     output$plot_results <- shiny::renderPlot({
       shiny::req(selected_group())
       filtered_obj <- filter_nc(nc_obj, selected_group())
-      plot(filtered_obj, which = "results")
+      plot(filtered_obj, which = "results") +
+        theme(legend.position = "none")
     })
   }
 
